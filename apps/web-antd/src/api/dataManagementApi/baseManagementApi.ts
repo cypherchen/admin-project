@@ -1,0 +1,129 @@
+/*
+ * @Author: cwx
+ * @Date: 2024-05-08 19:27:13
+ * @LastEditTime: 2024-12-24 22:32:39
+ * @LastEditors: cwx
+ * @Description: 基地管理
+ */
+import { requestClient } from '#/api/request';
+import type { Recordable } from '@vben/types';
+import type { BasicFetchResult } from '#/api/basicType';
+
+export namespace BaseManagementApi {
+  export interface BaseResult {
+    ID: string;
+    // 定义其他必要的属性
+  }
+
+  export interface BaseMonomerResult {
+    ID: string;
+    // 定义其他必要的属性
+  }
+}
+
+/**
+ * @description: 新增基地
+ * @param {*} orgId
+ * @param {*} data
+ * @return {Promise<BaseResult>}
+ */
+export async function postBase(orgId: string, data: Recordable<any>) {
+  return requestClient.post<BaseManagementApi.BaseResult>(
+    `api/APProjectBaseTree/${orgId}`,
+    data,
+  );
+}
+
+/**
+ * @description: 删除基地
+ * @param {*} orgId
+ * @param {*} id
+ * @return {Promise<boolean>}
+ */
+export async function deleteBase(orgId: string, id: string) {
+  return requestClient.delete<boolean>(`api/APProjectBaseTree/${orgId}/${id}`);
+}
+
+/**
+ * @description: 修改基地
+ * @param {*} orgId
+ * @param {*} data
+ * @return {Promise<BaseResult>}
+ */
+export async function putBase(orgId: string, data: Recordable<any>) {
+  return requestClient.put<BaseManagementApi.BaseResult>(
+    `api/APProjectBaseTree/${orgId}/${data.ID}`,
+    data,
+  );
+}
+
+/**
+ * @description: 查询基地
+ * @param {*} orgId
+ * @param {*} params
+ * @return {Promise<BasicFetchResult<BaseResult>>}
+ */
+export async function getBase({
+  orgId,
+  params,
+}: {
+  orgId: string;
+  params?: Recordable<any>;
+}) {
+  return requestClient.get<BasicFetchResult<BaseManagementApi.BaseResult>>(
+    `api/APProjectBaseTree/${orgId}`,
+    { params },
+  );
+}
+
+/**
+ * @description: 新增基地单体
+ * @param {*} data
+ * @return {Promise<BaseMonomerResult>}
+ */
+export async function postBaseMonomer(data: Recordable<any>) {
+  return requestClient.post<BaseManagementApi.BaseMonomerResult>(
+    `api/IPMonomerData`,
+    data,
+  );
+}
+
+/**
+ * @description: 删除基地单体
+ * @param {*} id
+ * @return {Promise<boolean>}
+ */
+export async function deleteBaseMonomer(id: string) {
+  return requestClient.delete<boolean>(`api/IPMonomerData/${id}`);
+}
+
+/**
+ * @description: 修改基地单体
+ * @param {*} data
+ * @return {Promise<BaseMonomerResult>}
+ */
+export async function putBaseMonomer(data: Recordable<any>) {
+  return requestClient.put<BaseManagementApi.BaseMonomerResult>(
+    `api/IPMonomerData/${data.ID}`,
+    data,
+  );
+}
+
+/**
+ * @description: 查询基地单体
+ * @param {*} params
+ * @return {Promise<BasicFetchResult<BaseMonomerResult>>}
+ */
+export async function getBaseMonomer(params?: Recordable<any>) {
+  return requestClient.get<
+    BasicFetchResult<BaseManagementApi.BaseMonomerResult>
+  >(`api/IPMonomerData`, { params });
+}
+
+/**
+ * @description: 手动更新基地单体
+ * @return {Promise<any>}
+ */
+export async function postBaseManualUpdate() {
+  return requestClient.post<any>(`api/IPMonomerData/UpdataSSOTMonomerData`);
+}
