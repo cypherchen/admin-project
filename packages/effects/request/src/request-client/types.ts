@@ -1,10 +1,3 @@
-/*
- * @Author: cwx
- * @Date: 2024-12-17 21:39:49
- * @LastEditTime: 2024-12-19 21:17:33
- * @LastEditors: cwx
- * @Description:
- */
 import type {
   AxiosResponse,
   CreateAxiosDefaults,

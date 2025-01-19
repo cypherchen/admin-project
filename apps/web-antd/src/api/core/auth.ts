@@ -1,10 +1,3 @@
-/*
- * @Author: cwx
- * @Date: 2024-12-17 21:39:49
- * @LastEditTime: 2024-12-19 22:05:30
- * @LastEditors: cwx
- * @Description:
- */
 import { baseRequestClient, requestClient } from '#/api/request';
 
 export namespace AuthApi {

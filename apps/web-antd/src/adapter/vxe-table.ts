@@ -1,10 +1,3 @@
-/*
- * @Author: cwx
- * @Date: 2024-12-17 21:39:49
- * @LastEditTime: 2024-12-24 20:41:14
- * @LastEditors: cwx
- * @Description:
- */
 import { h } from 'vue';
 
 import { setupVbenVxeTable, useVbenVxeGrid } from '@vben/plugins/vxe-table';

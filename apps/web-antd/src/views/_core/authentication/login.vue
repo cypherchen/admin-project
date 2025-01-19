@@ -1,10 +1,3 @@
-<!--
- * @Author: cwx
- * @Date: 2024-12-17 21:39:49
- * @LastEditTime: 2024-12-19 21:15:06
- * @LastEditors: cwx
- * @Description: 
--->
 <script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
 import type { BasicOption } from '@vben/types';

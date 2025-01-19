@@ -1,7 +1,7 @@
 import type { BasicUserInfo } from '@vben-core/typings';
 
 /** 用户信息 */
-interface UserInfo {
+interface UserInfo extends BasicUserInfo {
   /**
    * 头像
    */

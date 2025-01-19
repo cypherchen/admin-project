@@ -1,12 +1,6 @@
-/*
- * @Author: cwx
- * @Date: 2024-12-17 21:39:49
- * @LastEditTime: 2024-12-24 19:53:29
- * @LastEditors: cwx
- * @Description:
- */
-import type { Recordable } from '@vben/types';
 import type { VxeGridProps, VxeUIExport } from 'vxe-table';
+
+import type { Recordable } from '@vben/types';
 
 import type { VxeGridApi } from './api';
 

@@ -9,7 +9,7 @@ import { resetAllStores, useAccessStore, useUserStore } from '@vben/stores';
 import { notification } from 'ant-design-vue';
 import { defineStore } from 'pinia';
 
-import { getAccessCodesApi, getUserInfoApi, loginApi, logoutApi } from '#/api';
+import { getUserInfoApi, loginApi, logoutApi } from '#/api';
 import { $t } from '#/locales';
 
 export const useAuthStore = defineStore('auth', () => {
@@ -28,13 +28,13 @@ export const useAuthStore = defineStore('auth', () => {
     params: Recordable<any>,
     onSuccess?: () => Promise<void> | void,
   ) {
-    // 异步处理用户登录操作并获取 token
+    // 异步处理用户登录操作并获取 accessToken
     let userInfo: null | UserInfo = null;
     try {
       loginLoading.value = true;
       const userData = await loginApi(params);
 
-      // 如果成功获取到 token
+      // 如果成功获取到 accessToken
       if (userData.token) {
         accessStore.setAccessToken(userData.token);
 
@@ -54,10 +54,10 @@ export const useAuthStore = defineStore('auth', () => {
         } else {
           onSuccess
             ? await onSuccess?.()
-            : await router.push(userInfo?.homePath || DEFAULT_HOME_PATH);
+            : await router.push(userInfo.homePath || DEFAULT_HOME_PATH);
         }
 
-        if (userInfo?.Name) {
+        if (userInfo?.realName) {
           notification.success({
             description: `${$t('authentication.loginSuccessDesc')}:${userInfo?.Name}`,
             duration: 3,
