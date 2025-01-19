@@ -103,6 +103,10 @@ class RequestClient {
    */
   public async request<T>(url: string, config: AxiosRequestConfig): Promise<T> {
     try {
+      if (Array.isArray(config.params?.Where)) {
+        const Where: string = JSON.stringify(config.params?.Where);
+        Object.assign(config.params, { Where });
+      }
       const response: AxiosResponse<T> = await this.instance({
         url,
         ...config,

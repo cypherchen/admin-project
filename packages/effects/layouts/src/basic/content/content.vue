@@ -100,13 +100,13 @@ function transformComponent(
             :is="transformComponent(Component, route)"
             v-if="renderRouteView"
             v-show="!route.meta.iframeSrc"
-            :key="route.fullPath"
+            :key="route.name || route.fullPath"
           />
         </KeepAlive>
         <component
           :is="Component"
           v-else-if="renderRouteView"
-          :key="route.fullPath"
+          :key="route.name || route.fullPath"
         />
       </Transition>
     </RouterView>

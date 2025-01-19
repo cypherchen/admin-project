@@ -2,12 +2,18 @@ import { h } from 'vue';
 
 import { setupVbenVxeTable, useVbenVxeGrid } from '@vben/plugins/vxe-table';
 
+import VxeUIPluginRenderAntd from '@vxe-ui/plugin-render-antd';
 import { Button, Image } from 'ant-design-vue';
 
 import { useVbenForm } from './form';
 
+import '@vxe-ui/plugin-render-antd/dist/style.css';
+
 setupVbenVxeTable({
   configVxeTable: (vxeUI) => {
+    // 安装antd插件
+    vxeUI.use(VxeUIPluginRenderAntd);
+
     vxeUI.setConfig({
       grid: {
         align: 'center',
