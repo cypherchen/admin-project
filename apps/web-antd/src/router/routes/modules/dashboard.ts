@@ -1,10 +1,3 @@
-/*
- * @Author: cwx
- * @Date: 2025-01-18 15:14:24
- * @LastEditTime: 2025-01-21 13:06:36
- * @LastEditors: cwx
- * @Description:
- */
 import type { RouteRecordRaw } from 'vue-router';
 
 import { $t } from '#/locales';

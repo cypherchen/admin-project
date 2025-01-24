@@ -4,6 +4,11 @@
   "workbench.list.smoothScrolling": true,
   "workbench.startupEditor": "newUntitledFile",
   "workbench.tree.indent": 10,
+  "workbench.editor.highlightModifiedTabs": true,
+  "workbench.editor.closeOnFileDelete": true,
+  "workbench.editor.limit.enabled": true,
+  "workbench.editor.limit.perEditorGroup": true,
+  "workbench.editor.limit.value": 5,
 
   // editor
   "editor.tabSize": 2,
@@ -218,7 +223,5 @@
   "commentTranslate.multiLineMerge": true,
   "vue.server.hybridMode": true,
   "typescript.tsdk": "node_modules/typescript/lib",
-  "oxc.enable": false,
-  "cSpell.words": ["CATL"],
-  "workbench.editor.enablePreview": false
+  "oxc.enable": false
 }

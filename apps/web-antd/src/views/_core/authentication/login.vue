@@ -58,14 +58,14 @@ const formSchema = computed((): VbenFormSchema[] => {
             if (findUser) {
               form.setValues({
                 password: '123456',
-                account: findUser.value,
+                username: findUser.value,
               });
             }
           }
         },
         triggerFields: ['selectAccount'],
       },
-      fieldName: 'account',
+      fieldName: 'username',
       label: $t('authentication.username'),
       rules: z.string().min(1, { message: $t('authentication.usernameTip') }),
     },

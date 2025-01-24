@@ -654,8 +654,8 @@ importers:
         specifier: 'catalog:'
         version: 12.3.0(typescript@5.7.3)
       '@vxe-ui/plugin-render-antd':
-        specifier: 4.0.9
-        version: 4.0.9
+        specifier: 4.0.12
+        version: 4.0.12
       ant-design-vue:
         specifier: 'catalog:'
         version: 4.2.6(vue@3.5.13(typescript@5.7.3))
@@ -4750,8 +4750,8 @@ packages:
     peerDependencies:
       vue: ^3.5.13
 
-  '@vxe-ui/plugin-render-antd@4.0.9':
-    resolution: {integrity: sha512-2N+Up5JIInXyCgMCh0cL+l0ehahVxG+k0AGJUwjM0Qmh5HpKLfUEZ0wfkfgeIcihLZSPmfgXacaxgrguWcyZ4Q==}
+  '@vxe-ui/plugin-render-antd@4.0.12':
+    resolution: {integrity: sha512-ZOE8GEBaImJKLWhVUYikplAAFvvBVBdkSU6zlrr0vA7fClps8iRZ5gMOXmDYAB8RSKxtAJKWRXRDCfWp29GP3A==}
 
   JSONStream@1.3.5:
     resolution: {integrity: sha512-E+iruNOY8VV9s4JEbe1aNEm6MiszPRr/UfcHMz0TQh1BXSxHK+ASV1R6W4HpjBhSeS+54PIsAMCBmwD06LLsqQ==}
@@ -13800,7 +13800,7 @@ snapshots:
       vue: 3.5.13(typescript@5.7.3)
       xe-utils: 3.7.0
 
-  '@vxe-ui/plugin-render-antd@4.0.9': {}
+  '@vxe-ui/plugin-render-antd@4.0.12': {}
 
   JSONStream@1.3.5:
     dependencies:
