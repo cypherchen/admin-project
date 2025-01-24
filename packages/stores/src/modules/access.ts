@@ -12,6 +12,10 @@ interface AccessState {
    */
   accessCodes: string[];
   /**
+   * 菜单权限码
+   */
+  accessMenuCodes: string[];
+  /**
    * 可访问的菜单列表
    */
   accessMenus: MenuRecordRaw[];
@@ -64,6 +68,9 @@ export const useAccessStore = defineStore('core-access', {
     setAccessCodes(codes: string[]) {
       this.accessCodes = codes;
     },
+    setAccessMenuCodes(codes: string[]) {
+      this.accessMenuCodes = codes;
+    },
     setAccessMenus(menus: MenuRecordRaw[]) {
       this.accessMenus = menus;
     },
@@ -85,10 +92,11 @@ export const useAccessStore = defineStore('core-access', {
   },
   persist: {
     // 持久化
-    pick: ['accessToken', 'refreshToken', 'accessCodes'],
+    pick: ['accessToken', 'refreshToken', 'accessCodes', 'accessMenuCodes'],
   },
   state: (): AccessState => ({
     accessCodes: [],
+    accessMenuCodes: [],
     accessMenus: [],
     accessRoutes: [],
     accessToken: null,

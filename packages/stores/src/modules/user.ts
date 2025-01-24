@@ -4,6 +4,11 @@ interface BasicUserInfo {
   [key: string]: any;
 
   /**
+   * 账号
+   */
+  Account: string;
+
+  /**
    * 头像
    */
   avatar?: string;
@@ -14,29 +19,24 @@ interface BasicUserInfo {
   ID: string;
 
   /**
-   * 用户昵称
-   */
-  Name: string;
-
-  /**
-   * 账号
-   */
-  Account: string;
-
-  /**
-   * 用户角色
-   */
-  roleName: string;
-
-  /**
    * 是否超管
    */
   IsAdmin: boolean;
 
   /**
+   * 用户昵称
+   */
+  Name: string;
+
+  /**
    * 组织ID
    */
   Orz_ID: string;
+
+  /**
+   * 用户角色
+   */
+  roleName: string;
 }
 
 interface AccessState {
@@ -65,6 +65,10 @@ export const useUserStore = defineStore('core-user', {
     setUserRoles(roles: string[]) {
       this.userRoles = roles;
     },
+  },
+  persist: {
+    // 持久化
+    pick: ['userInfo', 'userRoles'],
   },
   state: (): AccessState => ({
     userInfo: null,

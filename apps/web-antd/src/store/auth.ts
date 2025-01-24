@@ -1,4 +1,4 @@
-import type { Recordable, UserInfo } from '@vben/types';
+import type { AuthApi } from '#/api';
 
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -25,11 +25,12 @@ export const useAuthStore = defineStore('auth', () => {
    * @param params 登录表单数据
    */
   async function authLogin(
-    params: Recordable<any>,
+    params: Record<string, any>,
     onSuccess?: () => Promise<void> | void,
   ) {
     // 异步处理用户登录操作并获取 accessToken
-    let userInfo: null | UserInfo = null;
+    let userInfo: AuthApi.LoginResult | null = null;
+
     try {
       loginLoading.value = true;
       const userData = await loginApi(params);
@@ -48,6 +49,7 @@ export const useAuthStore = defineStore('auth', () => {
 
         userStore.setUserInfo(userInfo);
         accessStore.setAccessCodes(userData.Authority);
+        accessStore.setAccessMenuCodes(userData.Menu);
 
         if (accessStore.loginExpired) {
           accessStore.setLoginExpired(false);
@@ -57,7 +59,7 @@ export const useAuthStore = defineStore('auth', () => {
             : await router.push(userInfo.homePath || DEFAULT_HOME_PATH);
         }
 
-        if (userInfo?.realName) {
+        if (userInfo?.Name) {
           notification.success({
             description: `${$t('authentication.loginSuccessDesc')}:${userInfo?.Name}`,
             duration: 3,
@@ -95,7 +97,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function fetchUserInfo() {
-    let userInfo: null | UserInfo = null;
+    let userInfo: AuthApi.LoginResult | null = null;
     userInfo = await getUserInfoApi();
     userStore.setUserInfo(userInfo);
     return userInfo;

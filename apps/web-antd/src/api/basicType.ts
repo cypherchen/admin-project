@@ -7,26 +7,7 @@
  */
 import { ConditionalType } from '#/enums/basicEnum';
 
-// GET请求参数
-export interface BasicParamsType {
-  PageIndex?: number;
-  PageSize?: number;
-  Where?: WhereType[];
-  Order?: string;
-}
-
-// 查询参数
-export interface WhereType {
-  FieldName: string;
-  ConditionalType: ConditionalType;
-  FieldValue: any;
-}
-
-// 基础返回值类型
-export interface BasicFetchResult<T> {
-  List: (T & BasicModel)[];
-  Count?: number;
-}
+export * from '#/enums/basicEnum';
 
 // 基础类型
 export interface BasicModel {
@@ -42,4 +23,25 @@ export interface BasicModel {
   IsDelete?: boolean;
   SysLevel?: number;
   Orz_ID?: string;
+}
+
+// 查询参数
+export interface WhereType {
+  FieldName: string;
+  ConditionalType: ConditionalType;
+  FieldValue: any;
+}
+
+// GET请求参数
+export interface BasicParamsType {
+  PageIndex?: number;
+  PageSize?: number;
+  Where?: WhereType[];
+  Order?: string;
+}
+
+// 基础返回值类型
+export interface BasicFetchResult<T> {
+  List: (BasicModel & T)[];
+  Count?: number;
 }

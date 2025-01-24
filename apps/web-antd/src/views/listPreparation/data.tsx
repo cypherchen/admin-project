@@ -1,16 +1,25 @@
-export const searchFormSchema = [
+/*
+ * @Author: cwx
+ * @Date: 2025-01-18 15:37:12
+ * @LastEditTime: 2025-01-24 20:52:43
+ * @LastEditors: cwx
+ * @Description:
+ */
+import type { VbenFormSchema } from '#/adapter/form';
+import type { VxeGridProps } from '#/adapter/vxe-table';
+
+export const searchFormSchema: VbenFormSchema[] = [
   {
+    fieldName: 'Name',
+    label: '名称',
     component: 'Input',
     componentProps: {
       placeholder: '请输入名称',
     },
-    defaultValue: '1',
-    fieldName: 'Name',
-    label: '名称',
   },
 ];
 
-export const columns = [
+export const columns: VxeGridProps['columns'] = [
   {
     type: 'seq',
     width: 70,
@@ -20,38 +29,27 @@ export const columns = [
     field: 'Code',
     title: '编号',
     width: 100,
-    component: 'vxe-input',
-    componentProps: {
-      placeholder: '请输入',
-    },
+    editRender: { name: 'AInput' },
   },
   {
     field: 'Name',
     title: '名称',
     minWidth: 100,
-    component: 'vxe-input',
-    componentProps: {
-      placeholder: '请输入',
-    },
+    editRender: { name: 'AInput' },
   },
   {
     field: 'Type',
     title: '类型',
     width: 100,
-    component: 'vxe-input',
-    componentProps: {
-      placeholder: '请输入',
-    },
+    editRender: { name: 'AInput' },
   },
   {
     field: 'PlanTime',
     title: '计划开始时间',
     width: 130,
-    component: 'vxe-input',
-    componentProps: {
-      placeholder: '请输入',
-      type: 'date',
-      transfer: true,
+    editRender: {
+      name: 'ADatePicker',
+      props: { valueFormat: 'YYYY-MM-DD' },
     },
     formatter: ({ cellValue }: { cellValue: string }) =>
       cellValue?.slice(0, 10),
@@ -60,11 +58,9 @@ export const columns = [
     field: 'PlanEndTime',
     title: '计划完成时间',
     width: 130,
-    component: 'vxe-input',
-    componentProps: {
-      placeholder: '请输入',
-      type: 'date',
-      transfer: true,
+    editRender: {
+      name: 'ADatePicker',
+      props: { valueFormat: 'YYYY-MM-DD' },
     },
     formatter: ({ cellValue }: { cellValue: string }) =>
       cellValue?.slice(0, 10),
@@ -73,33 +69,13 @@ export const columns = [
     field: 'ResponsibleUserID',
     title: '责任人',
     width: 120,
-    component: 'vxe-select',
-    componentProps: {
-      transfer: false,
-      placeholder: '请输入',
-      filterable: true,
-      clearable: true,
-      optionProps: {
-        label: 'Name',
-        value: 'ID',
-      },
-    },
+    editRender: { name: 'ASelect' },
   },
   {
     field: 'ReportedUserID',
     title: '汇报人',
     width: 120,
-    component: 'vxe-select',
-    componentProps: {
-      transfer: false,
-      placeholder: '请输入',
-      filterable: true,
-      clearable: true,
-      optionProps: {
-        label: 'Name',
-        value: 'ID',
-      },
-    },
+    editRender: { name: 'ASelect' },
   },
   {
     field: 'IPProjectState',
@@ -120,5 +96,12 @@ export const columns = [
     field: 'UpdatedTime',
     title: '修改时间',
     width: 165,
+  },
+  {
+    field: 'action',
+    title: '操作',
+    width: 100,
+    fixed: 'right',
+    slots: { default: 'action' },
   },
 ];

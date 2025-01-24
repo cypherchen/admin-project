@@ -1,9 +1,9 @@
-import type { UserInfo } from '@vben/types';
+import type { AuthApi } from '#/api/core/auth';
 
 /**
  * 获取用户信息
  */
 export async function getUserInfoApi() {
   // return requestClient.get<UserInfo>('/user/info');
-  return {} as UserInfo;
+  return {} as AuthApi.LoginResult;
 }
