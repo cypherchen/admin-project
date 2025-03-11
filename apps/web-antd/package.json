@@ -44,6 +44,7 @@
     "@vxe-ui/plugin-render-antd": "4.0.12",
     "ant-design-vue": "catalog:",
     "dayjs": "catalog:",
+    "lodash": "^4.17.21",
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"
