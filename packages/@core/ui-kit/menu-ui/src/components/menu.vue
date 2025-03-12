@@ -210,7 +210,7 @@ function handleResize() {
 
 const { currentRoute } = useRouter();
 function getActivePaths() {
-  activePath.value = currentRoute.value.mate?.activePath || activePath.value;
+  activePath.value = currentRoute.value.meta?.activePath || activePath.value;
   const activeItem = activePath.value && items.value[activePath.value];
 
   if (!activeItem || props.mode === 'horizontal' || props.collapse) {
