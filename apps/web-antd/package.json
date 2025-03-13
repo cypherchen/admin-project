@@ -46,6 +46,7 @@
     "dayjs": "catalog:",
     "lodash": "^4.17.21",
     "pinia": "catalog:",
+    "uuid": "^11.1.0",
     "vue": "catalog:",
     "vue-router": "catalog:"
   }
