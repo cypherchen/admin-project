@@ -67,6 +67,12 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
 
       config.headers.Authorization = formatToken(accessStore.accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
+
+      if (Array.isArray(config.params?.Where)) {
+        const Where = JSON.stringify(config.params.Where);
+        Object.assign(config.params, { Where });
+      }
+
       return config;
     },
   });
