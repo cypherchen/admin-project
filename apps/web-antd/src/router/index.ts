@@ -9,6 +9,8 @@ import { resetStaticRoutes } from '@vben/utils';
 import { createRouterGuard } from './guard';
 import { routes } from './routes';
 
+import { stringifyQuery, parseQuery } from './utils/query';
+
 /**
  *  @zh_CN 创建vue-router实例
  */
@@ -27,6 +29,8 @@ const router = createRouter({
   },
   // 是否应该禁止尾部斜杠。
   // strict: true,
+  stringifyQuery, // 序列化query, 并加密
+  parseQuery, // 反序列化query, 并解密
 });
 
 const resetRoutes = () => resetStaticRoutes(router, routes);

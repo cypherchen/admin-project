@@ -8,7 +8,11 @@ import { startProgress, stopProgress } from '@vben/utils';
 import { accessRoutes, coreRouteNames } from '#/router/routes';
 import { useAuthStore } from '#/store';
 
-import { generateAccess } from './access';
+import { generateAccess, generateCustomAccess } from './access';
+
+import { hasPermission } from '#/components/authority';
+
+import { tracking } from '#/router/utils/tracking';
 
 /**
  * 通用守卫配置
@@ -93,7 +97,7 @@ function setupAccessGuard(router: Router) {
     // 生成路由表
     // 当前登录用户拥有的角色标识列表
     const userInfo = userStore.userInfo || (await authStore.fetchUserInfo());
-    const userRoles = userInfo.roles ?? [];
+    const userRoles = userInfo.roleName ? [userInfo.roleName] : [];
 
     // 生成菜单和路由
     const { accessibleMenus, accessibleRoutes } = await generateAccess({
@@ -106,6 +110,7 @@ function setupAccessGuard(router: Router) {
     // 保存菜单信息和路由信息
     accessStore.setAccessMenus(accessibleMenus);
     accessStore.setAccessRoutes(accessibleRoutes);
+
     accessStore.setIsAccessChecked(true);
     const redirectPath = (from.query.redirect ??
       (to.path === DEFAULT_HOME_PATH
@@ -120,6 +125,53 @@ function setupAccessGuard(router: Router) {
 }
 
 /**
+ * 自定义权限访问守卫配置
+ * @param router
+ */
+function setupAuthGuard(router: Router) {
+  router.beforeEach(async (to, from) => {
+    const userStore = useUserStore();
+    const userInfo = userStore.userInfo;
+
+    // 非管理员禁止进入后台
+    if (!userInfo?.IsAdmin && to.meta?.belongTo === 'admin') {
+      const route =
+        from.meta?.belongTo !== 'admin' ? from : router.resolve(LOGIN_PATH);
+      return route;
+    }
+
+    // 埋点
+    tracking('enterPage', to, from);
+
+    const belongTo = to.meta?.belongTo;
+
+    if (!belongTo || belongTo === from.meta?.belongTo) {
+      // 同属于一个级别的路由，不需要重新生成菜单, 主要针对页面刷新时, 菜单需要重新生成
+      return true;
+    }
+
+    // 动态过滤路由
+    const filteredRoutes = accessRoutes.filter((route) => {
+      // return hasPermission(route.name as string, 'menu');
+      return true;
+    });
+
+    const routes = filteredRoutes.filter((item) =>
+      belongTo ? item.meta?.belongTo === belongTo : true,
+    );
+    await generateCustomAccess(router, routes, {
+      setRoutes: false,
+      setMenus: true,
+    });
+  });
+
+  router.afterEach((to, from) => {
+    // 埋点
+    tracking('leavePage', to, from);
+  });
+}
+
+/**
  * 项目守卫配置
  * @param router
  */
@@ -128,6 +180,8 @@ function createRouterGuard(router: Router) {
   setupCommonGuard(router);
   /** 权限访问 */
   setupAccessGuard(router);
+  /** 自定义权限访问 */
+  setupAuthGuard(router);
 }
 
 export { createRouterGuard };
