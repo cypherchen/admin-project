@@ -44,6 +44,7 @@
     "@vueuse/core": "catalog:",
     "@vxe-ui/plugin-render-antd": "4.0.12",
     "ant-design-vue": "catalog:",
+    "browser-md5-file": "^1.1.1",
     "crypto-js": "^4.2.0",
     "dayjs": "catalog:",
     "lodash": "^4.17.21",
