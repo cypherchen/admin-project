@@ -19,6 +19,7 @@ setupVbenForm<ComponentType>({
       Radio: 'checked',
       Switch: 'checked',
       Upload: 'fileList',
+      BasicUpload: 'fileList',
     },
   },
   defineRules: {
@@ -31,8 +32,14 @@ setupVbenForm<ComponentType>({
     },
     // 选择项目必填国际化适配
     selectRequired: (value, _params, ctx) => {
-      if (value === undefined || value === null) {
+      if (value === undefined || value === null || value.length === 0) {
         return $t('ui.formRules.selectRequired', [ctx.label]);
+      }
+      return true;
+    },
+    uploadRequired: (value, _params, ctx) => {
+      if (!value || value.length === 0) {
+        return `请上传${ctx.label}`;
       }
       return true;
     },

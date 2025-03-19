@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2025-03-15 15:59:10
- * @LastEditTime: 2025-03-18 21:12:43
+ * @LastEditTime: 2025-03-19 11:27:59
  * @LastEditors: cwx
  * @Description: 上传组件
 -->
@@ -204,7 +204,7 @@ const handleChange: UploadProps['onChange'] = async ({ file }) => {
     case 'removed':
       const removedList = fileList.value.filter((f) => f.MD5Code !== file.md5);
       emit('update:fileList', removedList);
-      emit('change', removedList);
+      emit('change', file);
       break;
     default:
       console.warn('未知状态:', file.status);

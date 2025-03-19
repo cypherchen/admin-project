@@ -37,6 +37,8 @@ import {
   Upload,
 } from 'ant-design-vue';
 
+import { BasicUpload } from '#/components/basicUpload';
+
 const withDefaultPlaceholder = <T extends Component>(
   component: T,
   type: 'input' | 'select',
@@ -74,6 +76,7 @@ export type ComponentType =
   | 'TimePicker'
   | 'TreeSelect'
   | 'Upload'
+  | 'BasicUpload'
   | BaseFormComponentType;
 
 async function initComponentAdapter() {
@@ -148,6 +151,7 @@ async function initComponentAdapter() {
     TimePicker,
     TreeSelect: withDefaultPlaceholder(TreeSelect, 'select'),
     Upload,
+    BasicUpload,
   };
 
   // 将组件注册到全局共享状态中

@@ -7,6 +7,8 @@ import { Button, Image } from 'ant-design-vue';
 
 import { useVbenForm } from './form';
 
+import { AuditStatus } from '#/components/auditStatus';
+
 import '@vxe-ui/plugin-render-antd/dist/style.css';
 
 setupVbenVxeTable({
@@ -52,8 +54,8 @@ setupVbenVxeTable({
           isHover: true,
           keyField: 'ID',
         },
-        scrollX: { enabled: true, gt: 30 },
-        scrollY: { enabled: true, gt: 20 },
+        scrollX: { enabled: true, gt: 20 },
+        scrollY: { enabled: true, gt: 30 },
         round: true,
         showOverflow: true,
         size: 'small',
@@ -77,6 +79,14 @@ setupVbenVxeTable({
           { size: 'small', type: 'link' },
           { default: () => props?.text },
         );
+      },
+    });
+
+    // 表格配置项可以用 cellRender: { name: 'AuditStatus' },
+    vxeUI.renderer.add('AuditStatus', {
+      renderTableDefault(_, params) {
+        const { row } = params;
+        return h(AuditStatus, { status: row.AuditStatus, record: row });
       },
     });
 
