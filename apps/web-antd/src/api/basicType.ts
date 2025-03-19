@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2024-12-19 22:59:08
- * @LastEditTime: 2024-12-19 23:28:33
+ * @LastEditTime: 2025-03-19 20:57:48
  * @LastEditors: cwx
  * @Description:
  */
@@ -26,11 +26,19 @@ export interface BasicModel {
 }
 
 // 查询参数
-export interface WhereType {
+export type BasicWhereType = {
   FieldName: string;
   ConditionalType: ConditionalType;
   FieldValue: any;
+};
+export interface ConditionalListEntry {
+  Key: 0 | 1; // 0:and 1:or
+  Value: BasicWhereType;
 }
+export interface ComplexWhereType {
+  ConditionalList: ConditionalListEntry[];
+}
+export type WhereType = BasicWhereType | ComplexWhereType;
 
 // GET请求参数
 export interface BasicParamsType {
