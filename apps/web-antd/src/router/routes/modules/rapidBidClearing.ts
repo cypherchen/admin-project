@@ -17,6 +17,7 @@ const routes: RouteRecordRaw[] = [
       order: 3,
       title: '快速清标',
       hideChildrenInMenu: true,
+      belongTo: 'user',
     },
     children: [
       {

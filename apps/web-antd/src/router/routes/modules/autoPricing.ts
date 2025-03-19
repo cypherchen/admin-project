@@ -17,6 +17,7 @@ const routes: RouteRecordRaw[] = [
       order: 2,
       title: '自动套价',
       hideChildrenInMenu: true,
+      belongTo: 'user',
     },
     children: [
       {

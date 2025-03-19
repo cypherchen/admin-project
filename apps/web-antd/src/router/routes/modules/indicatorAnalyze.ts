@@ -17,6 +17,7 @@ const routes: RouteRecordRaw[] = [
       order: 4,
       title: '指标分析',
       hideChildrenInMenu: true,
+      belongTo: 'user',
     },
     children: [
       {

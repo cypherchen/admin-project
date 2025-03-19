@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2025-01-18 15:37:12
- * @LastEditTime: 2025-01-24 20:52:43
+ * @LastEditTime: 2025-03-19 19:04:03
  * @LastEditors: cwx
  * @Description:
  */
@@ -29,41 +29,30 @@ export const columns: VxeGridProps['columns'] = [
     field: 'Code',
     title: '编号',
     width: 100,
-    editRender: { name: 'AInput' },
+    editRender: {
+      name: 'AInput',
+    },
   },
   {
     field: 'Name',
     title: '名称',
     minWidth: 100,
-    editRender: { name: 'AInput' },
-  },
-  {
-    field: 'Type',
-    title: '类型',
-    width: 100,
-    editRender: { name: 'AInput' },
-  },
-  {
-    field: 'PlanTime',
-    title: '计划开始时间',
-    width: 130,
     editRender: {
-      name: 'ADatePicker',
-      props: { valueFormat: 'YYYY-MM-DD' },
+      name: 'AInput',
     },
-    formatter: ({ cellValue }: { cellValue: string }) =>
-      cellValue?.slice(0, 10),
   },
   {
-    field: 'PlanEndTime',
-    title: '计划完成时间',
-    width: 130,
+    field: 'Time',
+    title: '计划时间',
+    width: 250,
     editRender: {
-      name: 'ADatePicker',
-      props: { valueFormat: 'YYYY-MM-DD' },
+      name: 'ARangePicker',
+      props: {
+        valueFormat: 'YYYY-MM-DD',
+      },
     },
-    formatter: ({ cellValue }: { cellValue: string }) =>
-      cellValue?.slice(0, 10),
+    formatter: ({ cellValue }: Record<string, any>) =>
+      cellValue?.length > 0 ? cellValue.join(' ~ ') : '',
   },
   {
     field: 'ResponsibleUserID',
@@ -80,12 +69,14 @@ export const columns: VxeGridProps['columns'] = [
   {
     field: 'IPProjectState',
     title: '进度',
-    width: 85,
+    width: 100,
+    slots: { default: 'IPProjectState' },
   },
   {
     field: 'AuditStatus',
     title: '审批状态',
     width: 100,
+    cellRender: { name: 'AuditStatus' },
   },
   {
     field: 'CreatedTime',

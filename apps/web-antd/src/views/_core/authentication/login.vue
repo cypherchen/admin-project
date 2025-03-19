@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
-import type { BasicOption } from '@vben/types';
 
 import { computed, markRaw } from 'vue';
 
@@ -8,62 +7,18 @@ import { AuthenticationLogin, SliderCaptcha, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
 import { useAuthStore } from '#/store';
+import { useAppConfig } from '@vben/hooks';
 
 defineOptions({ name: 'Login' });
 
 const authStore = useAuthStore();
 
-const MOCK_USER_OPTIONS: BasicOption[] = [
-  {
-    label: 'Super',
-    value: 'vben',
-  },
-  {
-    label: 'Admin',
-    value: 'admin',
-  },
-  {
-    label: 'User',
-    value: 'jack',
-  },
-];
-
 const formSchema = computed((): VbenFormSchema[] => {
   return [
-    {
-      component: 'VbenSelect',
-      componentProps: {
-        options: MOCK_USER_OPTIONS,
-        placeholder: $t('authentication.selectAccount'),
-      },
-      fieldName: 'selectAccount',
-      label: $t('authentication.selectAccount'),
-      rules: z
-        .string()
-        .min(1, { message: $t('authentication.selectAccount') })
-        .optional()
-        .default('vben'),
-    },
     {
       component: 'VbenInput',
       componentProps: {
         placeholder: $t('authentication.usernameTip'),
-      },
-      dependencies: {
-        trigger(values, form) {
-          if (values.selectAccount) {
-            const findUser = MOCK_USER_OPTIONS.find(
-              (item) => item.value === values.selectAccount,
-            );
-            if (findUser) {
-              form.setValues({
-                password: '123456',
-                username: findUser.value,
-              });
-            }
-          }
-        },
-        triggerFields: ['selectAccount'],
       },
       fieldName: 'username',
       label: $t('authentication.username'),
@@ -87,12 +42,39 @@ const formSchema = computed((): VbenFormSchema[] => {
     },
   ];
 });
+
+const { envType, ssoUrlProd, ssoUrlTest, ssoClientIdProd, ssoClientIdTest } =
+  useAppConfig(import.meta.env, import.meta.env.PROD);
+const SSOLogin = (state = '') => {
+  const ssoUrl = envType === 0 ? ssoUrlProd : ssoUrlTest;
+
+  const ssoClientId = envType === 0 ? ssoClientIdProd : ssoClientIdTest;
+
+  const encodeUrl = encodeURIComponent(`${window.location.origin}/#/login`);
+
+  let href = `${ssoUrl}?client_id=${ssoClientId}&response_type=code&redirect_uri=${encodeUrl}`;
+
+  if (state) {
+    href += `&state=${state}`;
+  }
+
+  window.open(href, '_self');
+};
 </script>
 
 <template>
   <AuthenticationLogin
     :form-schema="formSchema"
     :loading="authStore.loginLoading"
+    :showForgetPassword="false"
+    :showCodeLogin="false"
+    :showQrcodeLogin="false"
+    :showThirdPartyLogin="false"
+    :showRegister="false"
     @submit="authStore.authLogin"
-  />
+  >
+    <template #third-party-login>
+      <a-button class="mt-4 w-full" @click="SSOLogin()">单点登录</a-button>
+    </template>
+  </AuthenticationLogin>
 </template>

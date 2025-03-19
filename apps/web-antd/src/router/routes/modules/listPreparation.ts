@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2024-12-19 20:56:58
- * @LastEditTime: 2025-01-21 00:05:51
+ * @LastEditTime: 2025-03-14 23:08:22
  * @LastEditors: cwx
  * @Description:
  */
@@ -9,7 +9,7 @@ import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {
-    name: 'listPreparation',
+    name: 'ListPreparation',
     path: '/listPreparation',
     meta: {
       icon: 'ic:baseline-view-in-ar',
@@ -17,17 +17,17 @@ const routes: RouteRecordRaw[] = [
       order: 1,
       title: '清单编制',
       hideChildrenInMenu: true,
-      authority: ['admin'],
       menuVisibleWithForbidden: true,
+      belongTo: 'user',
     },
     children: [
       {
         name: 'ListPreparationList',
-        path: '/listPreparation',
+        path: '/listPreparation/:bId?',
         component: () => import('#/views/listPreparation/index.vue'),
         meta: {
           title: '清单编制',
-          activePath: '/listPreparation',
+          activePath: '/listPreparation/:bId?',
         },
       },
       {
@@ -36,7 +36,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/listPreparation/content/content.vue'),
         meta: {
           title: '清单编制详情',
-          activePath: '/listPreparation',
+          activePath: '/listPreparation/:bId?',
         },
       },
     ],

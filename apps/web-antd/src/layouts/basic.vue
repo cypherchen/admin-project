@@ -1,12 +1,11 @@
 <script lang="ts" setup>
+import { useRouter, type RouteRecordRaw } from 'vue-router';
 import type { NotificationItem } from '@vben/layouts';
 
 import { computed, ref, watch } from 'vue';
 
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
-import { VBEN_DOC_URL, VBEN_GITHUB_URL } from '@vben/constants';
 import { useWatermark } from '@vben/hooks';
-import { BookOpenText, CircleHelp, MdiGithub } from '@vben/icons';
 import {
   BasicLayout,
   LockScreen,
@@ -21,35 +20,18 @@ import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
 
+import { accessRoutes } from '#/router/routes';
+
+import { sortBy } from 'lodash';
+
 const notifications = ref<NotificationItem[]>([
-  {
-    avatar: 'https://avatar.vercel.sh/vercel.svg?text=VB',
-    date: '3小时前',
-    isRead: true,
-    message: '描述信息描述信息描述信息',
-    title: '收到了 14 份新周报',
-  },
-  {
-    avatar: 'https://avatar.vercel.sh/1',
-    date: '刚刚',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '朱偏右 回复了你',
-  },
-  {
-    avatar: 'https://avatar.vercel.sh/1',
-    date: '2024-01-01',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '曲丽丽 评论了你',
-  },
-  {
-    avatar: 'https://avatar.vercel.sh/satori',
-    date: '1天前',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '代办提醒',
-  },
+  // {
+  //   avatar: 'https://avatar.vercel.sh/vercel.svg?text=VB',
+  //   date: '3小时前',
+  //   isRead: true,
+  //   message: '描述信息描述信息描述信息',
+  //   title: '收到了 14 份新周报',
+  // },
 ]);
 
 const userStore = useUserStore();
@@ -60,33 +42,33 @@ const showDot = computed(() =>
   notifications.value.some((item) => !item.isRead),
 );
 
+const router = useRouter();
 const menus = computed(() => [
   {
-    handler: () => {
-      openWindow(VBEN_DOC_URL, {
-        target: '_blank',
-      });
+    handler: async () => {
+      const routes = sortBy(
+        accessRoutes.filter((item) => item.meta?.belongTo === 'user'),
+        (r: RouteRecordRaw) => r.meta?.order,
+      );
+      router.push({ name: routes[0]?.name });
     },
-    icon: BookOpenText,
-    text: $t('ui.widgets.document'),
+    text: '前台',
+  },
+  {
+    handler: async () => {
+      const routes = sortBy(
+        accessRoutes.filter((item) => item.meta?.belongTo === 'admin'),
+        (r: RouteRecordRaw) => r.meta?.order,
+      );
+      router.push({ name: routes[0]?.name });
+    },
+    text: '后台',
   },
   {
     handler: () => {
-      openWindow(VBEN_GITHUB_URL, {
-        target: '_blank',
-      });
+      // router.push({ name: 'Register' });
     },
-    icon: MdiGithub,
-    text: 'GitHub',
-  },
-  {
-    handler: () => {
-      openWindow(`${VBEN_GITHUB_URL}/issues`, {
-        target: '_blank',
-      });
-    },
-    icon: CircleHelp,
-    text: $t('ui.widgets.qa'),
+    text: '修改密码',
   },
 ]);
 
@@ -110,7 +92,7 @@ watch(
   async (enable) => {
     if (enable) {
       await updateWatermark({
-        content: `${userStore.userInfo?.username}`,
+        content: `${userStore.userInfo?.Name}`,
       });
     } else {
       destroyWatermark();

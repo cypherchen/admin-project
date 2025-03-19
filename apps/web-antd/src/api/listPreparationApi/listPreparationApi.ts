@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2024-05-24 08:47:27
- * @LastEditTime: 2024-12-24 22:25:43
+ * @LastEditTime: 2025-03-19 19:51:09
  * @LastEditors: cwx
  * @Description: 清单编制台账api
  */
@@ -58,9 +58,9 @@ export namespace ListPreparationApi {
 
 /**
  * @description: 新增清单编制台账
- * @param {*} orgId
- * @param {*} treeId
- * @param {*} data
+ * @param {string} orgId
+ * @param {string} treeId
+ * @param {Recordable<any>} data
  * @return {*}
  */
 export async function postListPreparation(
@@ -76,9 +76,9 @@ export async function postListPreparation(
 
 /**
  * @description: 删除清单编制台账
- * @param {*} orgId
- * @param {*} treeId
- * @param {*} data
+ * @param {string} orgId
+ * @param {string} treeId
+ * @param {string[]} data
  * @return {*}
  */
 export async function deleteListPreparation(
@@ -86,17 +86,16 @@ export async function deleteListPreparation(
   treeId: string,
   data: string[],
 ) {
-  return requestClient.delete<boolean>(
-    `api/IPProject/${orgId}/${treeId}`,
+  return requestClient.delete<boolean>(`api/IPProject/${orgId}/${treeId}`, {
     data,
-  );
+  });
 }
 
 /**
  * @description: 修改清单编制台账
- * @param {*} orgId
- * @param {*} treeId
- * @param {*} data
+ * @param {string} orgId
+ * @param {string} treeId
+ * @param {Recordable<any>} data
  * @return {*}
  */
 export async function putListPreparation(
@@ -105,16 +104,16 @@ export async function putListPreparation(
   data: Recordable<any>,
 ) {
   return requestClient.put<ListPreparationApi.ProjectResult>(
-    `api/IPProject/${orgId}/${treeId}`,
+    `api/IPProject/${orgId}/${treeId}/${data.ID}`,
     data,
   );
 }
 
 /**
  * @description: 查询清单编制台账
- * @param {*} orgId
- * @param {*} treeId
- * @param {*} params
+ * @param {string} orgId
+ * @param {string} treeId
+ * @param {BasicParamsType} params
  * @return {*}
  */
 export async function getListPreparation({
@@ -124,7 +123,7 @@ export async function getListPreparation({
 }: {
   orgId: string;
   treeId: string;
-  params?: Recordable<any>;
+  params?: BasicParamsType;
 }) {
   return requestClient.get<BasicFetchResult<ListPreparationApi.ProjectResult>>(
     `api/IPProject/${orgId}/${treeId}`,
@@ -134,22 +133,22 @@ export async function getListPreparation({
 
 /**
  * @description: 通过项目ID查询项目详情
- * @param {*} orgId 组织ID
- * @param {*} pId 项目ID
+ * @param {string} orgId
+ * @param {string} pId
  * @return {*}
  */
 export async function getListPreparationByProjectID(
   orgId: string,
   pId: string,
 ) {
-  return requestClient.get<ListPreparationApi.ProjectResult>(
-    `api/IPProject/${orgId}/${pId}`,
+  return requestClient.get<BasicFetchResult<ListPreparationApi.ProjectResult>>(
+    `api/IPProjectVersion/${orgId}/${pId}/GetProjectOnly`,
   );
 }
 
 /**
  * @description: 只需要Where条件的查询
- * @param {*} params
+ * @param {BasicParamsType} params
  * @return {*}
  */
 export async function getListPreparationAll(params: BasicParamsType) {
@@ -165,17 +164,26 @@ export async function getListPreparationAll(params: BasicParamsType) {
  */
 export async function postListPreparationFromSSOT() {
   return requestClient.post<ListPreparationApi.ProjectResult>(
-    `api/IPProjectFromSSOT`,
+    `api/IPProjectIndex/UpdataSSOTData`,
   );
+}
+
+/**
+ * @description: 判断是否可以提交
+ * @param {string} pId
+ * @return {*}
+ */
+export function getListPreparationCanSubmit(pId: string) {
+  return requestClient.get(`api/IPProjectIndex/IsCanSubmit/${pId}`);
 }
 
 /*********************清单编制版本*********************/
 
 /**
  * @description: 新增版本
- * @param {*} orgId
- * @param {*} pId
- * @param {*} data
+ * @param {string} orgId
+ * @param {string} pId
+ * @param {Recordable<any>} data
  * @return {*}
  */
 export async function postListPreparationVersion(
@@ -191,9 +199,9 @@ export async function postListPreparationVersion(
 
 /**
  * @description: 删除版本
- * @param {*} orgId
- * @param {*} pId
- * @param {*} id
+ * @param {string} orgId
+ * @param {string} pId
+ * @param {string} id
  * @return {*}
  */
 export async function deleteListPreparationVersion(
@@ -208,9 +216,9 @@ export async function deleteListPreparationVersion(
 
 /**
  * @description: 修改版本
- * @param {*} orgId
- * @param {*} pId
- * @param {*} data
+ * @param {string} orgId
+ * @param {string} pId
+ * @param {Recordable<any>} data
  * @return {*}
  */
 export async function putListPreparationVersion(
@@ -226,9 +234,9 @@ export async function putListPreparationVersion(
 
 /**
  * @description: 查询版本
- * @param {*} orgId
- * @param {*} pId
- * @param {*} params
+ * @param {string} orgId
+ * @param {string} pId
+ * @param {BasicParamsType} params
  * @return {*}
  */
 export async function getListPreparationVersion({
