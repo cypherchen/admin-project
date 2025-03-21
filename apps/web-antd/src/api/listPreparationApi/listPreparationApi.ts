@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2024-05-24 08:47:27
- * @LastEditTime: 2025-03-19 19:51:09
+ * @LastEditTime: 2025-03-21 16:27:09
  * @LastEditors: cwx
  * @Description: 清单编制台账api
  */
@@ -227,7 +227,7 @@ export async function putListPreparationVersion(
   data: Recordable<any>,
 ) {
   return requestClient.put<ListPreparationApi.VersionResult>(
-    `api/IPProjectVersion/${orgId}/${pId}`,
+    `api/IPProjectVersion/${orgId}/${pId}/${data.ID}`,
     data,
   );
 }

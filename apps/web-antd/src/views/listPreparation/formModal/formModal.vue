@@ -1,52 +1,73 @@
 <!--
  * @Author: cwx
  * @Date: 2025-01-24 20:56:52
- * @LastEditTime: 2025-03-17 23:18:39
+ * @LastEditTime: 2025-03-21 23:21:08
  * @LastEditors: cwx
- * @Description: 
+ * @Description: 清单编制-新增表单
 -->
 <template>
-  <Modal
+  <VbenModal
     title="新增"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :fullscreen-button="false"
+    footer-class="border-none"
+    header-class="border-none"
   >
-    <Form> </Form>
-  </Modal>
+    <VbenForm> </VbenForm>
+  </VbenModal>
 </template>
 
 <script setup lang="tsx" name="FormModal">
+import { ref } from 'vue';
 import { useVbenModal, useVbenForm } from '@vben/common-ui';
+import { useUserStore } from '@vben/stores';
 
 import { formSchema } from './data';
 
-const hanledConfirm = async () => {
-  const { valid, values } = await formApi.validate();
-  console.log('getValues', values);
-};
+import { postListPreparation } from '#/api/listPreparationApi/listPreparationApi';
 
-const [Modal] = useVbenModal({
+const emit = defineEmits(['submit']);
+
+const userStore = useUserStore();
+
+async function hanledConfirm() {
+  const { valid } = await formApi.validate();
+  const values = await formApi.getValues();
+
+  if (!valid) return;
+
+  const data: Record<string, any> = {
+    ...values,
+    PlanTime: values.DateRange?.[0],
+    PlanEndTime: values.DateRange?.[1],
+  };
+
+  await postListPreparation(
+    userStore.userInfo!.Orz_ID,
+    currentNode.value.ID,
+    data,
+  );
+
+  emit('submit');
+  modalApi.close();
+}
+
+const currentNode = ref<Record<string, any>>({});
+const [VbenModal, modalApi] = useVbenModal({
   onConfirm: hanledConfirm,
+  onOpenChange: (isOpen: boolean) => {
+    if (isOpen) {
+      const data = modalApi.getData<Record<string, any>>();
+      currentNode.value = data.currentNode;
+      formApi.resetForm();
+    }
+  },
 });
 
-const [Form, formApi] = useVbenForm({
+const [VbenForm, formApi] = useVbenForm({
   schema: formSchema,
   showDefaultActions: false,
-});
-
-formApi.setValues({
-  Files: [
-    {
-      FileID: '45fd35e7-7586-46ce-94fc-4b80bc28bd09',
-      FileName: '3',
-      MD5Code: '1c310b90875ed9679c01acc5f82dff42',
-      FileUrl: '/src/文件管理/1c310b90875ed9679c01acc5f82dff42.png',
-      Suffix: '.png',
-      ContentType: 'image/png',
-      Length: 143128,
-    },
-  ],
 });
 </script>
 

@@ -1,13 +1,22 @@
 /*
  * @Author: cwx
  * @Date: 2025-01-24 20:56:52
- * @LastEditTime: 2025-03-19 11:24:39
+ * @LastEditTime: 2025-03-21 22:50:45
  * @LastEditors: cwx
  * @Description:
  */
 import { type VbenFormSchema } from '@vben/common-ui';
 
 export const formSchema: VbenFormSchema[] = [
+  {
+    component: 'Input',
+    componentProps: {
+      placeholder: '请输入编号',
+    },
+    fieldName: 'Code',
+    label: '编号',
+    rules: 'required',
+  },
   {
     component: 'Input',
     componentProps: {
@@ -18,17 +27,28 @@ export const formSchema: VbenFormSchema[] = [
     rules: 'required',
   },
   {
-    component: 'BasicUpload',
+    component: 'RangePicker',
     componentProps: {
-      maxCount: 2,
-      action: '/api/SysFile',
-      accept: ['.png', '.jpg', '.jpeg', '.tif'],
-      listType: 'picture-card',
-      disabled: false,
-      multiple: true,
+      valueFormat: 'YYYY-MM-DD',
     },
-    fieldName: 'Files',
-    label: '附件',
+    fieldName: 'DateRange',
+    label: '计划时间',
     rules: 'selectRequired',
+  },
+  {
+    component: 'Select',
+    componentProps: {
+      placeholder: '请选择责任人',
+    },
+    fieldName: 'ResponsibleUserID',
+    label: '责任人',
+  },
+  {
+    component: 'Select',
+    componentProps: {
+      placeholder: '请选择责任人',
+    },
+    fieldName: 'ReportedUserID',
+    label: '汇报人',
   },
 ];
