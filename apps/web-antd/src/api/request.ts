@@ -110,7 +110,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
       if (disableErrorPrompt) return;
 
       const responseData = error?.response?.data ?? {};
-      const errorMessage = responseData?.error ?? responseData?.message ?? '';
+      const errorMessage = responseData?.Message ?? '';
       // 如果没有错误信息，则会根据状态码进行提示
       message.error(errorMessage || msg);
     }),
