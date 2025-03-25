@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2025-03-18 22:09:53
- * @LastEditTime: 2025-03-18 22:53:48
+ * @LastEditTime: 2025-03-25 15:21:11
  * @LastEditors: cwx
  * @Description: 审核状态
 -->
@@ -17,6 +17,7 @@
 
 <script setup lang="ts" name="AuditStatus">
 import { toRefs, type Component, type PropType } from 'vue';
+import { message } from 'ant-design-vue';
 import {
   InfoCircleFilled,
   ClockCircleFilled,
@@ -26,6 +27,8 @@ import {
 } from '@ant-design/icons-vue/lib/icons';
 
 import { AuditStatusEnum } from '#/enums/auditStatusEnum';
+
+import { createViewAuditModal } from '#/components/auditModal';
 
 const iconMap: Record<AuditStatusEnum, { icon: Component; color: string }> = {
   [AuditStatusEnum.未提交]: {
@@ -50,26 +53,35 @@ const iconMap: Record<AuditStatusEnum, { icon: Component; color: string }> = {
   },
 };
 
+const emit = defineEmits(['close']);
+
 const props = defineProps({
   status: {
     type: Number as PropType<AuditStatusEnum>,
     default: 0,
   },
-  record: {
-    type: Object as PropType<Record<string, any>>,
-    default: () => ({}),
+  instanceId: {
+    type: String as PropType<string>,
+    default: '',
   },
   clickable: {
     type: Boolean as PropType<boolean>,
     default: true,
   },
 });
-const { status, record, clickable } = toRefs(props);
+const { status, instanceId, clickable } = toRefs(props);
 
-const handleClick = () => {
+function handleClick() {
   if (!clickable.value) return;
-  console.log('record', record.value);
-};
+  if (status.value === AuditStatusEnum.未提交) {
+    message.error('该数据未提交审批');
+    return;
+  }
+  createViewAuditModal({
+    instanceId: instanceId.value,
+    close: () => emit('close'),
+  });
+}
 </script>
 
 <style scoped></style>
