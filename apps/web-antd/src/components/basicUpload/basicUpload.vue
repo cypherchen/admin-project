@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2025-03-15 15:59:10
- * @LastEditTime: 2025-03-19 11:27:59
+ * @LastEditTime: 2025-03-23 01:05:15
  * @LastEditors: cwx
  * @Description: 上传组件
 -->
@@ -73,7 +73,7 @@ const props = defineProps({
     default: null,
   },
   showUploadList: {
-    type: Object as PropType<UploadProps['showUploadList']>,
+    type: [Object, Boolean] as PropType<UploadProps['showUploadList']>,
     default: () => ({
       showPreviewIcon: true,
       showRemoveIcon: true,

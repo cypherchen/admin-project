@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2024-12-19 22:59:08
- * @LastEditTime: 2025-03-19 20:57:48
+ * @LastEditTime: 2025-03-25 15:27:40
  * @LastEditors: cwx
  * @Description:
  */
@@ -42,6 +42,7 @@ export type WhereType = BasicWhereType | ComplexWhereType;
 
 // GET请求参数
 export interface BasicParamsType {
+  [key: string]: any;
   PageIndex?: number;
   PageSize?: number;
   Where?: WhereType[];
