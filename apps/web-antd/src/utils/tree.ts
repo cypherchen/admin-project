@@ -1,9 +1,9 @@
 /*
  * @Author: cwx
  * @Date: 2024-07-12 15:38:34
- * @LastEditTime: 2024-12-24 23:24:59
+ * @LastEditTime: 2025-03-25 15:59:10
  * @LastEditors: cwx
- * @Description:
+ * @Description: 树结构相关
  */
 
 import type { Recordable } from '@vben/types';
