@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2025-03-20 11:05:24
- * @LastEditTime: 2025-03-21 14:35:45
+ * @LastEditTime: 2025-03-26 09:19:26
  * @LastEditors: cwx
  * @Description: 操作列按钮
 -->
@@ -13,7 +13,6 @@
         v-bind="action"
         type="link"
         size="small"
-        @click="action.onClick"
         class="!text-[13px]"
         :class="getColorClass(action)"
       >
@@ -123,7 +122,7 @@ const getColorClass = (action: ActionItem) => {
     color: #ff7875;
   }
 }
-[disabled] {
+[disabled='true'] {
   color: rgba(0, 0, 0, 0.25) !important;
   cursor: not-allowed;
 }
