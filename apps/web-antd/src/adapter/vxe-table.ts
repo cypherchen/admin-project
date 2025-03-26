@@ -54,6 +54,10 @@ setupVbenVxeTable({
           isHover: true,
           keyField: 'ID',
         },
+        editConfig: {
+          mode: 'cell',
+          trigger: 'click',
+        },
         scrollX: { enabled: true, gt: 20 },
         scrollY: { enabled: true, gt: 30 },
         round: true,
