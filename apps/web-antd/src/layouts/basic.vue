@@ -14,11 +14,11 @@ import {
 } from '@vben/layouts';
 import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
-import { openWindow } from '@vben/utils';
 
 import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
+import { createModifyPassword } from '#/components/_project/modifyPassword';
 
 import { accessRoutes } from '#/router/routes';
 
@@ -66,11 +66,22 @@ const menus = computed(() => [
   },
   {
     handler: () => {
-      // router.push({ name: 'Register' });
+      createModifyPassword({
+        closeable: true,
+        submit: () => {
+          handleLogout();
+        },
+      });
     },
     text: '修改密码',
   },
 ]);
+
+const computedMenus = computed(() => {
+  return userStore.userInfo?.IsAdmin
+    ? menus.value
+    : menus.value.filter((item) => !['前台', '后台'].includes(item.text));
+});
 
 const avatar = computed(() => {
   return userStore.userInfo?.avatar ?? preferences.app.defaultAvatar;
@@ -109,7 +120,7 @@ watch(
     <template #user-dropdown>
       <UserDropdown
         :avatar
-        :menus
+        :menus="computedMenus"
         :text="userStore.userInfo?.Name"
         description=""
         tag-text="Pro"
