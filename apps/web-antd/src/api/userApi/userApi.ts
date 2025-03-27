@@ -1,9 +1,9 @@
 /*
  * @Author: cwx
  * @Date: 2025-03-23 12:14:00
- * @LastEditTime: 2025-03-27 09:12:36
+ * @LastEditTime: 2025-03-27 14:49:25
  * @LastEditors: cwx
- * @Description: 成员管理api
+ * @Description: 用户管理api
  */
 import { requestClient } from '#/api/request';
 import type {
@@ -56,31 +56,31 @@ export namespace UserApi {
 }
 
 /**
- * @description: 添加成员
+ * @description: 添加用户
  * @param {Record<string, any>} data
  * @return {*}
  */
-export function postMember(data: Record<string, any>) {
+export function postUser(data: Record<string, any>) {
   return requestClient.post<UserApi.UserResult>(`api/SystemUserInfo`, { data });
 }
 
 /**
- * @description: 删除成员
+ * @description: 删除用户
  * @param {string[]} data
  * @return {*}
  */
-export function deleteMember(data: string[]) {
+export function deleteUser(data: string[]) {
   return requestClient.delete<UserApi.UserResult>(`api/SystemUserInfo`, {
     data,
   });
 }
 
 /**
- * @description: 修改成员
+ * @description: 修改用户
  * @param {Record<string, any>} data
  * @return {*}
  */
-export function putMember(data: Record<string, any>) {
+export function putUser(data: Record<string, any>) {
   return requestClient.put<UserApi.UserResult>(
     `api/SystemUserInfo/${data.ID}`,
     { data },
@@ -88,11 +88,11 @@ export function putMember(data: Record<string, any>) {
 }
 
 /**
- * @description: 查询成员
+ * @description: 查询用户
  * @param {BasicParamsType} params
  * @return {*}
  */
-export function getMember({ params }: { params?: BasicParamsType }) {
+export function getUser({ params }: { params?: BasicParamsType }) {
   return requestClient.get<BasicFetchResult<UserApi.UserResult>>(
     `api/SystemUserInfo/GetOrganizationMember`,
     { params },
@@ -100,12 +100,36 @@ export function getMember({ params }: { params?: BasicParamsType }) {
 }
 
 /**
- * @description: 查询当前成员的融合后权限信息
+ * @description: 查询当前用户的融合后权限信息
  * @param {string} userId 用户ID
  * @return {*}
  */
-export function getMemberAuth(userId: string) {
+export function getUserAuth(userId: string) {
   return requestClient.get<UserApi.UserAuthResult>(
     `api/SystemUserInfo/GetUserAuthority/${userId}`,
+  );
+}
+
+/**
+ * @description: 根据ID查询用户
+ * @param {{ userId: string }} userId 用户ID
+ * @return {*}
+ */
+export function getUserByID(params: { userId: string }) {
+  return requestClient.get<UserApi.UserResult>(
+    `api/SystemUserInfo/GetUserInfo`,
+    { params },
+  );
+}
+
+/**
+ * @description: 修改当前用户密码
+ * @param {{ userId: string; newPassword: string }} data
+ * @return {*}
+ */
+export function putUserPassword(data: { userId: string; newPassword: string }) {
+  return requestClient.put<UserApi.UserResult>(
+    `api/SystemUserInfo/ChangePassword`,
+    data,
   );
 }

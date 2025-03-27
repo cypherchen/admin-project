@@ -79,7 +79,7 @@ import type { SubmitAuditProps } from './props';
 
 import { formSchema } from './data';
 import { postAudit } from '#/api/auditInstanceApi/auditInstanceApi';
-import { getMember } from '#/api/memberApi/memberApi';
+import { getUser } from '#/api/userApi/userApi';
 import { getAuditTemplate } from '#/api/auditTemplateApi/auditTemplateApi';
 
 import { isFunction } from '@vben/utils';
@@ -171,7 +171,7 @@ async function getUserList() {
   const params = {
     orzId: userStore.userInfo!.Orz_ID,
   };
-  const { List } = await getMember({ params });
+  const { List } = await getUser({ params });
   userOptions.value = List.map((n: Record<string, any>) => ({
     ID: n.ID,
     UserName: n.Name,
