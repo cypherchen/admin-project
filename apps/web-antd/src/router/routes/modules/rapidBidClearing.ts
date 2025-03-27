@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2024-12-19 20:56:58
- * @LastEditTime: 2025-01-20 20:52:16
+ * @LastEditTime: 2025-03-26 23:51:31
  * @LastEditors: cwx
  * @Description:
  */
@@ -12,9 +12,9 @@ const routes: RouteRecordRaw[] = [
     name: 'RapidBidClearing',
     path: '/rapidBidClearing',
     meta: {
-      icon: 'ic:baseline-view-in-ar',
+      icon: 'carbon:compare',
       keepAlive: true,
-      order: 3,
+      order: 4,
       title: '快速清标',
       hideChildrenInMenu: true,
       belongTo: 'user',

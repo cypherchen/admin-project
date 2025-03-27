@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2024-12-19 20:56:58
- * @LastEditTime: 2025-01-20 20:54:54
+ * @LastEditTime: 2025-03-27 00:01:30
  * @LastEditors: cwx
  * @Description:
  */
@@ -12,9 +12,9 @@ const routes: RouteRecordRaw[] = [
     name: 'IndicatorAnalyze',
     path: '/indicatorAnalyze',
     meta: {
-      icon: 'ic:baseline-view-in-ar',
+      icon: 'carbon:analytics-reference',
       keepAlive: true,
-      order: 4,
+      order: 5,
       title: '指标分析',
       hideChildrenInMenu: true,
       belongTo: 'user',
