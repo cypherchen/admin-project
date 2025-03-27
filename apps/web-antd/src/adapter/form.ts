@@ -37,12 +37,6 @@ setupVbenForm<ComponentType>({
       }
       return true;
     },
-    uploadRequired: (value, _params, ctx) => {
-      if (!value || value.length === 0) {
-        return `请上传${ctx.label}`;
-      }
-      return true;
-    },
   },
 });
 
