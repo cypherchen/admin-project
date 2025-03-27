@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2024-05-24 08:47:27
- * @LastEditTime: 2025-03-21 16:27:09
+ * @LastEditTime: 2025-03-26 10:06:04
  * @LastEditors: cwx
  * @Description: 清单编制台账api
  */
@@ -46,7 +46,6 @@ export namespace ListPreparationApi {
 
   export interface VersionResult extends BasicModel {
     IPProjectID: string;
-    IsDelete: boolean;
     Label: string;
     Name: string;
     ParameterSettingTemplate_ID: string;
@@ -174,7 +173,9 @@ export async function postListPreparationFromSSOT() {
  * @return {*}
  */
 export function getListPreparationCanSubmit(pId: string) {
-  return requestClient.get(`api/IPProjectIndex/IsCanSubmit/${pId}`);
+  return requestClient.get<{ Value: boolean; Message: string }>(
+    `api/IPProjectIndex/IsCanSubmit/${pId}`,
+  );
 }
 
 /*********************清单编制版本*********************/

@@ -4,7 +4,7 @@ export namespace AuthApi {
   /** 登录接口参数 */
   export interface LoginParams {
     password?: string;
-    username?: string;
+    account?: string;
   }
 
   /** 登录接口返回值 */
@@ -18,6 +18,7 @@ export namespace AuthApi {
     Authority: string[];
     roleName: string;
     token: string;
+    homePath?: string;
   }
 
   export interface RefreshTokenResult {
