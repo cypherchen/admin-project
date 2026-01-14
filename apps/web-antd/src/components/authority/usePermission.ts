@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2025-01-20 22:21:39
- * @LastEditTime: 2025-03-14 17:29:47
+ * @LastEditTime: 2025-03-31 10:25:05
  * @LastEditors: cwx
  * @Description: 权限相关
  */
@@ -20,9 +20,9 @@ export function hasPermission(
   const accessStore = useAccessStore();
   const userStore = useUserStore();
 
-  // 管理员显示全部
-  // const isAdmin = userStore.userInfo?.IsAdmin;
-  // if (isAdmin) return true;
+  // 管理员显示全部;
+  const isAdmin = userStore.userInfo?.IsAdmin;
+  if (isAdmin) return true;
 
   if (PERMISSION_CACHE[value] !== undefined) {
     return PERMISSION_CACHE[value];
