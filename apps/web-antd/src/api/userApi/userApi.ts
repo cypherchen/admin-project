@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2025-03-23 12:14:00
- * @LastEditTime: 2025-03-27 14:49:25
+ * @LastEditTime: 2025-03-30 22:34:53
  * @LastEditors: cwx
  * @Description: 用户管理api
  */
@@ -61,7 +61,7 @@ export namespace UserApi {
  * @return {*}
  */
 export function postUser(data: Record<string, any>) {
-  return requestClient.post<UserApi.UserResult>(`api/SystemUserInfo`, { data });
+  return requestClient.post<UserApi.UserResult>(`api/SystemUserInfo`, data);
 }
 
 /**
@@ -83,7 +83,7 @@ export function deleteUser(data: string[]) {
 export function putUser(data: Record<string, any>) {
   return requestClient.put<UserApi.UserResult>(
     `api/SystemUserInfo/${data.ID}`,
-    { data },
+    data,
   );
 }
 
