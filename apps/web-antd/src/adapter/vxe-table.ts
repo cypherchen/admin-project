@@ -59,7 +59,7 @@ setupVbenVxeTable({
           trigger: 'click',
         },
         scrollX: { enabled: true, gt: 20 },
-        scrollY: { enabled: true, gt: 30 },
+        scrollY: { enabled: true, gt: 50 },
         round: true,
         showOverflow: true,
         size: 'small',
