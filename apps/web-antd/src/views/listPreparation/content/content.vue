@@ -111,7 +111,7 @@ const handleTabChange = (key: string) => {
 
 const handleBack = () => {
   push({
-    name: 'ListPreparationList',
+    name: 'listPreparationList',
     params: {
       bId: currentRoute.value.params?.bId,
     },

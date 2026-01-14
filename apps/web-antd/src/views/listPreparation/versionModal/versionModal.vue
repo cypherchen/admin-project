@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2025-01-21 23:05:17
- * @LastEditTime: 2025-03-21 22:54:32
+ * @LastEditTime: 2025-03-31 10:45:58
  * @LastEditors: cwx
  * @Description: 清单编制-版本管理
 -->
@@ -18,8 +18,14 @@
   >
     <Grid>
       <template #toolbar-actions>
-        <Authority value="listPreparation_version:create">
-          <a-button type="primary" @click="handleCreate"> 新建 </a-button>
+        <Authority :value="permission.版本_新建">
+          <a-button
+            type="primary"
+            :disabled="disabledByAudit"
+            @click="handleCreate"
+          >
+            新建
+          </a-button>
         </Authority>
       </template>
 
@@ -37,6 +43,8 @@
               color: 'error',
               model: 'confirm',
               tooltip: '删除',
+              disabled: disabledByAudit,
+              auth: permission.版本_删除,
               popConfirm: {
                 title: '是否确认删除?',
                 confirm: handleDelete.bind(null, row),
@@ -50,7 +58,7 @@
 </template>
 
 <script setup lang="ts" name="VersionModal">
-import { nextTick, ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
 import { useVbenModal } from '@vben/common-ui';
@@ -60,7 +68,7 @@ import type { VxeGridProps, VxeGridListeners } from '#/adapter/vxe-table';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
 import { TableAction } from '#/components/tableAction';
-import { Authority } from '#/components/authority';
+import { Authority, hasPermission } from '#/components/authority';
 
 import { type WhereType } from '#/api/basicType';
 
@@ -72,6 +80,10 @@ import {
 } from '#/api/listPreparationApi/listPreparationApi';
 
 import { columns } from './data';
+
+import { listPreparationPermission } from '#/permission';
+
+const permission = listPreparationPermission!.清单编制;
 
 const emit = defineEmits(['close']);
 
@@ -85,8 +97,6 @@ const [VbenModal, modalApi] = useVbenModal({
     if (isOpen) {
       const data = modalApi.getData<Record<string, any>>();
       currentRecord.value = data.currentRecord;
-      await nextTick();
-      gridApi.reload();
     }
   },
   onBeforeClose: () => {
@@ -95,15 +105,19 @@ const [VbenModal, modalApi] = useVbenModal({
   },
 });
 
-const gridOptions: VxeGridProps<Record<string, any>> = {
+const gridOptions: VxeGridProps = {
   columns,
   keepSource: true,
   height: 'auto',
   pagerConfig: {
     enabled: false,
   },
+  editConfig: {
+    enabled: hasPermission(permission.版本_修改, 'auth'),
+    beforeEditMethod: () => !disabledByAudit.value,
+  },
   proxyConfig: {
-    autoLoad: false,
+    autoLoad: true,
     ajax: {
       query: () => {
         const Where: WhereType[] = [];
@@ -120,10 +134,6 @@ const gridOptions: VxeGridProps<Record<string, any>> = {
       },
     },
   },
-  editConfig: {
-    mode: 'cell',
-    trigger: 'click',
-  },
 };
 
 const gridEvents: VxeGridListeners = {
@@ -137,13 +147,16 @@ const gridEvents: VxeGridListeners = {
       [column.field]: row[column.field],
     };
 
-    await putListPreparationVersion(
-      userStore.userInfo!.Orz_ID,
-      currentRecord.value.ID,
-      data,
-    );
-    message.success('修改成功');
-    gridApi.reload();
+    try {
+      await putListPreparationVersion(
+        userStore.userInfo!.Orz_ID,
+        currentRecord.value.ID,
+        data,
+      );
+      message.success('修改成功');
+    } finally {
+      gridApi.reload();
+    }
   },
 };
 
@@ -151,6 +164,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
   gridEvents,
 });
+
+const disabledByAudit = computed((): boolean =>
+  [1, 2].includes(currentRecord.value.AuditStatus),
+);
 
 async function handleCreate() {
   const tableData = gridApi.grid.getTableData().fullData;
@@ -161,19 +178,23 @@ async function handleCreate() {
     IPProjectID: currentRecord.value.ID,
     Label: '',
   };
-  await postListPreparationVersion(
-    userStore.userInfo!.Orz_ID,
-    currentRecord.value.ID,
-    data,
-  );
-  message.success('新增成功');
-  gridApi.reload();
+  try {
+    await postListPreparationVersion(
+      userStore.userInfo!.Orz_ID,
+      currentRecord.value.ID,
+      data,
+    );
+
+    message.success('新增成功');
+  } finally {
+    gridApi.reload();
+  }
 }
 
 const { push } = useRouter();
 async function handleViewDetail(row: Record<string, any>) {
   push({
-    name: 'ListPreparationDetail',
+    name: 'listPreparationDetail',
     params: {
       bId: currentRecord.value!.APProjectBaseTree_ID,
       pId: row.IPProjectID,

@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2025-01-24 20:56:52
- * @LastEditTime: 2025-03-21 22:50:45
+ * @LastEditTime: 2025-03-26 09:31:16
  * @LastEditors: cwx
  * @Description:
  */
@@ -33,12 +33,19 @@ export const formSchema: VbenFormSchema[] = [
     },
     fieldName: 'DateRange',
     label: '计划时间',
-    rules: 'selectRequired',
   },
   {
     component: 'Select',
     componentProps: {
       placeholder: '请选择责任人',
+      fieldNames: {
+        label: 'Name',
+        value: 'ID',
+      },
+      allowClear: true,
+      showSearch: true,
+      filterOption: (input: string, option: Record<string, any>) =>
+        option.Name.indexOf(input) >= 0,
     },
     fieldName: 'ResponsibleUserID',
     label: '责任人',
@@ -47,6 +54,14 @@ export const formSchema: VbenFormSchema[] = [
     component: 'Select',
     componentProps: {
       placeholder: '请选择责任人',
+      fieldNames: {
+        label: 'Name',
+        value: 'ID',
+      },
+      allowClear: true,
+      showSearch: true,
+      filterOption: (input: string, option: Record<string, any>) =>
+        option.Name.indexOf(input) >= 0,
     },
     fieldName: 'ReportedUserID',
     label: '汇报人',

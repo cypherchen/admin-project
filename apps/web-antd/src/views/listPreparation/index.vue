@@ -1,15 +1,15 @@
 <!--
  * @Author: cwx
  * @Date: 2024-12-19 20:55:28
- * @LastEditTime: 2025-03-19 20:50:13
+ * @LastEditTime: 2026-01-14 21:33:03
  * @LastEditors: cwx
  * @Description: 清单编制台账页
 -->
 <template>
   <ColPage
     auto-content-height
-    :left-width="10"
-    :left-max-width="10"
+    :left-width="15"
+    :left-max-width="15"
     :left-min-width="2"
     split-handle
   >
@@ -19,10 +19,10 @@
     <Grid class="ml-2">
       <template #toolbar-actions>
         <Flex gap="8" align="center">
-          <Authority value="listPreparation_project:create">
+          <Authority :value="permission.项目_新建">
             <Button type="primary" @click="handleCreate"> 新建 </Button>
           </Authority>
-          <Authority value="listPreparation_project:import">
+          <Authority :value="permission.项目_导入">
             <ImportFile
               label="导入Excel"
               :action="importAction"
@@ -31,11 +31,11 @@
             >
             </ImportFile>
           </Authority>
-          <Authority value="listPreparation_project:updateSSOT">
+          <Authority :value="permission.项目_手动更新">
             <Button @click="updateSSOT"> 手动更新 </Button>
           </Authority>
-          <Authority value="listPreparation_project:import">
-            <Switch v-model:checked="isMine" @change="() => reload()">
+          <Authority :value="permission.项目_查看全部">
+            <Switch v-model:checked="isMine" @change="gridApi.reload()">
               <template #checkedChildren>与我相关</template>
               <template #unCheckedChildren>全部</template>
             </Switch>
@@ -56,72 +56,126 @@
           "
         ></Progress>
       </template>
+      <template #AuditStatus="{ row }">
+        <AuditStatus
+          v-if="!row.children.length"
+          :status="row.AuditStatus"
+          :instanceId="row.WorkflowInstance_ID"
+          @close="gridApi.reload()"
+        ></AuditStatus>
+      </template>
 
       <template #action="{ row }">
-        <Button type="link" @click="handleView(row)" class="px-1">
-          查看
-        </Button>
-        <Popconfirm
-          title="是否确认删除?"
-          ok-text="确认"
-          cancel-text="取消"
-          @confirm="handleDelete(row)"
-        >
-          <Button type="link" danger class="px-1"> 删除 </Button>
-        </Popconfirm>
+        <TableAction
+          :actions="[
+            {
+              icon: 'EyeOutlined',
+              model: 'button',
+              tooltip: '查看详情',
+              ifShow: !row.children.length,
+              onClick: handleViewDetail.bind(null, row),
+            },
+            {
+              icon: 'PlusCircleOutlined',
+              model: 'button',
+              tooltip: '添加子项',
+              ifShow: !row.Parent_ID,
+              disabled: disabledByAudit(row),
+              auth: permission.项目_新建,
+              onClick: handleCreateChild.bind(null, row),
+            },
+            {
+              icon: 'BlockOutlined',
+              model: 'button',
+              tooltip: '查看版本',
+              ifShow: !row.children.length,
+              onClick: handleViewVersion.bind(null, row),
+            },
+            {
+              icon: 'AuditOutlined',
+              model: 'button',
+              color: 'success',
+              tooltip: '发起审批',
+              ifShow: !row.children.length,
+              auth: permission.项目_发起审批,
+              onClick: handleAudit.bind(null, row),
+            },
+            {
+              icon: 'DeleteOutlined',
+              color: 'error',
+              model: 'confirm',
+              tooltip: '删除',
+              disabled: disabledByAudit(row),
+              auth: permission.项目_删除,
+              popConfirm: {
+                title: '是否确认删除?',
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        ></TableAction>
       </template>
     </Grid>
-    <Modal></Modal>
+    <FormModalOuter @submit="gridApi.reload()"></FormModalOuter>
+    <VersionModalOuter @close="gridApi.reload()"></VersionModalOuter>
   </ColPage>
 </template>
 
 <script lang="tsx" setup name="ListPreparation">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import {
-  Flex,
-  Button,
-  Switch,
-  Popconfirm,
-  Progress,
-  message,
-} from 'ant-design-vue';
+import { Flex, Button, Switch, Progress, message } from 'ant-design-vue';
 
-import type { Recordable } from '@vben/types';
 import { ColPage, useVbenModal } from '@vben/common-ui';
 
 import { useUserStore } from '@vben/stores';
 
 import type { VxeGridProps, VxeGridListeners } from '#/adapter/vxe-table';
-
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+
+import { BaseTree } from '#/components/_project/baseTree';
 import { ImportFile } from '#/components/basicUpload';
-import { BaseTree } from '#/components/baseTree';
-import { Authority } from '#/components/authority';
+import { TableAction } from '#/components/tableAction';
+import { Authority, hasPermission } from '#/components/authority';
 
 import FormModal from './formModal/formModal.vue';
+import VersionModal from './versionModal/versionModal.vue';
+import { AuditStatus } from '#/components/auditStatus';
+import { createSubmitAuditModal } from '#/components/auditModal';
 
 import {
   getListPreparation,
+  postListPreparation,
   putListPreparation,
   deleteListPreparation,
   postListPreparationFromSSOT,
+  getListPreparationCanSubmit,
 } from '#/api/listPreparationApi/listPreparationApi';
+import { getUser } from '#/api/userApi/userApi';
+
 import { ConditionalType, type WhereType } from '#/api/basicType';
 
 import { columns, searchFormSchema } from './data';
 
+import { listPreparationPermission } from '#/permission';
+
+const permission = listPreparationPermission!.清单编制;
+
 const userStore = useUserStore();
 
-const currentNode = ref<null | Recordable<any>>(null);
+const currentNode = ref<null | Record<string, any>>(null);
 const importAction = computed(
   () =>
     `/api/IPProject/${userStore.userInfo!.Orz_ID}/${currentNode.value?.ID}/Import`,
 );
 
+const disabledByAudit = (row: Record<string, any>): boolean => {
+  return [1, 2].includes(row.AuditStatus);
+};
+
 const isMine = ref<boolean>(true);
 
-const gridOptions: VxeGridProps<Recordable<any>> = {
+const gridOptions: VxeGridProps = {
   columns,
   keepSource: true,
   height: 'auto',
@@ -129,13 +183,16 @@ const gridOptions: VxeGridProps<Recordable<any>> = {
     enabled: false,
   },
   treeConfig: {
-    transform: true,
     expandAll: true,
+  },
+  editConfig: {
+    enabled: hasPermission(permission.项目_修改, 'auth'),
+    beforeEditMethod: ({ row }) => !disabledByAudit(row),
   },
   proxyConfig: {
     autoLoad: false,
     ajax: {
-      query: ({ page }, formValues) => {
+      query: ({}, formValues) => {
         const Where: WhereType[] = [];
         if (formValues.Name) {
           Where.push({
@@ -177,8 +234,8 @@ const gridOptions: VxeGridProps<Recordable<any>> = {
 
         const params = {
           Where,
-          PageSize: page.pageSize,
-          PageIndex: page.currentPage,
+          Order: 'Sort asc, CreatedTime asc',
+          Islinkage: true,
         };
 
         return getListPreparation({
@@ -189,18 +246,14 @@ const gridOptions: VxeGridProps<Recordable<any>> = {
       },
       querySuccess: ({ response }) => {
         const { List } = response;
-        List.forEach((n: Recordable<any>) => {
-          n.Time =
+        List.forEach((n: Record<string, any>) => {
+          n.DateRange =
             n.PlanTime && n.PlanEndTime
               ? [n.PlanTime?.slice(0, 10), n.PlanEndTime?.slice(0, 10)]
               : [];
         });
       },
     },
-  },
-  editConfig: {
-    mode: 'cell',
-    trigger: 'click',
   },
 };
 
@@ -210,17 +263,33 @@ const gridEvents: VxeGridListeners = {
       return;
     }
 
-    let data = {};
-    if (column.field === 'Time') {
+    let data = {
+      ID: row.ID,
+      [column.field]: row[column.field] ?? null,
+    };
+    if (column.field === 'DateRange') {
       data = {
-        ID: row.ID,
+        ...data,
         PlanTime: row[column.field]?.[0] ?? null,
         PlanEndTime: row[column.field]?.[1] ?? null,
       };
-    } else {
+    } else if (column.field === 'ResponsibleUserID') {
+      const name = row[column.field]
+        ? userOptions.value.find((n) => n.ID === row[column.field])?.Name
+        : null;
+      row.ResponsibleUserName = name;
       data = {
-        ID: row.ID,
-        [column.field]: row[column.field],
+        ...data,
+        ResponsibleUserName: name,
+      };
+    } else if (column.field === 'ReportedUserID') {
+      const name = row[column.field]
+        ? userOptions.value.find((n) => n.ID === row[column.field])?.Name
+        : null;
+      row.ReportedUserName = name;
+      data = {
+        ...data,
+        ReportedUserName: name,
       };
     }
 
@@ -230,11 +299,11 @@ const gridEvents: VxeGridListeners = {
       data,
     );
     message.success('修改成功');
-    reload();
+    gridApi.reload();
   },
 };
 
-const [Grid, { reload }] = useVbenVxeGrid({
+const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
   formOptions: {
     schema: searchFormSchema,
@@ -243,35 +312,41 @@ const [Grid, { reload }] = useVbenVxeGrid({
   gridEvents,
 });
 
-const nodeClick = (node: Recordable<any>) => {
+function nodeClick(node: Record<string, any>) {
   currentNode.value = node;
-  reload();
-};
+  gridApi.reload();
+}
 
-const [Modal, modalApi] = useVbenModal({
+const [FormModalOuter, formModalApi] = useVbenModal({
   // 连接抽离的组件
   connectedComponent: FormModal,
 });
-const handleCreate = () => {
-  modalApi.open();
-};
 
-const handleSuccess = () => {
-  reload();
-};
+const [VersionModalOuter, versionModalApi] = useVbenModal({
+  // 连接抽离的组件
+  connectedComponent: VersionModal,
+});
 
-const updateSSOT = async () => {
+function handleCreate() {
+  formModalApi.setData({ currentNode: currentNode.value }).open();
+}
+
+function handleSuccess() {
+  gridApi.reload();
+}
+
+async function updateSSOT() {
   try {
     await postListPreparationFromSSOT();
   } finally {
-    reload();
+    gridApi.reload();
   }
-};
+}
 
-const { push } = useRouter();
-function handleView(row: Recordable<any>) {
+const { push, resolve } = useRouter();
+function handleViewDetail(row: Record<string, any>) {
   push({
-    name: 'ListPreparationDetail',
+    name: 'listPreparationDetail',
     params: {
       bId: currentNode.value!.ID,
       pId: row.ID,
@@ -281,6 +356,101 @@ function handleView(row: Recordable<any>) {
       auditStatus: row.AuditStatus,
     },
   });
+}
+
+function handleViewVersion(row: Record<string, any>) {
+  versionModalApi
+    .setState({ title: `版本-${row.Name}` })
+    .setData({ currentRecord: row })
+    .open();
+}
+
+async function handleCreateChild(row: Record<string, any>) {
+  const data: Record<string, any> = {
+    ...row,
+    ID: undefined,
+    Parent_ID: row.ID,
+  };
+  await postListPreparation(
+    userStore.userInfo!.Orz_ID,
+    currentNode.value!.ID,
+    data,
+  );
+  message.success('添加成功');
+  gridApi.reload();
+}
+
+async function handleAudit(row: Record<string, any>) {
+  if ([1, 2].includes(row.AuditStatus)) {
+    return message.error('该项目已发起审批');
+  }
+
+  const isCanSubmit = (await getListPreparationCanSubmit(row.ID)).Value;
+  if (!isCanSubmit) {
+    return message.error('请填写项目信息中的必填项');
+  }
+
+  // 审批字段
+  const schema = columns!
+    .filter((n) => !['AuditStatus', 'action', undefined].includes(n.field!))
+    .map((n) => {
+      if (n.field === 'ResponsibleUserID') {
+        return {
+          field: 'ResponsibleUserName',
+          title: n.title,
+        };
+      }
+      if (n.field === 'ReportedUserID') {
+        return {
+          field: 'ReportedUserName',
+          title: n.title,
+        };
+      }
+
+      return {
+        field: n.field,
+        title: n.title,
+      };
+    });
+  schema.unshift({
+    field: 'BaseTreeName',
+    title: '基地名称',
+  });
+
+  // 审批数据
+  const data = {
+    ...row,
+    IPProjectState: '已完成',
+    DateRange:
+      row.PlanTime && row.PlanEndTime
+        ? [row.PlanTime.slice(0, 10), row.PlanEndTime.slice(0, 10)].join(' ~ ')
+        : '',
+  };
+
+  // 详情链接
+  const linkUrl = resolve({
+    name: 'listPreparationDetail',
+    params: {
+      bId: row.APProjectBaseTree_ID,
+      pId: row.ID,
+      vId: row.Version_ID,
+    },
+    query: { auditStatus: 1 },
+  }).href;
+
+  const params = {
+    tableName: 'IPProject', // 审批数据的控制器
+    auditName: `【清单编制】-【${row.BaseTreeName}】-${row.Name}`,
+    schema,
+    data,
+    linkUrl,
+    customizable: true,
+    isOtherTables: false,
+    submit: () => {
+      gridApi.reload();
+    },
+  };
+  createSubmitAuditModal(params);
 }
 
 async function handleDelete(row: Record<string, any>) {
@@ -293,6 +463,39 @@ async function handleDelete(row: Record<string, any>) {
     data,
   );
   message.success('删除成功');
-  reload();
+  gridApi.reload();
 }
+
+const userOptions = ref<Record<string, any>[]>([]);
+async function getUserList() {
+  const params = {
+    orzId: userStore.userInfo!.Orz_ID,
+  };
+  const { List } = await getUser({ params });
+  userOptions.value = List.map((n: Record<string, any>) => ({
+    ID: n.ID,
+    Name: n.Name,
+  }));
+}
+
+onMounted(async () => {
+  await getUserList();
+  columns?.forEach((n) => {
+    if (n.field === 'ResponsibleUserID') {
+      n.editRender!.props = {
+        ...n.editRender!.props,
+        options: userOptions.value,
+      };
+    }
+    if (n.field === 'ReportedUserID') {
+      n.editRender!.props = {
+        ...n.editRender!.props,
+        options: userOptions.value,
+      };
+    }
+  });
+  gridApi.setGridOptions({
+    columns,
+  });
+});
 </script>
