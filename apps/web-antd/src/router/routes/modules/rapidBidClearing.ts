@@ -9,7 +9,7 @@ import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {
-    name: 'RapidBidClearing',
+    name: 'rapidBidClearing',
     path: '/rapidBidClearing',
     meta: {
       icon: 'carbon:compare',
@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
     },
     children: [
       {
-        name: 'RapidBidClearingList',
+        name: 'rapidBidClearingList',
         path: '/rapidBidClearing',
         component: () => import('#/views/listPreparation/index.vue'),
         meta: {
@@ -30,7 +30,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'RapidBidClearingDetail',
+        name: 'rapidBidClearingDetail',
         path: '/rapidBidClearing/:bId/detail/:pId/:vId',
         component: () => import('#/views/listPreparation/content/content.vue'),
         meta: {

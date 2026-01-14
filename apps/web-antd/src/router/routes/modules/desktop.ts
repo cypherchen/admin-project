@@ -10,7 +10,7 @@ import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {
-    name: 'Desktop',
+    name: 'desktop',
     path: '/desktop',
     meta: {
       icon: 'carbon:dashboard',

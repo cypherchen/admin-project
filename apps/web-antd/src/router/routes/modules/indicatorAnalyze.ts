@@ -9,7 +9,7 @@ import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {
-    name: 'IndicatorAnalyze',
+    name: 'indicatorAnalyze',
     path: '/indicatorAnalyze',
     meta: {
       icon: 'carbon:analytics-reference',
@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
     },
     children: [
       {
-        name: 'IndicatorAnalyzeList',
+        name: 'indicatorAnalyzeList',
         path: '/indicatorAnalyze',
         component: () => import('#/views/listPreparation/index.vue'),
         meta: {
@@ -30,7 +30,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'IndicatorAnalyzeDetail',
+        name: 'indicatorAnalyzeDetail',
         path: '/indicatorAnalyze/:bId/detail/:pId/:vId',
         component: () => import('#/views/listPreparation/content/content.vue'),
         meta: {

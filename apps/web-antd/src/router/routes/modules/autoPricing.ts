@@ -9,7 +9,7 @@ import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {
-    name: 'AutoPricing',
+    name: 'autoPricing',
     path: '/autoPricing',
     meta: {
       icon: 'carbon:pricing-container',
@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
     },
     children: [
       {
-        name: 'AutoPricingList',
+        name: 'autoPricingList',
         path: '/autoPricing',
         component: () => import('#/views/listPreparation/index.vue'),
         meta: {
@@ -30,7 +30,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'AutoPricingDetail',
+        name: 'autoPricingDetail',
         path: '/autoPricing/:bId/detail/:pId/:vId',
         component: () => import('#/views/listPreparation/content/content.vue'),
         meta: {

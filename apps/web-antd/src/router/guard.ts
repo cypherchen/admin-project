@@ -56,7 +56,11 @@ function setupAccessGuard(router: Router) {
 
     // 基本路由，这些路由不需要进入权限拦截
     if (coreRouteNames.includes(to.name as string)) {
-      if (to.path === LOGIN_PATH && accessStore.accessToken) {
+      if (
+        to.path === LOGIN_PATH &&
+        accessStore.accessToken &&
+        userStore.userInfo?.homePath
+      ) {
         return decodeURIComponent(
           (to.query?.redirect as string) ||
             userStore.userInfo?.homePath ||
@@ -140,6 +144,29 @@ function setupAuthGuard(router: Router) {
       return route;
     }
 
+    if (coreRouteNames.includes(to.name as string)) {
+      return true;
+    }
+
+    // 动态过滤路由
+    const filteredRoutes = accessRoutes.filter((route) => {
+      const parentRoute = to.matched.length > 1 ? to.matched.at(-2) : null;
+      return parentRoute
+        ? hasPermission(route.name as string, 'menu') ||
+            hasPermission(parentRoute.name as string, 'menu')
+        : hasPermission(route.name as string, 'menu');
+    });
+
+    if (
+      to.meta?.belongTo === 'user' &&
+      !filteredRoutes.some((item) =>
+        (to.name as string)!.startsWith(item.name as string),
+      )
+    ) {
+      const route = router.resolve({ name: 'FallbackForbidden' });
+      return route;
+    }
+
     // 埋点
     tracking('enterPage', to, from);
 
@@ -150,17 +177,12 @@ function setupAuthGuard(router: Router) {
       return true;
     }
 
-    // 动态过滤路由
-    const filteredRoutes = accessRoutes.filter((route) => {
-      // return hasPermission(route.name as string, 'menu');
-      return true;
-    });
-
     const routes = filteredRoutes.filter((item) =>
       belongTo ? item.meta?.belongTo === belongTo : true,
     );
+
     await generateCustomAccess(router, routes, {
-      setRoutes: false,
+      setRoutes: true,
       setMenus: true,
     });
   });

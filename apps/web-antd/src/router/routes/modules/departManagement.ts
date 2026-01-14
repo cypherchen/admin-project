@@ -10,7 +10,7 @@ import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {
-    name: 'DepartManagement',
+    name: 'departManagement',
     path: '/departManagement',
     component: () => import('#/views/listPreparation/index.vue'),
     meta: {

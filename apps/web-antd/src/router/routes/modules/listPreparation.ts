@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2024-12-19 20:56:58
- * @LastEditTime: 2025-03-26 23:49:40
+ * @LastEditTime: 2025-03-31 15:50:24
  * @LastEditors: cwx
  * @Description:
  */
@@ -9,8 +9,8 @@ import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {
-    name: 'ListPreparation',
-    path: '/listPreparation',
+    name: 'listPreparation',
+    path: '/listPreparation/:bId?',
     meta: {
       icon: 'carbon:list',
       keepAlive: true,
@@ -20,9 +20,10 @@ const routes: RouteRecordRaw[] = [
       menuVisibleWithForbidden: true,
       belongTo: 'user',
     },
+    component: () => import('#/views/listPreparation/index.vue'),
     children: [
       {
-        name: 'ListPreparationList',
+        name: 'listPreparationList',
         path: '/listPreparation/:bId?',
         component: () => import('#/views/listPreparation/index.vue'),
         meta: {
@@ -31,7 +32,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'ListPreparationDetail',
+        name: 'listPreparationDetail',
         path: '/listPreparation/:bId/detail/:pId/:vId',
         component: () => import('#/views/listPreparation/content/content.vue'),
         meta: {
