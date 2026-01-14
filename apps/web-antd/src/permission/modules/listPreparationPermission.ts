@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2024-06-23 21:44:52
- * @LastEditTime: 2024-10-15 16:33:24
+ * @LastEditTime: 2025-03-31 10:26:28
  * @LastEditors: cwx
  * @Description: 清单编制权限
  */
@@ -24,6 +24,10 @@ const listPreparation: PermissionModule = {
     {
       name: '项目_查看全部',
       key: 'listPreparation_project:queryAll',
+    },
+    {
+      name: '项目_手动更新',
+      key: 'listPreparation_project:updateSSOT',
     },
     {
       name: '项目_修改',

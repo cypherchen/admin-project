@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2025-03-27 16:13:35
- * @LastEditTime: 2025-03-27 18:52:13
+ * @LastEditTime: 2025-03-31 10:35:34
  * @LastEditors: cwx
  * @Description: 权限
  */
@@ -60,7 +60,7 @@ const processedModules = Object.entries(modules).reduce(
         .split('/')
         .pop()
         ?.replace('Permission.ts', '')
-        .replace(/^\w/, (m) => m.toUpperCase()) + 'Permission';
+        .replace(/^\w/, (m) => m) + 'Permission';
 
     if (moduleName) {
       acc[moduleName] = transToEnum(module.default);
