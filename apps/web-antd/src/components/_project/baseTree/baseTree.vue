@@ -1,24 +1,24 @@
 <!--
  * @Author: cwx
  * @Date: 2024-12-24 20:46:24
- * @LastEditTime: 2025-03-15 02:07:39
- * @LastEditors: cwx
+ * @LastEditTime: 2026-01-09 20:29:32
+ * @LastEditors: 'cypherchen' dinmunhiong@gmail.com
  * @Description: 基地树
 -->
 <template>
-  <Flex vertical class="h-full w-full rounded-md bg-white p-2">
+  <Flex vertical class="h-full w-full rounded-md">
     <Input
       v-model:value="searchValue"
       allow-clear
-      class="my-2"
+      class="mb-2"
       placeholder="请输入关键字"
     />
     <div class="flex-1 overflow-auto">
       <Tree
-        class="h-full min-w-[200px]"
+        class="h-full min-w-[200px] p-2"
         :tree-data="treeData"
         :selected-keys="selectedKeys"
-        :field-names="{ key: 'ID', title: 'Name' }"
+        :fieldNames="{ key: 'ID', title: 'Name' }"
         block-node
         @select="nodeSelect"
       />
@@ -30,7 +30,7 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Flex, Input, Tree } from 'ant-design-vue';
+import { Flex, Input, Tree, type TreeProps } from 'ant-design-vue';
 
 import type { Recordable } from '@vben/types';
 import { watchDebounced } from '@vueuse/core';
@@ -96,7 +96,7 @@ const nodeSelect = (_, info: Recordable<any>) => {
 };
 
 const catalogList = ref<Recordable<any>[]>([]);
-const treeData = ref<Recordable<any>[]>([]);
+const treeData = ref<TreeProps['treeData']>([]);
 const getBaseList = async () => {
   const Where = [];
   Where.push({
