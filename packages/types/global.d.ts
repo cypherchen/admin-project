@@ -14,6 +14,15 @@ export interface VbenAdminProAppConfigRaw {
   VITE_GLOB_SSO_URL_TEST: string;
   VITE_GLOB_SSO_CLIENT_ID_PROD: string;
   VITE_GLOB_SSO_CLIENT_ID_TEST: string;
+  VITE_GLOB_AUTH_DINGDING_CLIENT_ID: string;
+  VITE_GLOB_AUTH_DINGDING_CORP_ID: string;
+}
+
+interface AuthConfig {
+  dingding?: {
+    clientId: string;
+    corpId: string;
+  };
 }
 
 export interface ApplicationConfig {
@@ -23,6 +32,7 @@ export interface ApplicationConfig {
   ssoUrlTest: string;
   ssoClientIdProd: string;
   ssoClientIdTest: string;
+  auth: AuthConfig;
 }
 
 declare global {

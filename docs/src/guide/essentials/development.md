@@ -60,6 +60,8 @@ npm 脚本是项目常见的配置，用于执行一些常见的任务，比如�
     "build:ele": "pnpm run build --filter=@vben/web-ele",
     // 单独构建 web-naive 应用
     "build:naive": "pnpm run build --filter=@vben/naive",
+    // 单独构建 web-tdesign 应用
+    "build:tdesign": "pnpm run build --filter=@vben/web-tdesign",
     // 单独构建 playground 应用
     "build:play": "pnpm run build --filter=@vben/playground",
     // changeset 版本管理
@@ -98,8 +100,8 @@ npm 脚本是项目常见的配置，用于执行一些常见的任务，比如�
     "postinstall": "pnpm -r run stub --if-present",
     // 只允许使用pnpm
     "preinstall": "npx only-allow pnpm",
-    // husky的安装
-    "prepare": "is-ci || husky",
+    // lefthook的安装
+    "prepare": "is-ci || lefthook install",
     // 预览应用
     "preview": "turbo-run preview",
     // 包规范检查
@@ -149,6 +151,73 @@ pnpm dev:ele
 ```bash
 pnpm dev:docs
 ```
+
+## 区分构建环境
+
+在实际的业务开发中，通常会在构建时区分多种环境，如测试环境`test`、生产环境`build`等。
+
+此时可以修改三个文件，在其中增加对应的脚本配置来达到区分生产环境的效果。
+
+以`@vben/web-antd`添加测试环境`test`为例：
+
+- `apps\web-antd\package.json`
+
+```json
+"scripts": {
+  "build:prod": "pnpm vite build --mode production",
+  "build:test": "pnpm vite build --mode test",
+  "build:analyze": "pnpm vite build --mode analyze",
+  "dev": "pnpm vite --mode development",
+  "preview": "vite preview",
+  "typecheck": "vue-tsc --noEmit --skipLibCheck"
+},
+```
+
+增加命令`"build:test"`, 并将原`"build"`改为`"build:prod"`以避免同时构建两个环境的包。
+
+- `package.json`
+
+```json
+"scripts": {
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=8192 turbo build",
+    "build:analyze": "turbo build:analyze",
+    "build:antd": "pnpm run build --filter=@vben/web-antd",
+    "build-test:antd": "pnpm run build --filter=@vben/web-antd build:test",
+
+    ······
+}
+```
+
+在根目录`package.json`中加入构建测试环境的命令
+
+- `turbo.json`
+
+```json
+"tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [
+        "dist/**",
+        "dist.zip",
+        ".vitepress/dist.zip",
+        ".vitepress/dist/**"
+      ]
+    },
+
+    "build-test:antd": {
+      "dependsOn": ["@vben/web-antd#build:test"],
+      "outputs": ["dist/**"]
+    },
+
+    "@vben/web-antd#build:test": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+
+    ······
+```
+
+在`turbo.json`中加入相关依赖的命令
 
 ## 公共静态资源
 

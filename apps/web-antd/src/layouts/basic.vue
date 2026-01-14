@@ -15,7 +15,6 @@ import {
 import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 
-import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
 import { createModifyPassword } from '#/components/_project/modifyPassword';
@@ -95,12 +94,26 @@ function handleNoticeClear() {
   notifications.value = [];
 }
 
+function markRead(id: number | string) {
+  const item = notifications.value.find((item) => item.id === id);
+  if (item) {
+    item.isRead = true;
+  }
+}
+
+function remove(id: number | string) {
+  notifications.value = notifications.value.filter((item) => item.id !== id);
+}
+
 function handleMakeAll() {
   notifications.value.forEach((item) => (item.isRead = true));
 }
 watch(
-  () => preferences.app.watermark,
-  async (enable) => {
+  () => ({
+    enable: preferences.app.watermark,
+    content: preferences.app.watermarkContent,
+  }),
+  async ({ enable, content }) => {
     if (enable) {
       await updateWatermark({
         content: `${userStore.userInfo?.Name}`,
@@ -132,6 +145,8 @@ watch(
         :dot="showDot"
         :notifications="notifications"
         @clear="handleNoticeClear"
+        @read="(item) => item.id && markRead(item.id)"
+        @remove="(item) => item.id && remove(item.id)"
         @make-all="handleMakeAll"
       />
     </template>

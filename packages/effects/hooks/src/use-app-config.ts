@@ -24,7 +24,7 @@ export function useAppConfig(
     VITE_GLOB_SSO_CLIENT_ID_TEST,
   } = config;
 
-  return {
+  const applicationConfig: ApplicationConfig = {
     apiURL: VITE_GLOB_API_URL,
     envType: VITE_GLOB_ENV_TYPE,
     ssoUrlProd: VITE_GLOB_SSO_URL_PROD,
@@ -32,4 +32,5 @@ export function useAppConfig(
     ssoClientIdProd: VITE_GLOB_SSO_CLIENT_ID_PROD,
     ssoClientIdTest: VITE_GLOB_SSO_CLIENT_ID_TEST,
   };
+  return applicationConfig;
 }
