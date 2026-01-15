@@ -1,8 +1,8 @@
 <!--
  * @Author: cwx
  * @Date: 2024-12-24 20:46:24
- * @LastEditTime: 2026-01-09 20:29:32
- * @LastEditors: 'cypherchen' dinmunhiong@gmail.com
+ * @LastEditTime: 2026-01-15 09:49:13
+ * @LastEditors: cwx
  * @Description: 基地树
 -->
 <template>
@@ -15,7 +15,7 @@
     />
     <div class="flex-1 overflow-auto">
       <Tree
-        class="h-full min-w-[200px] p-2"
+        class="h-full min-w-[200px] p-2 overflow-auto"
         :tree-data="treeData"
         :selected-keys="selectedKeys"
         :fieldNames="{ key: 'ID', title: 'Name' }"
