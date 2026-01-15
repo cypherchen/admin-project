@@ -1,20 +1,26 @@
 <script lang="ts" setup>
-import { Fallback } from '@vben/common-ui';
-import { Button } from 'ant-design-vue';
-import { ArrowLeftOutlined } from '@ant-design/icons-vue';
-
 import { useRouter } from 'vue-router';
 
-import { accessRoutes } from '#/router/routes';
+import { Fallback } from '@vben/common-ui';
+
+import { ArrowLeftOutlined } from '@ant-design/icons-vue';
+import { Button } from 'ant-design-vue';
+
 import { hasPermission } from '#/components/authority';
+import { accessRoutes } from '#/router/routes';
 
 defineOptions({ name: 'Fallback403Demo' });
 
-const filteredRoutes = accessRoutes.filter((route) => {
-  return hasPermission(route.name as string, 'menu') && route.meta?.belongTo === 'user';
-}).toSorted((a, b) => {
-  return (a.meta?.order || 0) - (b.meta?.order || 0);
-});
+const filteredRoutes = accessRoutes
+  .filter((route) => {
+    return (
+      hasPermission(route.name as string, 'menu') &&
+      route.meta?.belongTo === 'user'
+    );
+  })
+  .toSorted((a, b) => {
+    return (a.meta?.order || 0) - (b.meta?.order || 0);
+  });
 
 const { push } = useRouter();
 function goHome() {

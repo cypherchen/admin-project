@@ -5,43 +5,22 @@
  * @LastEditors: cwx
  * @Description: 基地树
 -->
-<template>
-  <Flex vertical class="h-full w-full rounded-md">
-    <Input
-      v-model:value="searchValue"
-      allow-clear
-      class="mb-2"
-      placeholder="请输入关键字"
-    />
-    <div class="flex-1 overflow-auto">
-      <Tree
-        class="h-full min-w-[200px] p-2 overflow-auto"
-        :tree-data="treeData"
-        :selected-keys="selectedKeys"
-        :fieldNames="{ key: 'ID', title: 'Name' }"
-        block-node
-        @select="nodeSelect"
-      />
-    </div>
-  </Flex>
-</template>
-
 <script setup lang="ts" name="BaseTree">
+import type { TreeProps } from 'ant-design-vue';
+
+import type { Recordable } from '@vben/types';
+
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Flex, Input, Tree, type TreeProps } from 'ant-design-vue';
-
-import type { Recordable } from '@vben/types';
-import { watchDebounced } from '@vueuse/core';
 import { useUserStore } from '@vben/stores';
 
-import { getBase } from '#/api/dataManagementApi/baseManagementApi';
+import { watchDebounced } from '@vueuse/core';
+import { Flex, Input, Tree } from 'ant-design-vue';
+
 import { ConditionalType } from '#/api/basicType';
-
+import { getBase } from '#/api/dataManagementApi/baseManagementApi';
 import { arrayToTree, treeToArray } from '#/utils/tree';
-
-const emit = defineEmits(['nodeClick']);
 
 const { type } = defineProps({
   type: {
@@ -50,6 +29,8 @@ const { type } = defineProps({
   },
 });
 
+const emit = defineEmits(['nodeClick']);
+
 const userStore = useUserStore();
 
 const searchValue = ref<string>('');
@@ -57,18 +38,17 @@ watchDebounced(
   () => searchValue.value,
   () => {
     if (searchValue.value?.trim()) {
-      const idList = Array.from(
+      const idList = new Set(
         new Set(
           catalogList.value
             .filter((n: Recordable<any>) =>
               n.Name.includes(searchValue.value.trim()),
             )
-            .map((n: Recordable<any>) => [n.ID, ...n.treeState.pathIDs])
-            .flat(),
+            .flatMap((n: Recordable<any>) => [n.ID, ...n.treeState.pathIDs]),
         ),
       );
       treeData.value = arrayToTree(
-        catalogList.value.filter((n: Recordable<any>) => idList.includes(n.ID)),
+        catalogList.value.filter((n: Recordable<any>) => idList.has(n.ID)),
       );
     } else {
       treeData.value = arrayToTree(catalogList.value);
@@ -98,12 +78,13 @@ const nodeSelect = (_, info: Recordable<any>) => {
 const catalogList = ref<Recordable<any>[]>([]);
 const treeData = ref<TreeProps['treeData']>([]);
 const getBaseList = async () => {
-  const Where = [];
-  Where.push({
-    FieldName: 'Type',
-    ConditionalType: ConditionalType.Equal,
-    FieldValue: type,
-  });
+  const Where = [
+    {
+      FieldName: 'Type',
+      ConditionalType: ConditionalType.Equal,
+      FieldValue: type,
+    },
+  ];
   const params = {
     Where,
   };
@@ -140,5 +121,26 @@ onMounted(async () => {
   }
 });
 </script>
+
+<template>
+  <Flex vertical class="h-full w-full rounded-md">
+    <Input
+      v-model:value="searchValue"
+      allow-clear
+      class="mb-2"
+      placeholder="请输入关键字"
+    />
+    <div class="flex-1 overflow-auto">
+      <Tree
+        class="h-full min-w-[200px] overflow-auto p-2"
+        :tree-data="treeData"
+        :selected-keys="selectedKeys"
+        :field-names="{ key: 'ID', title: 'Name' }"
+        block-node
+        @select="nodeSelect"
+      />
+    </div>
+  </Flex>
+</template>
 
 <style scoped></style>
