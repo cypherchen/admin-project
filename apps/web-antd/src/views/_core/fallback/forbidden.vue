@@ -11,8 +11,11 @@ import { hasPermission } from '#/components/authority';
 defineOptions({ name: 'Fallback403Demo' });
 
 const filteredRoutes = accessRoutes.filter((route) => {
-  return hasPermission(route.name as string, 'menu');
+  return hasPermission(route.name as string, 'menu') && route.meta?.belongTo === 'user';
+}).toSorted((a, b) => {
+  return (a.meta?.order || 0) - (b.meta?.order || 0);
 });
+
 const { push } = useRouter();
 function goHome() {
   const route = filteredRoutes[0];
