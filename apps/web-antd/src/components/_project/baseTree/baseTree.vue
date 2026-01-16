@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2024-12-24 20:46:24
- * @LastEditTime: 2026-01-16 10:30:11
+ * @LastEditTime: 2026-01-17 00:12:20
  * @LastEditors: cwx
  * @Description: 基地树
 -->
@@ -140,24 +140,25 @@ onActivated(async () => {
 </script>
 
 <template>
-  <Flex vertical class="h-full w-full rounded-md">
-    <Input
-      v-model:value="searchValue"
-      allow-clear
-      class="mb-2"
-      placeholder="请输入关键字"
-    />
-    <div class="flex-1 overflow-auto">
-      <Tree
-        class="h-full min-w-[200px] overflow-auto p-2"
-        :tree-data="treeData"
-        :selected-keys="selectedKeys"
-        :field-names="{ key: 'ID', title: 'Name' }"
-        block-node
-        @select="nodeSelect"
+  <Flex vertical class="h-full w-full rounded-md bg-card">
+    <div class="p-2">
+      <Input
+        v-model:value="searchValue"
+        allow-clear
+        placeholder="请输入关键字"
       />
     </div>
+    <Tree
+      class="flex-1 overflow-auto p-2"
+      :tree-data="treeData"
+      :selected-keys="selectedKeys"
+      :field-names="{ key: 'ID', title: 'Name' }"
+      block-node
+      @select="nodeSelect"
+    >
+      <template #title="{ data }">
+        <div class="whitespace-nowrap">{{ data.Name }}</div>
+      </template>
+    </Tree>
   </Flex>
 </template>
-
-<style scoped></style>
