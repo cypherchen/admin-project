@@ -1,17 +1,20 @@
 import type { Config } from 'tailwindcss';
 
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { addDynamicIconSelectors } from '@iconify/tailwind';
 import { getPackagesSync } from '@manypkg/get-packages';
 import typographyPlugin from '@tailwindcss/typography';
 import animate from 'tailwindcss-animate';
+import { findMonorepoRoot } from '@vben/node-utils';
 
 import { enterAnimationPlugin } from './plugins/entry';
 
 // import defaultTheme from 'tailwindcss/defaultTheme';
 
-const { packages } = getPackagesSync(process.cwd());
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
+const { packages } = getPackagesSync(findMonorepoRoot(__dirname));
 
 const tailwindPackages: string[] = [];
 
