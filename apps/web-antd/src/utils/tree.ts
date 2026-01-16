@@ -8,17 +8,18 @@
 
 import type { Recordable } from '@vben/types';
 
-interface TreeProps<T> {
+export interface TreeItem<T = Recordable<unknown>> {
   [key: string]: any;
-  serialNo: string;
+  serialNo?: string;
   treeState: {
+    level: number;
     pathIDs: string[];
     pathNames: string[];
-    level: number;
   };
-  children: TreeProps<T>[] | null;
+  children?: TreeItem<T>[];
 }
-export type TreeExtraProps<T> = TreeProps<T>;
+
+export type TreeExtraProps<T> = TreeItem<T>;
 
 /**
  * @description: 数组转树结构
@@ -33,12 +34,13 @@ export function arrayToTree<T = Recordable<unknown>>(
   key = 'ID',
   parentKey = 'Parent_ID',
   maxLevel = Infinity,
-): Array<TreeProps<T>> {
+): Array<TreeItem<T>> {
   if (data.length === 0) return [];
 
   // 给每个数据新增children和treeState字段
-  const hashTable: Record<string, TreeProps<T>> = {};
-  data.forEach((item: TreeProps<T>) => {
+  const hashTable: Record<string, TreeItem<T>> = {};
+  data.forEach((_item) => {
+    const item = _item as unknown as TreeItem<T>;
     item.serialNo = '';
     item.children = [];
     item.treeState = {
@@ -50,35 +52,41 @@ export function arrayToTree<T = Recordable<unknown>>(
   });
 
   // 生成树结构
-  const tree: Array<TreeProps<T>> = [];
-  data.forEach((item: Recordable<any>) => {
-    if (!item[parentKey] || !data.find((n) => n[key] === item[parentKey])) {
+  const tree: Array<TreeItem<T>> = [];
+  data.forEach((_item) => {
+    const item = _item as unknown as TreeItem<T>;
+    const parentId = item[parentKey as keyof TreeItem<T>] as string | undefined;
+    if (!parentId || !hashTable[parentId]) {
       tree.push(item);
-    } else if (hashTable[item[parentKey]]) {
-      hashTable[item[parentKey]]!.children!.push(item);
+    } else {
+      const parent = hashTable[parentId];
+      if (!parent.children) {
+        parent.children = [];
+      }
+      parent.children.push(item);
     }
   });
 
   // 递归计算treeState
   const traverse = (
-    node: TreeProps<T>,
+    node: TreeItem<T>,
     level: number,
     pathIDs: string[],
     pathNames: string[],
-    serialNo: string | number,
+    serialNo: number | string,
   ) => {
     node.serialNo = serialNo.toString();
     node.treeState.pathIDs = [...pathIDs];
     node.treeState.pathNames = [...pathNames];
     node.treeState.level = level;
     if (level + 1 >= maxLevel) {
-      node.children = null;
+      node.children = undefined;
       return;
     }
-    if (node.children?.length === 0) {
-      node.children = null;
+    if (!node.children || node.children.length === 0) {
+      node.children = undefined;
     } else {
-      node.children!.forEach((child, index) => {
+      node.children.forEach((child, index) => {
         traverse(
           child,
           level + 1,

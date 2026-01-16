@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2024-12-24 20:46:24
- * @LastEditTime: 2026-01-15 09:49:13
+ * @LastEditTime: 2026-01-16 10:30:11
  * @LastEditors: cwx
  * @Description: 基地树
 -->
@@ -10,7 +10,7 @@ import type { TreeProps } from 'ant-design-vue';
 
 import type { Recordable } from '@vben/types';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, onActivated, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useUserStore } from '@vben/stores';
@@ -49,9 +49,11 @@ watchDebounced(
       );
       treeData.value = arrayToTree(
         catalogList.value.filter((n: Recordable<any>) => idList.has(n.ID)),
-      );
+      ) as unknown as TreeProps['treeData'];
     } else {
-      treeData.value = arrayToTree(catalogList.value);
+      treeData.value = arrayToTree(
+        catalogList.value,
+      ) as unknown as TreeProps['treeData'];
     }
   },
   { debounce: 500 },
@@ -64,8 +66,8 @@ const selectedKeys = computed(() => {
 
 const { push, currentRoute } = useRouter();
 
-const nodeSelect = (_, info: Recordable<any>) => {
-  currentNode.value = info.node;
+const nodeSelect: NonNullable<TreeProps['onSelect']> = (_, info) => {
+  currentNode.value = info.node as Recordable<any>;
   emit('nodeClick', currentNode.value);
   push({
     name: currentRoute.value.name,
@@ -95,10 +97,10 @@ const getBaseList = async () => {
   });
   const list = res.List.filter((n: Recordable<any>) => n.Name);
   catalogList.value = list;
-  treeData.value = arrayToTree(list);
+  treeData.value = arrayToTree(list) as unknown as TreeProps['treeData'];
 };
 
-onMounted(async () => {
+const initBaseTree = async () => {
   if (currentRoute.value.params?.bId === ':bId') {
     push({
       name: currentRoute.value.name,
@@ -118,7 +120,22 @@ onMounted(async () => {
       : treeData.value[0]!;
 
     emit('nodeClick', currentNode.value);
+
+    push({
+      name: currentRoute.value.name,
+      params: {
+        bId: currentNode.value!.ID,
+      },
+    });
   }
+};
+
+onMounted(async () => {
+  await initBaseTree();
+});
+
+onActivated(async () => {
+  await initBaseTree();
 });
 </script>
 
