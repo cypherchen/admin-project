@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2025-01-24 20:35:57
- * @LastEditTime: 2025-03-15 03:05:12
+ * @LastEditTime: 2026-01-16 14:24:09
  * @LastEditors: cwx
  * @Description: 清单编制内容
 -->
@@ -48,19 +48,20 @@
 </template>
 
 <script setup lang="ts" name="ListPreparationContent">
-import { ref, computed, onMounted } from 'vue';
-import { Tabs, TabPane } from 'ant-design-vue';
-import { RollbackOutlined } from '@ant-design/icons-vue';
+import { type TabsProps } from 'ant-design-vue';
+
+import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { ColPage } from '@vben/common-ui';
 
+import { RollbackOutlined } from '@ant-design/icons-vue';
+import { TabPane, Tabs } from 'ant-design-vue';
+
+import { hasPermission } from '#/components/authority';
+import { listPreparationPermission } from '#/permission';
+
 import CatalogTree from './catalogTree/catalogTree.vue';
-import ProjectImport from './projectImport/index.vue';
-import ProjectParams from './projectParams/index.vue';
-import ProjectReference from './projectReference/index.vue';
-import ProjectList from './projectList/index.vue';
-import ListCheck from './listCheck/index.vue';
 
 const { currentRoute, push } = useRouter();
 
@@ -68,31 +69,40 @@ const tabList = [
   {
     name: '导入工程',
     key: 'ProjectImport',
-    component: ProjectImport,
+    component: defineAsyncComponent(() => import('./projectImport/index.vue')),
+    authKey: listPreparationPermission!.导入工程.key,
   },
   {
     name: '项目信息',
     key: 'ProjectParams',
-    component: ProjectParams,
+    component: defineAsyncComponent(() => import('./projectParams/index.vue')),
+    authKey: listPreparationPermission!.项目信息.key,
   },
   {
     name: '项目查询',
     key: 'ProjectReference',
-    component: ProjectReference,
+    component: defineAsyncComponent(
+      () => import('./projectReference/index.vue'),
+    ),
+    authKey: listPreparationPermission!.项目查询.key,
   },
   {
     name: '项目清单',
     key: 'ProjectList',
-    component: ProjectList,
+    component: defineAsyncComponent(() => import('./projectList/index.vue')),
+    authKey: listPreparationPermission!.项目清单.key,
   },
   {
     name: '清单核查',
     key: 'ListCheck',
-    component: ListCheck,
+    component: defineAsyncComponent(() => import('./listCheck/index.vue')),
+    authKey: listPreparationPermission!.清单核查.key,
   },
 ];
 
-const computedTabList = computed(() => tabList.filter((item) => true));
+const computedTabList = computed(() =>
+  tabList.filter((item) => hasPermission(item.authKey, 'menu')),
+);
 
 const currentNode = ref<null | Record<string, any>>(null);
 const handleNodeChange = (node: Record<string, any>) => {
@@ -100,7 +110,7 @@ const handleNodeChange = (node: Record<string, any>) => {
 };
 
 const activeKey = ref<string | undefined>('');
-const handleTabChange = (key: string) => {
+const handleTabChange: TabsProps['onChange'] = (key) => {
   push({
     name: currentRoute.value.name,
     query: {
