@@ -7,14 +7,14 @@ import { addDynamicIconSelectors } from '@iconify/tailwind';
 import { getPackagesSync } from '@manypkg/get-packages';
 import typographyPlugin from '@tailwindcss/typography';
 import animate from 'tailwindcss-animate';
-import { findMonorepoRoot } from '@vben/node-utils';
 
 import { enterAnimationPlugin } from './plugins/entry';
 
 // import defaultTheme from 'tailwindcss/defaultTheme';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
-const { packages } = getPackagesSync(findMonorepoRoot(__dirname));
+const monorepoRoot = path.resolve(__dirname, '../../..');
+const { packages } = getPackagesSync(monorepoRoot);
 
 const tailwindPackages: string[] = [];
 
