@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2025-03-19 22:47:57
- * @LastEditTime: 2025-03-21 17:00:07
+ * @LastEditTime: 2026-01-15 16:59:01
  * @LastEditors: cwx
  * @Description:
  */
@@ -22,6 +22,22 @@ export const columns: VxeGridProps['columns'] = [
     width: 150,
     editRender: {
       name: 'ASelect',
+      props: {
+        options: [
+          {
+            label: '初稿',
+            value: '初稿',
+          },
+          {
+            label: '过程稿',
+            value: '过程稿',
+          },
+          {
+            label: '终稿',
+            value: '终稿',
+          },
+        ],
+      },
     },
   },
   {

@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2025-01-18 15:37:12
- * @LastEditTime: 2025-03-25 17:30:49
+ * @LastEditTime: 2026-01-16 11:03:14
  * @LastEditors: cwx
  * @Description:
  */
@@ -42,6 +42,27 @@ export const columns: VxeGridProps['columns'] = [
     },
   },
   {
+    field: 'Type',
+    title: '类型',
+    width: 100,
+    editRender: {
+      name: 'ASelect',
+      props: {
+        placeholder: '请选择类型',
+        options: [
+          {
+            label: '工程',
+            value: '工程',
+          },
+          {
+            label: '设备',
+            value: '设备',
+          },
+        ],
+      },
+    },
+  },
+  {
     field: 'DateRange',
     title: '计划时间',
     width: 250,
@@ -69,10 +90,10 @@ export const columns: VxeGridProps['columns'] = [
         allowClear: true,
         showSearch: true,
         filterOption: (input: string, option: Record<string, any>) =>
-          option.Name.indexOf(input) >= 0,
+          option.Name.includes(input),
       },
     },
-    formatter: ({ row }) => row.ResponsibleUserName,
+    formatter: ({ row }) => row.ResponsibleUserName || '',
   },
   {
     field: 'ReportedUserID',
@@ -89,10 +110,10 @@ export const columns: VxeGridProps['columns'] = [
         allowClear: true,
         showSearch: true,
         filterOption: (input: string, option: Record<string, any>) =>
-          option.Name.indexOf(input) >= 0,
+          option.Name.includes(input),
       },
     },
-    formatter: ({ row }) => row.ReportedUserName,
+    formatter: ({ row }) => row.ReportedUserName || '',
   },
   {
     field: 'IPProjectState',

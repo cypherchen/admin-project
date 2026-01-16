@@ -1,11 +1,11 @@
 /*
  * @Author: cwx
  * @Date: 2025-01-24 20:56:52
- * @LastEditTime: 2025-03-26 09:31:16
+ * @LastEditTime: 2026-01-16 10:59:27
  * @LastEditors: cwx
  * @Description:
  */
-import { type VbenFormSchema } from '@vben/common-ui';
+import type { VbenFormSchema } from '@vben/common-ui';
 
 export const formSchema: VbenFormSchema[] = [
   {
@@ -27,6 +27,25 @@ export const formSchema: VbenFormSchema[] = [
     rules: 'required',
   },
   {
+    component: 'Select',
+    componentProps: {
+      placeholder: '请选择类型',
+      options: [
+        {
+          label: '工程',
+          value: '工程',
+        },
+        {
+          label: '设备',
+          value: '设备',
+        },
+      ],
+    },
+    fieldName: 'Type',
+    label: '类型',
+    rules: 'required',
+  },
+  {
     component: 'RangePicker',
     componentProps: {
       valueFormat: 'YYYY-MM-DD',
@@ -45,7 +64,7 @@ export const formSchema: VbenFormSchema[] = [
       allowClear: true,
       showSearch: true,
       filterOption: (input: string, option: Record<string, any>) =>
-        option.Name.indexOf(input) >= 0,
+        option.Name.includes(input),
     },
     fieldName: 'ResponsibleUserID',
     label: '责任人',
@@ -61,7 +80,7 @@ export const formSchema: VbenFormSchema[] = [
       allowClear: true,
       showSearch: true,
       filterOption: (input: string, option: Record<string, any>) =>
-        option.Name.indexOf(input) >= 0,
+        option.Name.includes(input),
     },
     fieldName: 'ReportedUserID',
     label: '汇报人',
