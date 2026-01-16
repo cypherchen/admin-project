@@ -5,50 +5,8 @@
  * @LastEditors: cwx
  * @Description: 清单编制内容
 -->
-<template>
-  <ColPage
-    auto-content-height
-    :left-width="10"
-    :left-max-width="10"
-    :left-min-width="2"
-    split-handle
-  >
-    <template #left>
-      <CatalogTree ref="treeRef" @nodeChange="handleNodeChange"></CatalogTree>
-    </template>
-    <div class="ml-2 h-full w-full rounded-md bg-white p-2">
-      <Tabs
-        v-model:activeKey="activeKey"
-        @change="handleTabChange"
-        class="h-full"
-      >
-        <template #rightExtra>
-          <a-button type="link" @click="handleBack">
-            <template #icon>
-              <RollbackOutlined />
-            </template>
-            返回台账页
-          </a-button>
-        </template>
-        <TabPane
-          v-for="item in computedTabList"
-          :key="item.key"
-          :tab="item.name"
-        >
-          <component
-            :key="item.key"
-            :is="item.component"
-            :currentNode="currentNode"
-            @reloadTree="reloadTree"
-          ></component>
-        </TabPane>
-      </Tabs>
-    </div>
-  </ColPage>
-</template>
-
 <script setup lang="ts" name="ListPreparationContent">
-import { type TabsProps } from 'ant-design-vue';
+import type { TabsProps } from 'ant-design-vue';
 
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -139,6 +97,48 @@ onMounted(() => {
     computedTabList.value[0]?.key;
 });
 </script>
+
+<template>
+  <ColPage
+    auto-content-height
+    :left-width="10"
+    :left-max-width="10"
+    :left-min-width="2"
+    split-handle
+  >
+    <template #left>
+      <CatalogTree ref="treeRef" @node-change="handleNodeChange" />
+    </template>
+    <div class="ml-2 h-full w-full rounded-md bg-white p-2">
+      <Tabs
+        v-model:active-key="activeKey"
+        @change="handleTabChange"
+        class="h-full"
+      >
+        <template #rightExtra>
+          <a-button type="link" @click="handleBack">
+            <template #icon>
+              <RollbackOutlined />
+            </template>
+            返回台账页
+          </a-button>
+        </template>
+        <TabPane
+          v-for="item in computedTabList"
+          :key="item.key"
+          :tab="item.name"
+        >
+          <component
+            :key="item.key"
+            :is="item.component"
+            :current-node="currentNode"
+            @reload-tree="reloadTree"
+          />
+        </TabPane>
+      </Tabs>
+    </div>
+  </ColPage>
+</template>
 
 <style scoped>
 :deep(.ant-tabs-content-holder) {
