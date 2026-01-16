@@ -1,0 +1,48 @@
+/*
+ * @Author: cwx
+ * @Date: 2025-01-24 20:56:52
+ * @LastEditTime: 2026-01-16 15:59:37
+ * @LastEditors: cwx
+ * @Description:
+ */
+import type { VxeGridProps } from '#/adapter/vxe-table';
+
+export const monomerColumns: VxeGridProps['columns'] = [
+  {
+    type: 'checkbox',
+    width: 50,
+  },
+  {
+    field: 'MonomerName',
+    title: '单体名称',
+  },
+  {
+    field: 'MonomerCode',
+    title: '单体编码',
+  },
+  {
+    field: 'MonomerHierarchyCode',
+    title: '单体完整编码',
+  },
+];
+
+export const matColumns: VxeGridProps['columns'] = [
+  {
+    type: 'checkbox',
+    width: 50,
+  },
+  {
+    field: 'MatCode',
+    title: '物料编码',
+    width: 150,
+  },
+  {
+    field: 'MatName',
+    title: '物料名称',
+    width: 150,
+  },
+  {
+    field: 'MatFeature',
+    title: '物料规格',
+  },
+];

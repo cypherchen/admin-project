@@ -1,86 +1,113 @@
 <!--
  * @Author: cwx
  * @Date: 2025-01-24 20:56:52
- * @LastEditTime: 2025-03-15 03:02:03
+ * @LastEditTime: 2026-01-17 00:30:49
  * @LastEditors: cwx
  * @Description: 清单编制目录树
 -->
-
-<template>
-  <Flex vertical class="h-full w-full rounded-md bg-white p-2">
-    <Tooltip
-      :title="
-        currentProject.BaseTreeName?.length > 16
-          ? currentProject.BaseTreeName
-          : ''
-      "
-    >
-      <div class="truncate border-l-4 border-[#1b7be8] pl-2 text-sm font-bold">
-        {{ currentProject.BaseTreeName }}
-      </div>
-    </Tooltip>
-    <Input
-      v-model:value="searchValue"
-      allow-clear
-      class="my-2"
-      placeholder="请输入关键字"
-    />
-    <div class="flex-1 overflow-auto" v-loading="loading">
-      <Tree
-        class="h-full min-w-[200px]"
-        :tree-data="treeData"
-        v-model:expandedKeys="expandedKeys"
-        :selected-keys="selectedKeys"
-        :field-names="{ key: 'ID', title: 'Name' }"
-        block-node
-        @select="nodeSelect"
-      />
-    </div>
-  </Flex>
-</template>
-
 <script setup lang="ts" name="CatalogTree">
-import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-
-import { Flex, Tooltip, Tree, Input } from 'ant-design-vue';
+import type { TreeProps } from 'ant-design-vue';
 
 import type { Recordable } from '@vben/types';
-import { watchDebounced } from '@vueuse/core';
+
+import { computed, h, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+import { useVbenModal } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
 
-import { getListPreparationCatalog } from '#/api/listPreparationApi/listPreparationContentApi';
-import { getListPreparationByProjectID } from '#/api/listPreparationApi/listPreparationApi';
-import { ConditionalType } from '#/api/basicType';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusOutlined,
+} from '@ant-design/icons-vue';
+import { watchDebounced } from '@vueuse/core';
+import {
+  Button,
+  Flex,
+  Input,
+  message,
+  Modal,
+  Select,
+  Tooltip,
+  Tree,
+} from 'ant-design-vue';
 
+import { ConditionalType } from '#/api/basicType';
+import { getListPreparationByProjectID } from '#/api/listPreparationApi/listPreparationApi';
+import {
+  deleteListPreparationCatalog,
+  getListPreparationCatalog,
+} from '#/api/listPreparationApi/listPreparationContentApi';
+import { Authority } from '#/components/authority';
+import { listPreparationPermission } from '#/permission';
 import { arrayToTree } from '#/utils/tree';
+
+import TreeForm from './treeForm.vue';
+import TreeSelectForm from './treeSelectForm.vue';
 
 const emit = defineEmits(['nodeChange']);
 
 const { currentRoute } = useRouter();
-
 const userStore = useUserStore();
+
+const permission = listPreparationPermission!.清单编制;
+
+const [TreeFormModal, treeFormApi] = useVbenModal({
+  connectedComponent: TreeForm,
+});
+
+const [TreeSelectFormModal, treeSelectFormApi] = useVbenModal({
+  connectedComponent: TreeSelectForm,
+});
+
+const expandLevel = ref<number>(3);
+
+const maxLevel = computed(() => {
+  return Math.max(
+    ...catalogList.value.map((n: Recordable<any>) => n.treeState.level + 1),
+  );
+});
+
+const levelOptions = computed(() => {
+  return Array.from(
+    {
+      length: maxLevel.value,
+    },
+    (_, index) => ({
+      label: `${index + 1}级`,
+      value: index,
+    }),
+  );
+});
+
+const levelChange = () => {
+  expandedKeys.value = catalogList.value
+    .filter((n: Recordable<any>) => n.Hierarchy <= expandLevel.value - 1)
+    .map((n: Recordable<any>) => n.ID);
+};
 
 const searchValue = ref<string>('');
 watchDebounced(
   () => searchValue.value,
   () => {
     if (searchValue.value?.trim()) {
-      const idList = Array.from(
+      const idList = new Set(
         new Set(
           catalogList.value
             .filter((n: Recordable<any>) =>
               n.Name.includes(searchValue.value.trim()),
             )
-            .map((n: Recordable<any>) => [n.ID, ...n.treeState.pathIDs])
-            .flat(),
+            .flatMap((n: Recordable<any>) => [n.ID, ...n.treeState.pathIDs]),
         ),
       );
       treeData.value = arrayToTree(
-        catalogList.value.filter((n: Recordable<any>) => idList.includes(n.ID)),
-      );
+        catalogList.value.filter((n: Recordable<any>) => idList.has(n.ID)),
+      ) as unknown as TreeProps['treeData'];
     } else {
-      treeData.value = arrayToTree(catalogList.value);
+      treeData.value = arrayToTree(
+        catalogList.value,
+      ) as unknown as TreeProps['treeData'];
     }
   },
   { debounce: 500 },
@@ -91,23 +118,24 @@ const selectedKeys = computed(() => {
   return currentNode.value ? [currentNode.value.ID] : [];
 });
 
-const nodeSelect = (_, info: Recordable<any>) => {
+const nodeSelect: NonNullable<TreeProps['onSelect']> = (_, info) => {
   currentNode.value = info.node;
   emit('nodeChange', currentNode.value);
 };
 
 const loading = ref<boolean>(false);
 const catalogList = ref<Recordable<any>[]>([]);
-const treeData = ref<Recordable<any>[]>([]);
+const treeData = ref<TreeProps['treeData']>([]);
 const expandedKeys = ref<string[]>([]);
 const getCatalogList = async () => {
   loading.value = true;
-  const Where = [];
-  Where.push({
-    FieldName: 'Hierarchy',
-    ConditionalType: ConditionalType.LessThanOrEqual,
-    FieldValue: 3,
-  });
+  const Where = [
+    {
+      FieldName: 'Hierarchy',
+      ConditionalType: ConditionalType.LessThanOrEqual,
+      FieldValue: 3,
+    },
+  ];
   const params = {
     Where,
   };
@@ -119,8 +147,22 @@ const getCatalogList = async () => {
       params,
     });
     catalogList.value = res.List;
-    treeData.value = arrayToTree(res.List);
-    expandedKeys.value = res.List.map((n: Recordable<any>) => n.ID);
+    treeData.value = arrayToTree(res.List) as unknown as TreeProps['treeData'];
+
+    if (expandedKeys.value.length === 0) {
+      expandedKeys.value = res.List.filter(
+        (item: Recordable<any>) => item.Hierarchy <= expandLevel.value - 1,
+      ).map((item: Recordable<any>) => item.ID);
+    }
+
+    if (currentNode.value) {
+      const newNode = res.List.find((n) => n.ID === currentNode.value?.ID);
+      if (newNode) {
+        currentNode.value = newNode;
+
+        currentNode.value = newNode;
+      }
+    }
   } finally {
     loading.value = false;
   }
@@ -136,6 +178,86 @@ const getProject = async () => {
 const pId = ref<string>('');
 const vId = ref<string>('');
 const auditStatus = ref<string>('');
+
+const disabledByAudit = computed(() => {
+  return [1, 2].includes(Number(auditStatus.value));
+});
+
+const addDisable = computed(() => {
+  return currentNode.value?.Hierarchy === 3;
+});
+
+const editDisable = computed(() => {
+  return currentNode.value?.Hierarchy === 0;
+});
+
+const deleteDisable = computed(() => {
+  return currentNode.value?.Hierarchy === 0;
+});
+
+function showTreeForm(isUpdate: boolean) {
+  if (!currentNode.value && !isUpdate) return;
+  if (!currentNode.value && isUpdate) {
+    message.warning('请选择一个节点');
+    return;
+  }
+
+  const hierarchy = currentNode.value?.Hierarchy;
+
+  let useSelectForm = false;
+  if (isUpdate) {
+    // Modify
+    if ([1, 2].includes(hierarchy)) {
+      useSelectForm = true;
+    }
+  } else {
+    // Add
+    if ([0, 1].includes(hierarchy)) {
+      useSelectForm = true;
+    }
+  }
+
+  const data = {
+    isUpdate,
+    currentNode: currentNode.value,
+  };
+
+  if (useSelectForm) {
+    treeSelectFormApi.setData(data);
+    treeSelectFormApi.open();
+  } else {
+    treeFormApi.setData(data);
+    treeFormApi.open();
+  }
+}
+
+async function deleteTreeNode() {
+  if (!currentNode.value) return;
+
+  Modal.confirm({
+    title: '提示',
+    content: '是否删除该节点及其关联数据?',
+    type: 'warning',
+    onOk: async () => {
+      await deleteListPreparationCatalog(
+        pId.value,
+        vId.value,
+        currentNode.value!.ID,
+      );
+      message.success('删除成功');
+      await getCatalogList();
+
+      if (treeData.value?.length) {
+        currentNode.value = treeData.value[0]!;
+        emit('nodeChange', currentNode.value);
+      } else {
+        currentNode.value = null;
+        emit('nodeChange', null);
+      }
+    },
+  });
+}
+
 onMounted(async () => {
   pId.value = currentRoute.value.params?.pId as string;
   vId.value = currentRoute.value.params?.vId as string;
@@ -144,6 +266,8 @@ onMounted(async () => {
   getProject();
 
   await getCatalogList();
+
+  expandLevel.value = maxLevel.value - 1;
 
   if (treeData.value?.length) {
     currentNode.value = treeData.value[0]!;
@@ -155,4 +279,98 @@ onMounted(async () => {
 defineExpose({ getCatalogList });
 </script>
 
-<style scoped></style>
+<template>
+  <Flex vertical class="h-full w-full rounded-md bg-card">
+    <Tooltip
+      :title="
+        currentProject.BaseTreeName?.length > 16
+          ? currentProject.BaseTreeName
+          : ''
+      "
+    >
+      <div
+        class="m-2 truncate border-l-4 border-[#1b7be8] pl-2 text-sm font-bold"
+      >
+        {{ currentProject.BaseTreeName }}
+      </div>
+    </Tooltip>
+
+    <Flex justify="center" class="my-2 bg-card">
+      <div class="flex gap-1">
+        <Authority :value="permission.目录树_新增">
+          <Button
+            size="small"
+            :icon="h(PlusOutlined)"
+            title="添加节点"
+            :disabled="addDisable || disabledByAudit"
+            @click="showTreeForm(false)"
+          />
+        </Authority>
+        <Authority :value="permission.目录树_删除">
+          <Button
+            size="small"
+            :icon="h(DeleteOutlined)"
+            title="删除节点"
+            :disabled="deleteDisable || disabledByAudit"
+            @click="deleteTreeNode"
+          />
+        </Authority>
+        <Authority :value="permission.目录树_修改">
+          <Button
+            size="small"
+            :icon="h(EditOutlined)"
+            title="修改节点"
+            :disabled="editDisable || disabledByAudit"
+            @click="showTreeForm(true)"
+          />
+        </Authority>
+      </div>
+    </Flex>
+
+    <Flex class="mb-2 p-2">
+      <Select
+        v-model:value="expandLevel"
+        :options="levelOptions"
+        @change="levelChange"
+        class="mr-2 w-[90px]"
+      />
+      <Input
+        v-model:value="searchValue"
+        allow-clear
+        placeholder="请输入关键字"
+      />
+    </Flex>
+    <Tree
+      v-loading="loading"
+      class="flex-1 overflow-auto"
+      :tree-data="treeData"
+      v-model:expanded-keys="expandedKeys"
+      :selected-keys="selectedKeys"
+      :field-names="{ key: 'ID', title: 'Name' }"
+      block-node
+      @select="nodeSelect"
+    >
+      <template #title="{ data }">
+        <div v-if="data.Hierarchy !== 2" class="whitespace-nowrap">
+          {{ data.Name }}
+        </div>
+        <div v-else class="whitespace-nowrap">
+          <template v-if="!data.Specification">
+            {{ data.Code ? `${data.Name} - [${data.Code}]` : data.Name }}
+          </template>
+          <Tooltip
+            v-else
+            :title="data.Specification"
+            overlay-class-name="!max-w-lg"
+            placement="topLeft"
+          >
+            {{ data.Code ? `${data.Name} - [${data.Code}]` : data.Name }}
+          </Tooltip>
+        </div>
+      </template>
+    </Tree>
+
+    <TreeFormModal :tree-list="catalogList" @submit="getCatalogList" />
+    <TreeSelectFormModal :tree-list="catalogList" @submit="getCatalogList" />
+  </Flex>
+</template>

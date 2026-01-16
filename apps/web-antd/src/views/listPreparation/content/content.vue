@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2025-01-24 20:35:57
- * @LastEditTime: 2026-01-16 14:24:09
+ * @LastEditTime: 2026-01-17 00:21:47
  * @LastEditors: cwx
  * @Description: 清单编制内容
 -->
@@ -101,15 +101,15 @@ onMounted(() => {
 <template>
   <ColPage
     auto-content-height
-    :left-width="10"
-    :left-max-width="10"
+    :left-width="12"
+    :left-max-width="12"
     :left-min-width="2"
     split-handle
   >
     <template #left>
       <CatalogTree ref="treeRef" @node-change="handleNodeChange" />
     </template>
-    <div class="ml-2 h-full w-full rounded-md bg-white p-2">
+    <div class="ml-2 h-full w-full rounded-md bg-card p-2">
       <Tabs
         v-model:active-key="activeKey"
         @change="handleTabChange"
