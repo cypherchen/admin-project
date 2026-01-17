@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2025-03-14 23:53:02
- * @LastEditTime: 2025-03-15 00:06:06
+ * @LastEditTime: 2026-01-17 12:55:47
  * @LastEditors: cwx
  * @Description: 清单编制内容api
  */
@@ -14,7 +14,18 @@ import type {
 } from '#/api/basicType';
 
 export namespace ListPreparationContentApi {
-  export interface CatalogTreeResult extends BasicModel {}
+  export interface CatalogTreeResult extends BasicModel {
+    Code: string | null;
+    Name: string;
+    Hierarchy: number;
+    Parent_ID: string | null;
+    NamePath: string | null;
+    IDPath: string;
+    IPProjectID: string;
+    CopyTreeID: string | null;
+    Specification: string | null;
+    Version_ID: string;
+  }
 }
 
 /**
@@ -63,7 +74,7 @@ export async function putListPreparationCatalog(
   data: Recordable<any>,
 ) {
   return requestClient.put<ListPreparationContentApi.CatalogTreeResult>(
-    `api/IPProjectTree/${pId}/${vId}`,
+    `api/IPProjectTree/${pId}/${vId}/${data.ID}`,
     data,
   );
 }

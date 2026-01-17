@@ -1,23 +1,43 @@
 /*
  * @Author: cwx
  * @Date: 2024-05-08 19:27:13
- * @LastEditTime: 2024-12-24 22:32:39
+ * @LastEditTime: 2026-01-17 12:51:12
  * @LastEditors: cwx
  * @Description: 基地管理
  */
 import { requestClient } from '#/api/request';
 import type { Recordable } from '@vben/types';
-import type { BasicFetchResult } from '#/api/basicType';
+import type { BasicFetchResult, BasicModel } from '#/api/basicType';
 
 export namespace BaseManagementApi {
-  export interface BaseResult {
-    ID: string;
-    // 定义其他必要的属性
+  export interface BaseResult extends BasicModel {
+    Name: string;
+    BackShowName: string | null;
+    Parent_ID: string | null;
+    Count: number;
+    Amount: number | null;
+    Type: number;
+    MergeState: number;
+    ErrorReason: string | null;
+    IsThirdParty: boolean | null;
+    ThirdPartyId: string | null;
+    ShortName: string | null;
+    CopyID: string | null;
   }
 
-  export interface BaseMonomerResult {
-    ID: string;
-    // 定义其他必要的属性
+  export interface BaseMonomerResult extends BasicModel {
+    MonomerName: string;
+    MonomerCode: string;
+    MonomerHierarchyCode: string;
+    BusinessType: string;
+    BusinessCode: string;
+    CoverArea: number;
+    BuildingArea: number;
+    APProjectBaseTree_ID: string;
+    APProjectBaseTreeName: string;
+    ThirdPartyId: string;
+    BaseTreeThirdPartyId: string | null;
+    BaseTreeShortName: string | null;
   }
 }
 
