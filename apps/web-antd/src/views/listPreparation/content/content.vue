@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2025-01-24 20:35:57
- * @LastEditTime: 2026-01-17 00:21:47
+ * @LastEditTime: 2026-01-17 15:06:09
  * @LastEditors: cwx
  * @Description: 清单编制内容
 -->
@@ -141,7 +141,9 @@ onMounted(() => {
 </template>
 
 <style scoped>
-:deep(.ant-tabs-content-holder) {
+:deep(.ant-tabs-content-holder),
+:deep(.ant-tabs-content),
+:deep(.ant-tabs-tabpane) {
   height: 100%;
 }
 </style>

@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2025-01-24 20:56:52
- * @LastEditTime: 2026-01-17 00:37:32
+ * @LastEditTime: 2026-01-17 18:23:40
  * @LastEditors: cwx
  * @Description: 目录树选择表单
 -->
@@ -233,43 +233,41 @@ const [VbenModal, modalApi] = useVbenModal({
   >
     <div class="h-[600px] w-full">
       <VbenVxeGrid>
-        <template #toolbar-actions>
-          <Flex justify="space-between" class="w-full">
-            <Flex align="left" vertical>
-              <span v-if="selectedRows.length > 0" class="mb-2">
-                名称: {{ selectedRows.map((n) => n.Name).join(', ') }}
-              </span>
-              <Flex v-if="!isUpdate" align="center">
-                <span class="mr-2">复制节点:</span>
-                <Select
-                  v-model:value="copyTreeID"
-                  :options="copyOptions"
-                  placeholder="请选择复制节点"
-                  allow-clear
-                  show-search
-                  class="w-[300px]"
-                  :filter-option="
-                    (input, option) =>
-                      (option?.label as string)
-                        .toLowerCase()
-                        .includes(input.toLowerCase())
-                  "
-                />
-              </Flex>
-            </Flex>
-            <Flex gap="2">
-              <InputSearch
-                v-model:value="nameKeyword"
-                placeholder="名称多关键字以空格分隔"
-                @search="gridApi.reload()"
-              />
-              <InputSearch
-                v-if="!isMonomer"
-                v-model:value="featureKeyword"
-                placeholder="规格多关键字以空格分隔"
-                @search="gridApi.reload()"
+        <template #table-title>
+          <Flex align="left" vertical>
+            <span v-if="selectedRows.length > 0">
+              名称: {{ selectedRows.map((n) => n.Name).join(', ') }}
+            </span>
+            <Flex v-if="!isUpdate" align="center" class="mt-2">
+              <span class="mr-2">复制节点:</span>
+              <Select
+                v-model:value="copyTreeID"
+                :options="copyOptions"
+                placeholder="请选择复制节点"
+                allow-clear
+                show-search
+                class="w-[300px]"
+                :filter-option="
+                  (input, option) => (option?.label as string).includes(input)
+                "
               />
             </Flex>
+          </Flex>
+        </template>
+        <template #toolbar-tools>
+          <Flex>
+            <InputSearch
+              v-model:value="nameKeyword"
+              placeholder="名称多关键字以空格分隔"
+              @search="gridApi.reload()"
+              class="mr-2"
+            />
+            <InputSearch
+              v-if="!isMonomer"
+              v-model:value="featureKeyword"
+              placeholder="规格多关键字以空格分隔"
+              @search="gridApi.reload()"
+            />
           </Flex>
         </template>
       </VbenVxeGrid>
