@@ -51,6 +51,15 @@ export namespace ListPreparationApi {
     ParameterSettingTemplate_ID: string;
     ProjectName: string;
   }
+
+  export interface CanSubmitResult {
+    Value: boolean;
+    Message: string;
+    List?: {
+      TreeName: string;
+      [key: string]: any;
+    }[];
+  }
 }
 
 /*********************清单编制台账*********************/
@@ -173,7 +182,7 @@ export async function postListPreparationFromSSOT() {
  * @return {*}
  */
 export function getListPreparationCanSubmit(pId: string) {
-  return requestClient.get<{ Value: boolean; Message: string }>(
+  return requestClient.get<ListPreparationApi.CanSubmitResult>(
     `api/IPProjectIndex/IsCanSubmit/${pId}`,
   );
 }
