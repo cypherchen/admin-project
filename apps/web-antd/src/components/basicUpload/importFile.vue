@@ -1,37 +1,20 @@
 <!--
  * @Author: cwx
  * @Date: 2025-03-18 09:19:29
- * @LastEditTime: 2025-03-18 21:09:09
+ * @LastEditTime: 2026-01-17 15:22:36
  * @LastEditors: cwx
  * @Description: 导入文件
 -->
-<template>
-  <BasicUpload
-    ref="uploadRef"
-    v-bind="$attrs"
-    :openFileDialogOnClick="false"
-    :showUploadList="false"
-    @change="handleChange"
-    class="!w-auto"
-  >
-    <a-button
-      v-if="!$slots.default"
-      :disabled="$attrs.disabled"
-      @click="uploadFile"
-    >
-      {{ label }}
-    </a-button>
-    <slot v-else :disabled="$attrs.disabled" :uploadFile="uploadFile"></slot>
-  </BasicUpload>
-</template>
-
 <script setup lang="tsx" name="ImportFile">
-import { toRefs, ref, type PropType, type VNode } from 'vue';
-import { Modal, type UploadFile, message } from 'ant-design-vue';
+import type { ButtonProps, UploadFile } from 'ant-design-vue';
+
+import type { PropType, VNode } from 'vue';
+
+import { ref, toRefs } from 'vue';
+
+import { message, Modal } from 'ant-design-vue';
 
 import { BasicUpload } from './index';
-
-const emit = defineEmits(['success']);
 
 const props = defineProps({
   label: {
@@ -47,8 +30,15 @@ const props = defineProps({
     type: [String, Object] as PropType<string | VNode>,
     default: '',
   },
+  btnProps: {
+    type: Object as PropType<ButtonProps>,
+    default: () => ({}),
+  },
 });
-const { label, title, tips } = toRefs(props);
+
+const emit = defineEmits(['success']);
+
+const { label, title, tips, btnProps } = toRefs(props);
 
 const uploadRef = ref();
 
@@ -76,5 +66,26 @@ const handleChange = (file: UploadFile) => {
   }
 };
 </script>
+
+<template>
+  <BasicUpload
+    ref="uploadRef"
+    v-bind="$attrs"
+    :open-file-dialog-on-click="false"
+    :show-upload-list="false"
+    @change="handleChange"
+    class="!w-auto"
+  >
+    <a-button
+      v-if="!$slots.default"
+      v-bind="btnProps"
+      :disabled="$attrs.disabled"
+      @click="uploadFile"
+    >
+      {{ label }}
+    </a-button>
+    <slot v-else :disabled="$attrs.disabled" :upload-file="uploadFile"></slot>
+  </BasicUpload>
+</template>
 
 <style scoped></style>
