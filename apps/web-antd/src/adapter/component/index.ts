@@ -92,6 +92,7 @@ const PreviewGroup = defineAsyncComponent(() =>
 );
 
 import { BasicUpload } from '#/components/basicUpload';
+import { RegionSelector } from '#/components/regionSelector';
 
 const withDefaultPlaceholder = <T extends Component>(
   component: T,
@@ -519,6 +520,7 @@ export type ComponentType =
   | 'TreeSelect'
   | 'Upload'
   | 'BasicUpload'
+  | 'RegionSelector'
   | BaseFormComponentType;
 
 async function initComponentAdapter() {
@@ -583,6 +585,7 @@ async function initComponentAdapter() {
     TreeSelect: withDefaultPlaceholder(TreeSelect, 'select'),
     Upload: withPreviewUpload(),
     BasicUpload,
+    RegionSelector,
   };
 
   // 将组件注册到全局共享状态中

@@ -10,6 +10,7 @@ import { Button, Image } from 'ant-design-vue';
 import { useVbenForm } from './form';
 
 import { AuditStatus } from '#/components/auditStatus';
+import { RegionSelector } from '#/components/regionSelector';
 
 import '@vxe-ui/plugin-render-antd/dist/style.css';
 
@@ -94,6 +95,22 @@ setupVbenVxeTable({
       renderTableDefault(_, params) {
         const { row } = params;
         return h(AuditStatus, { status: row.AuditStatus, record: row });
+      },
+    });
+
+    vxeUI.renderer.add('RegionSelector', {
+      renderEdit(renderOpts, params) {
+        const { row, column } = params;
+        const field = column.field as string;
+        const value = row[field];
+        const props = renderOpts.props || {};
+        return h(RegionSelector, {
+          value,
+          'onUpdate:value': (val: string) => {
+            row[field] = val;
+          },
+          ...props,
+        });
       },
     });
 
