@@ -12,15 +12,9 @@ import { Input, InputNumber } from 'ant-design-vue';
 
 const props = defineProps<{
   groupProps?: Record<string, any>;
-  minInputProps?: Record<string, any>;
   maxInputProps?: Record<string, any>;
+  minInputProps?: Record<string, any>;
 }>();
-
-const modelValue = defineModel<
-  [number | undefined, number | undefined] | undefined
->('value', {
-  default: undefined,
-});
 
 const emit = defineEmits<{
   (
@@ -28,6 +22,12 @@ const emit = defineEmits<{
     value: [number | undefined, number | undefined] | undefined,
   ): void;
 }>();
+
+const modelValue = defineModel<
+  [number | undefined, number | undefined] | undefined
+>('value', {
+  default: undefined,
+});
 
 const innerMin = computed<number | undefined>({
   get() {
@@ -65,16 +65,12 @@ const innerMax = computed<number | undefined>({
   },
 });
 
-const handleBlur = (activeType: 'min' | 'max') => {
+const handleBlur = (activeType: 'max' | 'min') => {
   const min = modelValue.value?.[0];
   const max = modelValue.value?.[1];
 
   if (min !== undefined && max !== undefined && min > max) {
-    if (activeType === 'min') {
-      modelValue.value = [min, min];
-    } else {
-      modelValue.value = [max, max];
-    }
+    modelValue.value = activeType === 'min' ? [min, min] : [max, max];
   }
 };
 

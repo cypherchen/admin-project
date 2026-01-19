@@ -32,13 +32,13 @@ const props = withDefaults(
   },
 );
 
+const emit = defineEmits<{
+  (e: 'change', value: null | string): void;
+}>();
+
 const modelValue = defineModel<null | string>('value', {
   default: null,
 });
-
-const emit = defineEmits<{
-  (e: 'change', value: string | null): void;
-}>();
 
 function normalizeOptions(source: RawOptions): OptionItem[] {
   // source 为空或未配置时直接返回空数组，避免后续分支做无效处理

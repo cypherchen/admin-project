@@ -13,21 +13,22 @@ import type {
   BasicModel,
   BasicParamsType,
 } from '#/api/basicType';
+
 import { requestClient } from '#/api/request';
 
 export namespace ProjectRepositoryApi {
   export interface ProjectResult extends BasicModel {
     Name: string;
-    Amount: number | null;
-    Area: number | null;
-    EconomicIndicators: number | null;
+    Amount: null | number;
+    Area: null | number;
+    EconomicIndicators: null | number;
     APProjectBaseTree_ID: string;
   }
 
   export interface ProjectQueryParam {
     Name: string;
     InputType: number;
-    Options?: string[] | null;
+    Options?: null | string[];
   }
 }
 
@@ -43,8 +44,8 @@ export async function getProjectByFilter({
   data,
   params,
 }: {
-  orgId: string;
   data: Recordable<any>;
+  orgId: string;
   params?: BasicParamsType;
 }) {
   return requestClient.post<
