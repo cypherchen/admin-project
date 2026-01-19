@@ -1,12 +1,12 @@
 <!--
  * @Author: cwx
  * @Date: 2026-01-18 20:02:41
- * @LastEditTime: 2026-01-19 10:35:41
+ * @LastEditTime: 2026-01-19 14:38:24
  * @LastEditors: cwx
  * @Description: 
 -->
 <script setup lang="ts" name="NumberRange">
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 
 import { Input, InputNumber } from 'ant-design-vue';
 
@@ -22,21 +22,24 @@ const modelValue = defineModel<
   default: undefined,
 });
 
+const emit = defineEmits<{
+  (
+    e: 'change',
+    value: [number | undefined, number | undefined] | undefined,
+  ): void;
+}>();
+
 const innerMin = computed<number | undefined>({
   get() {
     return modelValue.value?.[0];
   },
   set(val) {
-    const max = modelValue.value?.[1];
-    const nextMin = val;
+    const rawMax = modelValue.value?.[1];
+    const max = rawMax === null ? undefined : rawMax;
+    const nextMin = val === null ? undefined : val;
 
     if (nextMin === undefined && max === undefined) {
       modelValue.value = undefined;
-      return;
-    }
-
-    if (nextMin !== undefined && max !== undefined && nextMin > max) {
-      modelValue.value = [max, max];
       return;
     }
 
@@ -49,22 +52,39 @@ const innerMax = computed<number | undefined>({
     return modelValue.value?.[1];
   },
   set(val) {
-    const min = modelValue.value?.[0];
-    const nextMax = val;
+    const rawMin = modelValue.value?.[0];
+    const min = rawMin === null ? undefined : rawMin;
+    const nextMax = val === null ? undefined : val;
 
     if (min === undefined && nextMax === undefined) {
       modelValue.value = undefined;
       return;
     }
 
-    if (min !== undefined && nextMax !== undefined && nextMax < min) {
-      modelValue.value = [min, min];
-      return;
-    }
-
     modelValue.value = [min, nextMax];
   },
 });
+
+const handleBlur = (activeType: 'min' | 'max') => {
+  const min = modelValue.value?.[0];
+  const max = modelValue.value?.[1];
+
+  if (min !== undefined && max !== undefined && min > max) {
+    if (activeType === 'min') {
+      modelValue.value = [min, min];
+    } else {
+      modelValue.value = [max, max];
+    }
+  }
+};
+
+watch(
+  () => modelValue.value,
+  (val) => {
+    emit('change', val);
+  },
+  { deep: true },
+);
 </script>
 
 <template>
@@ -75,6 +95,7 @@ const innerMax = computed<number | undefined>({
       class="min-w-0 flex-1 text-center"
       placeholder="Minimum"
       v-bind="props.minInputProps"
+      @blur="handleBlur('min')"
     />
     <Input
       :readonly="true"
@@ -87,6 +108,7 @@ const innerMax = computed<number | undefined>({
       class="min-w-0 flex-1 border-l-0 text-center"
       placeholder="Maximum"
       v-bind="props.maxInputProps"
+      @blur="handleBlur('max')"
     />
   </Input.Group>
 </template>

@@ -6,7 +6,7 @@
  * @Description: 参数值编辑器，根据 InputType 自动渲染不同的输入控件
 -->
 <script setup lang="ts" name="ParamValueEditor">
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 
 import { DatePicker, Input, InputNumber, Select } from 'ant-design-vue';
 
@@ -35,6 +35,10 @@ const props = withDefaults(
 const modelValue = defineModel<null | string>('value', {
   default: null,
 });
+
+const emit = defineEmits<{
+  (e: 'change', value: string | null): void;
+}>();
 
 function normalizeOptions(source: RawOptions): OptionItem[] {
   // source 为空或未配置时直接返回空数组，避免后续分支做无效处理
@@ -223,6 +227,13 @@ const multiValue = computed<string[]>({
       .join(props.multiSeparator);
   },
 });
+
+watch(
+  () => modelValue.value,
+  (val) => {
+    emit('change', val);
+  },
+);
 </script>
 
 <template>
