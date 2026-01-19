@@ -23,11 +23,15 @@ export const searchFormSchema: VbenFormSchema[] = [
 
 export const columns: VxeGridProps['columns'] = [
   {
+    type: 'seq',
+    width: 70,
+    treeNode: true,
+  },
+  {
     field: 'Name',
     title: '名称',
     minWidth: 300,
     resizable: true,
-    treeNode: true,
     showOverflow: true,
   },
   {

@@ -20,6 +20,10 @@ export const searchFormSchema: VbenFormSchema[] = [
 
 export const columns: VxeGridProps['columns'] = [
   {
+    type: 'seq',
+    width: 70,
+  },
+  {
     field: 'FileName',
     title: '文件名称',
     resizable: true,
