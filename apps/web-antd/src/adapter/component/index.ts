@@ -92,6 +92,8 @@ const PreviewGroup = defineAsyncComponent(() =>
 );
 
 import { BasicUpload } from '#/components/basicUpload';
+import { NumberRange } from '#/components/numberRange';
+import { ParamValueEditor } from '#/components/paramValueEditor';
 import { RegionSelector } from '#/components/regionSelector';
 
 const withDefaultPlaceholder = <T extends Component>(
@@ -520,6 +522,8 @@ export type ComponentType =
   | 'TreeSelect'
   | 'Upload'
   | 'BasicUpload'
+  | 'NumberRange'
+  | 'ParamValueEditor'
   | 'RegionSelector'
   | BaseFormComponentType;
 
@@ -585,6 +589,8 @@ async function initComponentAdapter() {
     TreeSelect: withDefaultPlaceholder(TreeSelect, 'select'),
     Upload: withPreviewUpload(),
     BasicUpload,
+    NumberRange,
+    ParamValueEditor,
     RegionSelector,
   };
 

@@ -32,7 +32,7 @@ async function handleConfirm() {
     return;
   }
   const checked = projectQueryRef.value?.getChecked?.() ?? [];
-  if (!checked.length) {
+  if (checked.length === 0) {
     message.error('未勾选项目');
     return;
   }
@@ -73,14 +73,14 @@ const [VbenModal, modalApi] = useVbenModal({
   >
     <ProjectQuery
       ref="projectQueryRef"
-      :showModeSwitcher="false"
-      :filterConfig="{
+      :show-mode-switcher="false"
+      :filter-config="{
         level: {
           disabled: true,
           value: currentNode?.Hierarchy || null,
         },
       }"
-      defaultMode="table"
+      default-mode="table"
     />
   </VbenModal>
 </template>

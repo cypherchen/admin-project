@@ -10,6 +10,7 @@ import { Button, Image } from 'ant-design-vue';
 import { useVbenForm } from './form';
 
 import { AuditStatus } from '#/components/auditStatus';
+import { NumberRange } from '#/components/numberRange';
 import { RegionSelector } from '#/components/regionSelector';
 
 import '@vxe-ui/plugin-render-antd/dist/style.css';
@@ -107,6 +108,24 @@ setupVbenVxeTable({
         return h(RegionSelector, {
           value,
           'onUpdate:value': (val: string) => {
+            row[field] = val;
+          },
+          ...props,
+        });
+      },
+    });
+
+    vxeUI.renderer.add('NumberRange', {
+      renderEdit(renderOpts, params) {
+        const { row, column } = params;
+        const field = column.field as string;
+        const value = row[field];
+        const props = renderOpts.props || {};
+        return h(NumberRange, {
+          value,
+          'onUpdate:value': (
+            val: [number | undefined, number | undefined] | undefined,
+          ) => {
             row[field] = val;
           },
           ...props,

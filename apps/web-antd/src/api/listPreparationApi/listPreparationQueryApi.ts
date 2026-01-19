@@ -12,6 +12,7 @@ import type {
   BasicModel,
   BasicParamsType,
 } from '#/api/basicType';
+
 import { requestClient } from '#/api/request';
 
 export namespace ListPreparationQueryApi {
@@ -77,12 +78,11 @@ export async function putListPreparationQuery(
  * @return {*}
  */
 export async function getListPreparationQuery(options: {
-  treeId: string;
   params?: BasicParamsType;
+  treeId: string;
 }) {
   const { treeId, params } = options;
   return requestClient.get<
     BasicFetchResult<ListPreparationQueryApi.QueryResult>
   >(`api/IPProjectQuery/${treeId}`, { params });
 }
-
