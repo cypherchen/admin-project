@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2026-01-18 00:30:00
- * @LastEditTime: 2026-01-18 12:58:44
+ * @LastEditTime: 2026-01-19 10:40:29
  * @LastEditors: cwx
  * @Description: 参数值编辑器，根据 InputType 自动渲染不同的输入控件
 -->
@@ -244,6 +244,7 @@ const multiValue = computed<string[]>({
     v-model:value="singleSelectValue"
     :options="selectOptions"
     allow-clear
+    placeholder="请选择"
   />
   <DatePicker
     v-else-if="inputType === ParamsTypeEnum.日期型"
@@ -260,6 +261,7 @@ const multiValue = computed<string[]>({
     :options="selectOptions"
     mode="multiple"
     allow-clear
+    placeholder="请选择"
   />
   <Input v-else v-model:value="textValue" placeholder="请输入" />
 </template>

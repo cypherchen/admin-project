@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2026-01-17 21:20:00
- * @LastEditTime: 2026-01-18 01:20:00
+ * @LastEditTime: 2026-01-19 10:41:36
  * @LastEditors: cwx
  * @Description: 地区选择组件，支持名称/code 两种值类型和自定义分隔符
 -->
@@ -175,5 +175,6 @@ function displayRender({ labels }: { labels: string[] }) {
     change-on-select
     show-search
     :display-render="displayRender"
+    placeholder="请选择地区"
   />
 </template>
