@@ -1,13 +1,21 @@
+<!--
+ * @Author: cwx
+ * @Date: 2026-01-18 20:28:37
+ * @LastEditTime: 2026-01-19 11:02:38
+ * @LastEditors: cwx
+ * @Description: 业态类型树
+-->
 <script setup lang="ts" name="BusinessTypeTree">
 import type { TreeProps } from 'ant-design-vue';
+
 import type { Recordable } from '@vben/types';
 
 import { computed, onMounted, ref } from 'vue';
 
+import { useUserStore } from '@vben/stores';
+
 import { watchDebounced } from '@vueuse/core';
 import { Flex, Input, Spin, Tree } from 'ant-design-vue';
-
-import { useUserStore } from '@vben/stores';
 
 import { ConditionalType } from '#/api/basicType';
 import { getBusiness } from '#/api/dataManagementApi/businessManagementApi';
@@ -84,7 +92,7 @@ watchDebounced(
       });
       const filtered = sourceNodes.value.filter((item) => idSet.has(item.ID));
       setTreeDataFromList(filtered);
-    } else if (sourceNodes.value.length) {
+    } else if (sourceNodes.value.length > 0) {
       setTreeDataFromList(sourceNodes.value);
     }
   },
@@ -128,4 +136,3 @@ onMounted(async () => {
     </div>
   </Flex>
 </template>
-
