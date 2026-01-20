@@ -7,12 +7,12 @@ import { setupVbenVxeTable, useVbenVxeGrid } from '@vben/plugins/vxe-table';
 import VxeUIPluginRenderAntd from '@vxe-ui/plugin-render-antd';
 import { Button, Image } from 'ant-design-vue';
 
-import { useVbenForm } from './form';
-
 import { AuditStatus } from '#/components/auditStatus';
 import { NumberRange } from '#/components/numberRange';
 import { RegionSelector } from '#/components/regionSelector';
 import { UnitSelector } from '#/components/unitSelector';
+
+import { useVbenForm } from './form';
 
 import '@vxe-ui/plugin-render-antd/dist/style.css';
 

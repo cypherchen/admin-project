@@ -38,6 +38,12 @@ import { isEmpty } from '@vben/utils';
 
 import { message, Modal, notification } from 'ant-design-vue';
 
+import { BasicUpload } from '#/components/basicUpload';
+import { NumberRange } from '#/components/numberRange';
+import { ParamValueEditor } from '#/components/paramValueEditor';
+import { RegionSelector } from '#/components/regionSelector';
+import { UnitSelector } from '#/components/unitSelector';
+
 const AutoComplete = defineAsyncComponent(
   () => import('ant-design-vue/es/auto-complete'),
 );
@@ -90,12 +96,6 @@ const Image = defineAsyncComponent(() => import('ant-design-vue/es/image'));
 const PreviewGroup = defineAsyncComponent(() =>
   import('ant-design-vue/es/image').then((res) => res.ImagePreviewGroup),
 );
-
-import { BasicUpload } from '#/components/basicUpload';
-import { NumberRange } from '#/components/numberRange';
-import { ParamValueEditor } from '#/components/paramValueEditor';
-import { RegionSelector } from '#/components/regionSelector';
-import { UnitSelector } from '#/components/unitSelector';
 
 const withDefaultPlaceholder = <T extends Component>(
   component: T,
@@ -499,6 +499,7 @@ export type ComponentType =
   | 'ApiSelect'
   | 'ApiTreeSelect'
   | 'AutoComplete'
+  | 'BasicUpload'
   | 'Cascader'
   | 'Checkbox'
   | 'CheckboxGroup'
@@ -510,23 +511,22 @@ export type ComponentType =
   | 'InputNumber'
   | 'InputPassword'
   | 'Mentions'
+  | 'NumberRange'
+  | 'ParamValueEditor'
   | 'PrimaryButton'
   | 'Radio'
   | 'RadioGroup'
   | 'RangePicker'
   | 'Rate'
+  | 'RegionSelector'
   | 'Select'
   | 'Space'
   | 'Switch'
   | 'Textarea'
   | 'TimePicker'
   | 'TreeSelect'
-  | 'Upload'
-  | 'BasicUpload'
-  | 'NumberRange'
-  | 'ParamValueEditor'
-  | 'RegionSelector'
   | 'UnitSelector'
+  | 'Upload'
   | BaseFormComponentType;
 
 async function initComponentAdapter() {
