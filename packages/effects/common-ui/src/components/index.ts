@@ -16,10 +16,10 @@ export * from '@vben-core/popup-ui';
 
 // 给文档用
 export {
-  VbenAvatar,
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
+  VbenAvatar,
   VbenButton,
   VbenButtonGroup,
   VbenCheckbox,
