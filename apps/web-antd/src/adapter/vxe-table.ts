@@ -12,6 +12,7 @@ import { useVbenForm } from './form';
 import { AuditStatus } from '#/components/auditStatus';
 import { NumberRange } from '#/components/numberRange';
 import { RegionSelector } from '#/components/regionSelector';
+import { UnitSelector } from '#/components/unitSelector';
 
 import '@vxe-ui/plugin-render-antd/dist/style.css';
 
@@ -126,6 +127,22 @@ setupVbenVxeTable({
           'onUpdate:value': (
             val: [number | undefined, number | undefined] | undefined,
           ) => {
+            row[field] = val;
+          },
+          ...props,
+        });
+      },
+    });
+
+    vxeUI.renderer.add('UnitSelector', {
+      renderEdit(renderOpts, params) {
+        const { row, column } = params;
+        const field = column.field as string;
+        const value = row[field];
+        const props = renderOpts.props || {};
+        return h(UnitSelector, {
+          value,
+          'onUpdate:value': (val: string) => {
             row[field] = val;
           },
           ...props,

@@ -95,6 +95,7 @@ import { BasicUpload } from '#/components/basicUpload';
 import { NumberRange } from '#/components/numberRange';
 import { ParamValueEditor } from '#/components/paramValueEditor';
 import { RegionSelector } from '#/components/regionSelector';
+import { UnitSelector } from '#/components/unitSelector';
 
 const withDefaultPlaceholder = <T extends Component>(
   component: T,
@@ -525,6 +526,7 @@ export type ComponentType =
   | 'NumberRange'
   | 'ParamValueEditor'
   | 'RegionSelector'
+  | 'UnitSelector'
   | BaseFormComponentType;
 
 async function initComponentAdapter() {
@@ -592,6 +594,7 @@ async function initComponentAdapter() {
     NumberRange,
     ParamValueEditor,
     RegionSelector,
+    UnitSelector,
   };
 
   // 将组件注册到全局共享状态中
