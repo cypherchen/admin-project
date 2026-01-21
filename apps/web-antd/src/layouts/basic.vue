@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import { useRouter, type RouteRecordRaw } from 'vue-router';
+import type { RouteRecordRaw } from 'vue-router';
+
 import type { NotificationItem } from '@vben/layouts';
 
 import { computed, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
 import { useWatermark } from '@vben/hooks';
@@ -15,13 +17,12 @@ import {
 import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 
+import { sortBy } from 'lodash';
+
+import { createModifyPassword } from '#/components/_project/modifyPassword';
+import { accessRoutes } from '#/router/routes';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
-import { createModifyPassword } from '#/components/_project/modifyPassword';
-
-import { accessRoutes } from '#/router/routes';
-
-import { sortBy } from 'lodash';
 
 const notifications = ref<NotificationItem[]>([
   // {
@@ -113,7 +114,7 @@ watch(
     enable: preferences.app.watermark,
     content: preferences.app.watermarkContent,
   }),
-  async ({ enable, content }) => {
+  async ({ enable }) => {
     if (enable) {
       await updateWatermark({
         content: `${userStore.userInfo?.Name}`,

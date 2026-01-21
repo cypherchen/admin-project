@@ -4,10 +4,10 @@ import type { VbenFormSchema } from '@vben/common-ui';
 import { computed } from 'vue';
 
 import { AuthenticationLogin, z } from '@vben/common-ui';
+import { useAppConfig } from '@vben/hooks';
 import { $t } from '@vben/locales';
 
 import { useAuthStore } from '#/store';
-import { useAppConfig } from '@vben/hooks';
 
 defineOptions({ name: 'Login' });
 
@@ -59,11 +59,11 @@ const SSOLogin = (state = '') => {
   <AuthenticationLogin
     :form-schema="formSchema"
     :loading="authStore.loginLoading"
-    :showForgetPassword="false"
-    :showCodeLogin="false"
-    :showQrcodeLogin="false"
-    :showThirdPartyLogin="false"
-    :showRegister="false"
+    :show-forget-password="false"
+    :show-code-login="false"
+    :show-qrcode-login="false"
+    :show-third-party-login="false"
+    :show-register="false"
     @submit="authStore.authLogin"
   >
     <template #third-party-login>

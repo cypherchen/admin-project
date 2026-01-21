@@ -5,76 +5,24 @@
  * @LastEditors: cwx
  * @Description: 权限管理
 -->
-<template>
-  <ColPage
-    auto-content-height
-    :left-width="15"
-    :left-max-width="15"
-    :left-min-width="2"
-    split-handle
-  >
-    <template #left>
-      <RoleUserTree
-        ref="treeRef"
-        @type-change="typeChange"
-        @node-click="nodeClick"
-      ></RoleUserTree>
-    </template>
-    <Grid class="ml-2">
-      <template #toolbar-actions>
-        <Button type="primary" @click="handleSave">保存</Button>
-      </template>
-      <template #allCheckedHeader>
-        <Checkbox
-          v-model:checked="isCheckAllAuth"
-          :disabled="checkAllAuthDisabled"
-          @change="checkAllAuth"
-        >
-          控制
-        </Checkbox>
-      </template>
-      <template #allChecked="{ row }">
-        <Checkbox
-          v-model:checked="row.allChecked"
-          :disabled="!row.menuChecked"
-          @change="checkRowAllAuth(row)"
-        ></Checkbox>
-      </template>
-      <template #auth="{ row }">
-        <CheckboxGroup
-          v-model:value="row.checkedAuth"
-          :disabled="!row.menuChecked"
-          @change="authChange(row)"
-        >
-          <Checkbox v-for="item in row.auth" :value="item.key" :key="item.key">
-            {{ item.name }}
-          </Checkbox>
-        </CheckboxGroup>
-      </template>
-    </Grid>
-  </ColPage>
-</template>
-
 <script setup lang="ts" name="AuthorityManagement">
-import { ref, onMounted, computed } from 'vue';
-import { Button, Checkbox, CheckboxGroup, message } from 'ant-design-vue';
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
+
+import { computed, onMounted, ref } from 'vue';
 
 import { ColPage } from '@vben/common-ui';
-
-import RoleUserTree from './roleUserTree/roleUserTree.vue';
-
 import { useUserStore } from '@vben/stores';
 
-import type { VxeGridProps, VxeGridListeners } from '#/adapter/vxe-table';
+import { Button, Checkbox, CheckboxGroup, message } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-
-import { columns } from './data';
-
 import { putRole } from '#/api/roleManagementApi/roleManagementApi';
 import { putUser } from '#/api/userApi/userApi';
-
 import { permissions } from '#/permission';
 import { accessRoutes } from '#/router/routes';
+
+import { columns } from './data';
+import RoleUserTree from './roleUserTree/roleUserTree.vue';
 
 const userStore = useUserStore();
 
@@ -148,7 +96,7 @@ function authChange(row: Record<string, any>) {
 const dataSource = ref<Record<string, any>[]>([]);
 function transformData() {
   permissions
-    .sort((a, b) => {
+    .toSorted((a, b) => {
       const aIndex =
         accessRoutes.find((n) => n.name === a.key)?.meta?.order || 0;
       const bIndex =
@@ -239,5 +187,55 @@ onMounted(() => {
   });
 });
 </script>
+
+<template>
+  <ColPage
+    auto-content-height
+    :left-width="15"
+    :left-max-width="15"
+    :left-min-width="2"
+    split-handle
+  >
+    <template #left>
+      <RoleUserTree
+        ref="treeRef"
+        @type-change="typeChange"
+        @node-click="nodeClick"
+      />
+    </template>
+    <Grid class="ml-2">
+      <template #toolbar-actions>
+        <Button type="primary" @click="handleSave">保存</Button>
+      </template>
+      <template #allCheckedHeader>
+        <Checkbox
+          v-model:checked="isCheckAllAuth"
+          :disabled="checkAllAuthDisabled"
+          @change="checkAllAuth"
+        >
+          控制
+        </Checkbox>
+      </template>
+      <template #allChecked="{ row }">
+        <Checkbox
+          v-model:checked="row.allChecked"
+          :disabled="!row.menuChecked"
+          @change="checkRowAllAuth(row)"
+        />
+      </template>
+      <template #auth="{ row }">
+        <CheckboxGroup
+          v-model:value="row.checkedAuth"
+          :disabled="!row.menuChecked"
+          @change="authChange(row)"
+        >
+          <Checkbox v-for="item in row.auth" :value="item.key" :key="item.key">
+            {{ item.name }}
+          </Checkbox>
+        </CheckboxGroup>
+      </template>
+    </Grid>
+  </ColPage>
+</template>
 
 <style scoped></style>
