@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2025-01-24 20:35:57
- * @LastEditTime: 2026-01-17 15:06:09
+ * @LastEditTime: 2026-01-21 10:06:25
  * @LastEditors: cwx
  * @Description: 清单编制内容
 -->
@@ -72,6 +72,7 @@ const handleTabChange: TabsProps['onChange'] = (key) => {
   push({
     name: currentRoute.value.name,
     query: {
+      ...currentRoute.value.query,
       currentTab: key,
     },
   });
