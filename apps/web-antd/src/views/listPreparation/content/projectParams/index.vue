@@ -7,32 +7,31 @@
 -->
 <script setup lang="ts" name="ProjectParams">
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
-import type { ParamsTemplateApi } from '#/api/paramsTemplateApi/paramsTemplateApi';
 import type { WhereType } from '#/api/basicType';
+import type { ParamsTemplateApi } from '#/api/paramsTemplateApi/paramsTemplateApi';
 
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useUserStore } from '@vben/stores';
 
-import { Alert, Flex, Select, message } from 'ant-design-vue';
+import { Alert, Flex, message, Select } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { ConditionalType } from '#/api/basicType';
+import {
+  getListPreparationCanSubmit,
+  getListPreparationVersion,
+} from '#/api/listPreparationApi/listPreparationApi';
 import {
   getListPreparationParams,
   putListPreparationParams,
   setListPreparationParamsTemplate,
 } from '#/api/listPreparationApi/listPreparationParamsApi';
-import {
-  getListPreparationCanSubmit,
-  getListPreparationVersion,
-} from '#/api/listPreparationApi/listPreparationApi';
 import { getParamsTemplate } from '#/api/paramsTemplateApi/paramsTemplateApi';
 import { Authority, hasPermission } from '#/components/authority';
-import { listPreparationPermission } from '#/permission';
-
 import { ParamValueEditor } from '#/components/paramValueEditor';
+import { listPreparationPermission } from '#/permission';
 
 import { columns, searchFormSchema } from './data';
 

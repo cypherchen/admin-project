@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2025-03-15 02:38:33
- * @LastEditTime: 2026-01-19 16:17:50
+ * @LastEditTime: 2026-01-19 18:53:15
  * @LastEditors: cwx
  * @Description: 清单编制-项目查询
 -->
@@ -186,6 +186,7 @@ watch(
           {
             icon: 'PlayCircleOutlined',
             color: 'success',
+            model: 'confirm',
             tooltip: '启用',
             ifShow: !row.IsUse,
             disabled: disabledByAudit,
@@ -198,6 +199,7 @@ watch(
           {
             icon: 'StopOutlined',
             color: 'error',
+            model: 'confirm',
             tooltip: '停用',
             ifShow: row.IsUse,
             disabled: disabledByAudit,
@@ -210,6 +212,7 @@ watch(
           {
             icon: 'DeleteOutlined',
             color: 'error',
+            model: 'confirm',
             tooltip: '删除',
             disabled: row.IsUse || disabledByAudit,
             auth: permission.项目查询_删除,

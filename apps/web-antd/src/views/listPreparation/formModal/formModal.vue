@@ -5,28 +5,16 @@
  * @LastEditors: cwx
  * @Description: 清单编制-新增表单
 -->
-<template>
-  <VbenModal
-    title="新增"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
-    :fullscreen-button="false"
-    footer-class="border-none"
-    header-class="border-none"
-  >
-    <VbenForm> </VbenForm>
-  </VbenModal>
-</template>
-
 <script setup lang="tsx" name="FormModal">
 import { ref } from 'vue';
-import { useVbenModal, useVbenForm } from '@vben/common-ui';
-import { useUserStore } from '@vben/stores';
 
-import { formSchema } from './data';
+import { useVbenForm, useVbenModal } from '@vben/common-ui';
+import { useUserStore } from '@vben/stores';
 
 import { postListPreparation } from '#/api/listPreparationApi/listPreparationApi';
 import { getUser } from '#/api/userApi/userApi';
+
+import { formSchema } from './data';
 
 const emit = defineEmits(['submit']);
 
@@ -106,5 +94,18 @@ async function getUserList() {
   }));
 }
 </script>
+
+<template>
+  <VbenModal
+    title="新增"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+    :fullscreen-button="false"
+    footer-class="border-none"
+    header-class="border-none"
+  >
+    <VbenForm />
+  </VbenModal>
+</template>
 
 <style scoped></style>
