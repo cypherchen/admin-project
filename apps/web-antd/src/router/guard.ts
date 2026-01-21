@@ -5,14 +5,12 @@ import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 import { startProgress, stopProgress } from '@vben/utils';
 
+import { hasPermission } from '#/components/authority';
 import { accessRoutes, coreRouteNames } from '#/router/routes';
+import { tracking } from '#/router/utils/tracking';
 import { useAuthStore } from '#/store';
 
 import { generateAccess, generateCustomAccess } from './access';
-
-import { hasPermission } from '#/components/authority';
-
-import { tracking } from '#/router/utils/tracking';
 
 /**
  * 通用守卫配置
@@ -140,7 +138,7 @@ function setupAuthGuard(router: Router) {
     // 非管理员禁止进入后台
     if (!userInfo?.IsAdmin && to.meta?.belongTo === 'admin') {
       const route =
-        from.meta?.belongTo !== 'admin' ? from : router.resolve(LOGIN_PATH);
+        from.meta?.belongTo === 'admin' ? router.resolve(LOGIN_PATH) : from;
       return route;
     }
 
@@ -160,7 +158,7 @@ function setupAuthGuard(router: Router) {
     if (
       to.meta?.belongTo === 'user' &&
       !filteredRoutes.some((item) =>
-        (to.name as string)!.startsWith(item.name as string),
+        (to.name as string)?.startsWith(item.name as string),
       )
     ) {
       const route = router.resolve({ name: 'FallbackForbidden' });

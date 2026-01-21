@@ -7,17 +7,19 @@
  */
 
 import {
-  getEncryptToBase64 as encrypt,
   getDecryptByBase64 as decrypt,
+  getEncryptToBase64 as encrypt,
 } from './encryption';
+
 const encodeReserveRE = /[!'()*]/g;
-const encodeReserveReplacer = (c: string) => '%' + c.charCodeAt(0).toString(16); // 获取该字符的 ASCII 码值，再将其转换为十六进制字符串，并在前面加上 '%' 作为替换后的结果
+const encodeReserveReplacer = (c: string) =>
+  `%${(c.codePointAt(0) ?? 0).toString(16)}`; // 获取该字符的 ASCII 码值，再将其转换为十六进制字符串，并在前面加上 '%' 作为替换后的结果
 const commaRE = /%2C/g; // 英文逗号处理
 
 const encode = (str: string): string =>
   encodeURIComponent(str)
-    .replace(encodeReserveRE, encodeReserveReplacer)
-    .replace(commaRE, ',');
+    .replaceAll(encodeReserveRE, encodeReserveReplacer)
+    .replaceAll(commaRE, ',');
 
 const decode = decodeURIComponent;
 
@@ -32,7 +34,7 @@ function isBase64(str: string): boolean {
     return false;
   }
   // 正则表达式匹配Base64的字符集，允许末尾有0-2个等号用于填充
-  const base64Pattern: RegExp = /^[A-Za-z0-9+/]*={0,2}$/;
+  const base64Pattern: RegExp = /^[A-Z0-9+/]*={0,2}$/i;
 
   // 首先检查字符串是否符合Base64的字符集规范
   if (!base64Pattern.test(str)) {
@@ -41,7 +43,7 @@ function isBase64(str: string): boolean {
 
   try {
     return btoa(atob(str)) === str;
-  } catch (err) {
+  } catch {
     return false;
   }
 }
@@ -51,7 +53,7 @@ function isBase64(str: string): boolean {
  * @param {Record<string, any>} obj
  */
 export const stringifyQuery = (obj: Record<string, any>): string => {
-  const res: string | null = obj
+  const res: null | string = obj
     ? Object.keys(obj)
         .map((key) => {
           const val = obj[key];
@@ -64,13 +66,13 @@ export const stringifyQuery = (obj: Record<string, any>): string => {
               if (v === null || v === undefined) {
                 result.push(encode(key));
               } else {
-                result.push(encode(key) + '=' + encode(v));
+                result.push(`${encode(key)}=${encode(v)}`);
               }
             });
             return result.join('&');
           }
 
-          return encode(key) + '=' + encode(val);
+          return `${encode(key)}=${encode(val)}`;
         })
         .join('&')
     : null;
@@ -79,12 +81,12 @@ export const stringifyQuery = (obj: Record<string, any>): string => {
 
 /**
  * 解密  反序列化字符串参数
- * @param {String} query
+ * @param {string} query
  */
 export const parseQuery = (query: string): Record<string, any> => {
   const res: Record<string, any> = {};
 
-  query = query.trim().replace(/^(\?|#|&)/, '');
+  query = query.trim().replace(/^([?#&])/, '');
   if (!query) {
     return res;
   }

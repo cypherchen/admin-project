@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2025-03-25 15:47:02
- * @LastEditTime: 2025-03-25 15:53:11
+ * @LastEditTime: 2026-01-21 11:00:42
  * @LastEditors: cwx
  * @Description: 下载相关
  */
@@ -22,7 +22,7 @@ export function downloadByData(
   mime?: string,
   bom?: BlobPart,
 ) {
-  const blobData = typeof bom !== 'undefined' ? [bom, data] : [data];
+  const blobData = bom === undefined ? [data] : [bom, data];
   const blob = new Blob(blobData, { type: mime || 'application/octet-stream' });
 
   const blobURL = window.URL.createObjectURL(blob);
@@ -30,20 +30,20 @@ export function downloadByData(
   tempLink.style.display = 'none';
   tempLink.href = blobURL;
   tempLink.setAttribute('download', filename);
-  if (typeof tempLink.download === 'undefined') {
+  if (tempLink.download === undefined) {
     tempLink.setAttribute('target', '_self');
   }
-  document.body.appendChild(tempLink);
+  document.body.append(tempLink);
   tempLink.click();
-  document.body.removeChild(tempLink);
+  tempLink.remove();
   window.URL.revokeObjectURL(blobURL);
 }
 
 /**
  * @description: 通过 url 下载文件
- * @param {Object} options
+ * @param {object} options
  * @param {string} options.url 文件 url
- * @param {string} [options.target=_blank] 打开方式
+ * @param {string} [options.target] 打开方式
  * @param {string} [options.fileName] 文件名
  * @return {boolean} 是否成功
  */
@@ -52,16 +52,14 @@ export function downloadByUrl({
   target = '_blank',
   fileName,
 }: {
-  url: string;
-  target?: string;
   fileName?: string;
+  target?: string;
+  url: string;
 }) {
-  const isChrome =
-    window.navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
-  const isSafari =
-    window.navigator.userAgent.toLowerCase().indexOf('safari') > -1;
+  const isChrome = window.navigator.userAgent.toLowerCase().includes('chrome');
+  const isSafari = window.navigator.userAgent.toLowerCase().includes('safari');
 
-  if (/(iP)/g.test(window.navigator.userAgent)) {
+  if (/iP/.test(window.navigator.userAgent)) {
     console.error('Your browser does not support download!');
     return false;
   }
@@ -70,15 +68,14 @@ export function downloadByUrl({
 
     const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 
-    const baseUrl = apiURL ? apiURL : window.location.origin;
+    const baseUrl = apiURL || window.location.origin;
 
     link.href = baseUrl + url;
 
     link.target = target;
 
     if (link.download !== undefined) {
-      link.download =
-        fileName || url.substring(url.lastIndexOf('/') + 1, url.length);
+      link.download = fileName || url.slice(url.lastIndexOf('/') + 1);
     }
 
     if (document.createEvent) {
@@ -88,7 +85,7 @@ export function downloadByUrl({
       return true;
     }
   }
-  if (url.indexOf('?') === -1) {
+  if (!url.includes('?')) {
     url += '?download';
   }
 

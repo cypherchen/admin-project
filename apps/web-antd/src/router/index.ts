@@ -8,8 +8,7 @@ import { resetStaticRoutes } from '@vben/utils';
 
 import { createRouterGuard } from './guard';
 import { routes } from './routes';
-
-import { stringifyQuery, parseQuery } from './utils/query';
+import { parseQuery, stringifyQuery } from './utils/query';
 
 /**
  *  @zh_CN 创建vue-router实例

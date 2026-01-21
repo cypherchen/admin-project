@@ -6,12 +6,14 @@
  * @Description: 埋点
  */
 import { useUserStore } from '@vben/stores';
-import { v7 as uuidV7 } from 'uuid';
+
 import dayjs from 'dayjs';
+import { v7 as uuidV7 } from 'uuid';
+
 import { postRouteTracking } from '#/api/other/routeTrackingApi';
 
 function getFullPath(url: string): string {
-  return window.location.origin + '/#' + url;
+  return `${window.location.origin}/#${url}`;
 }
 
 /**
@@ -38,7 +40,7 @@ export async function tracking(eventType: string, to: any, from: any) {
     evt: eventType,
     operationId: uuidV7(),
     page: pageName,
-    pageName: pageName,
+    pageName,
     preUrl: eventType === 'leavePage' ? '' : getFullPath(from.path),
     startTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
     tenantCode: 'catl',

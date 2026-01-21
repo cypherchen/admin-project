@@ -13,10 +13,11 @@
  */
 export function calcExpr(expression: string) {
   try {
+    // eslint-disable-next-line no-eval
     const result = eval(expression);
 
-    if (typeof result !== 'number' || isNaN(result)) {
-      throw new Error('表达式结果为非数字');
+    if (typeof result !== 'number' || Number.isNaN(result)) {
+      throw new TypeError('表达式结果为非数字');
     }
     if (result === Infinity || result === -Infinity) {
       throw new Error('0不能作为除数');
@@ -34,7 +35,7 @@ export function calcExpr(expression: string) {
  * @param {number|string} price - 一个数字或数字字符串
  * @returns {string} - 格式化后的数字字符串
  */
-export function formatPrice(price?: string | number | null) {
+export function formatPrice(price?: null | number | string) {
   if (
     price === null ||
     price === undefined ||
@@ -45,11 +46,11 @@ export function formatPrice(price?: string | number | null) {
     return '';
   }
   // 去除价格中的逗号，防止重复格式化
-  const cleanedPrice = price.toString().replace(/,/g, '');
+  const cleanedPrice = price.toString().replaceAll(',', '');
   // 使用正则表达式和replace方法格式化数字
   // \B 匹配非单词边界的位置
   // (?=(\d{3})+(?!\d)) 是一个正向预查，匹配数字每三位之前的位置（但不包括这些数字本身）
   // $&, 在replace函数的第二个参数中，表示匹配到的字符串，即原数字字符串中每个三位数字前的位置
   // 替换为逗号加原位置（即在这些位置前加上逗号）
-  return cleanedPrice.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return cleanedPrice.replaceAll(/\B(?=(\d{3})+(?!\d))/g, ',');
 }

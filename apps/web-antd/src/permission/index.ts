@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2025-03-27 16:13:35
- * @LastEditTime: 2025-03-31 10:35:34
+ * @LastEditTime: 2026-01-21 10:54:39
  * @LastEditors: cwx
  * @Description: 权限
  */
@@ -9,11 +9,11 @@
 export interface PermissionModule {
   name: string;
   key: string;
-  auth: Array<{ name: string; key: string }>;
+  auth: Array<{ key: string; name: string }>;
   tabs?: Array<{
-    name: string;
+    auth: Array<{ key: string; name: string }>;
     key: string;
-    auth: Array<{ name: string; key: string }>;
+    name: string;
   }>;
 }
 
@@ -24,50 +24,44 @@ const modules = import.meta.glob('./modules/**/*.ts', {
 
 // 权限转换函数
 const transToEnum = (module: PermissionModule) => {
-  const auth: Record<string, any> = {};
+  const tabsAuth = module.tabs
+    ? Object.fromEntries(
+        module.tabs.map((tab) => [
+          tab.name,
+          {
+            key: tab.key,
+            ...Object.fromEntries(
+              tab.auth.map((curr) => [curr.name, curr.key]),
+            ),
+          },
+        ]),
+      )
+    : {};
 
-  // 处理主权限
-  auth[module.name] = module.auth.reduce(
-    (acc, curr) => {
-      acc[curr.name] = curr.key;
-      return acc;
-    },
-    {} as Record<string, string>,
-  );
-
-  // 处理页签权限
-  module.tabs?.forEach((tab) => {
-    auth[tab.name] = {
-      key: tab.key,
-      ...tab.auth.reduce(
-        (acc, curr) => {
-          acc[curr.name] = curr.key;
-          return acc;
-        },
-        {} as Record<string, string>,
-      ),
-    };
-  });
-
-  return auth;
+  return {
+    [module.name]: Object.fromEntries(
+      module.auth.map((curr) => [curr.name, curr.key]),
+    ),
+    ...tabsAuth,
+  };
 };
 
 // 生成处理后的权限对象
-const processedModules = Object.entries(modules).reduce(
-  (acc, [path, module]) => {
-    const moduleName =
-      path
+const processedModules = Object.fromEntries(
+  Object.entries(modules)
+    .map(([path, module]) => {
+      const moduleName = `${path
         .split('/')
         .pop()
         ?.replace('Permission.ts', '')
-        .replace(/^\w/, (m) => m) + 'Permission';
+        .replace(/^\w/, (m) => m)}Permission`;
 
-    if (moduleName) {
-      acc[moduleName] = transToEnum(module.default);
-    }
-    return acc;
-  },
-  {} as Record<string, ReturnType<typeof transToEnum>>,
+      if (moduleName) {
+        return [moduleName, transToEnum(module.default)];
+      }
+      return null;
+    })
+    .filter((item) => item !== null),
 );
 
 // 导出所有处理后的权限对象

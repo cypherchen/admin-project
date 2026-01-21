@@ -8,4 +8,3 @@ export enum ParamsTypeEnum {
   '企业业态类型',
   '多选下拉框',
 }
-

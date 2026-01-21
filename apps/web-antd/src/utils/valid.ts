@@ -9,7 +9,7 @@
 /**
  * @description: 校验密码强度
  * @param {string} password 密码
- * @param {boolean} [isAdmin=false] 是否为管理员
+ * @param {boolean} [isAdmin] 是否为管理员
  * @returns {boolean} true: 密码强度满足要求; false: 密码强度不满足要求
  */
 export function checkPwdStrength(password: string, isAdmin: boolean = false) {
@@ -43,9 +43,9 @@ export function checkPwdStrength(password: string, isAdmin: boolean = false) {
         /\d/.test(str[i + 1] as string) &&
         /\d/.test(str[i + 2] as string)
       ) {
-        const num1 = parseInt(str[i] as string, 10);
-        const num2 = parseInt(str[i + 1] as string, 10);
-        const num3 = parseInt(str[i + 2] as string, 10);
+        const num1 = Number.parseInt(str[i] as string, 10);
+        const num2 = Number.parseInt(str[i + 1] as string, 10);
+        const num3 = Number.parseInt(str[i + 2] as string, 10);
         if (num2 === num1 + 1 && num3 === num2 + 1) {
           return false;
         }
@@ -53,13 +53,13 @@ export function checkPwdStrength(password: string, isAdmin: boolean = false) {
 
       // 检查是否有连续递增的字母（如abc这种情况，这里只考虑英文字母且不区分大小写）
       if (
-        /[a-zA-Z]/.test(str[i] as string) &&
-        /[a-zA-Z]/.test(str[i + 1] as string) &&
-        /[a-zA-Z]/.test(str[i + 2] as string)
+        /[a-z]/i.test(str[i] as string) &&
+        /[a-z]/i.test(str[i + 1] as string) &&
+        /[a-z]/i.test(str[i + 2] as string)
       ) {
-        const code1 = (str[i] as string).toLowerCase().charCodeAt(0);
-        const code2 = (str[i + 1] as string).toLowerCase().charCodeAt(0);
-        const code3 = (str[i + 2] as string).toLowerCase().charCodeAt(0);
+        const code1 = (str[i] as string).toLowerCase().codePointAt(0) ?? 0;
+        const code2 = (str[i + 1] as string).toLowerCase().codePointAt(0) ?? 0;
+        const code3 = (str[i + 2] as string).toLowerCase().codePointAt(0) ?? 0;
         if (code2 === code1 + 1 && code3 === code2 + 1) {
           return false;
         }

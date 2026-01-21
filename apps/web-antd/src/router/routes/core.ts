@@ -107,4 +107,4 @@ const coreRoutes: RouteRecordRaw[] = [
   },
 ];
 
-export { coreRoutes, fallbackNotFoundRoute, fallbackForbiddenRoute };
+export { coreRoutes, fallbackForbiddenRoute, fallbackNotFoundRoute };

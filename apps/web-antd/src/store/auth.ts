@@ -1,6 +1,6 @@
 import type { AuthApi } from '#/api';
 
-import { ref, nextTick } from 'vue';
+import { nextTick, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { LOGIN_PATH } from '@vben/constants';
@@ -11,15 +11,12 @@ import { message, notification } from 'ant-design-vue';
 import { defineStore } from 'pinia';
 
 import { getUserInfoApi, loginApi, logoutApi } from '#/api';
+import { createModifyPassword } from '#/components/_project/modifyPassword';
+import { hasPermission } from '#/components/authority';
 import { $t } from '#/locales';
+import { accessRoutes } from '#/router/routes';
 import { encrypt } from '#/utils/encrypt';
 import { checkPwdStrength } from '#/utils/valid';
-
-import { createModifyPassword } from '#/components/_project/modifyPassword';
-
-import { accessRoutes } from '#/router/routes';
-
-import { hasPermission } from '#/components/authority';
 
 export const useAuthStore = defineStore('auth', () => {
   const accessStore = useAccessStore();
@@ -59,7 +56,7 @@ export const useAuthStore = defineStore('auth', () => {
         // ]);
 
         userData.homePath = accessRoutes
-          .sort((a, b) => a.meta?.order! - b.meta?.order!)
+          .toSorted((a, b) => (a.meta?.order ?? 0) - (b.meta?.order ?? 0))
           .find((item) => {
             return hasPermission(item.name as string, 'menu');
           })?.path;

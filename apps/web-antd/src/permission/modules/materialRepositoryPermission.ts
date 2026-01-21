@@ -65,8 +65,7 @@ const materialRepository: PermissionModule = {
       key: 'materialRepository_material:deleteHistory',
     },
   ],
+  tabs: [],
 };
-
-materialRepository.tabs = [];
 
 export default materialRepository;

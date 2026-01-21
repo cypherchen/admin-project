@@ -20,8 +20,7 @@ const desktop: PermissionModule = {
       key: 'desktop:notice',
     },
   ],
+  tabs: [],
 };
-
-desktop.tabs = [];
 
 export default desktop;

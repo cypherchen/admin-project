@@ -73,8 +73,7 @@ const listRepository: PermissionModule = {
       key: 'listRepository_composition:delete',
     },
   ],
+  tabs: [],
 };
-
-listRepository.tabs = [];
 
 export default listRepository;

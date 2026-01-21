@@ -1,22 +1,24 @@
+import type { Router, RouteRecordRaw } from 'vue-router';
+
 import type {
   ComponentRecordType,
   GenerateMenuAndRoutesOptions,
 } from '@vben/types';
-import type { Router, RouteRecordRaw } from 'vue-router';
 
 import { generateAccessible } from '@vben/access';
 import { preferences } from '@vben/preferences';
+import { useAccessStore, useUserStore } from '@vben/stores';
 
 import { message } from 'ant-design-vue';
 
 import { getAllMenusApi } from '#/api';
 import { BasicLayout, IFrameView } from '#/layouts';
 import { $t } from '#/locales';
-
-import { useAccessStore, useUserStore } from '@vben/stores';
 import { useAuthStore } from '#/store';
 
 const forbiddenComponent = () => import('#/views/_core/fallback/forbidden.vue');
+
+const DEFAULT_OPTIONS = { setMenus: true, setRoutes: true };
 
 async function generateAccess(options: GenerateMenuAndRoutesOptions) {
   const pageMap: ComponentRecordType = import.meta.glob('../views/**/*.vue');
@@ -46,7 +48,7 @@ async function generateAccess(options: GenerateMenuAndRoutesOptions) {
 async function generateCustomAccess(
   router: Router,
   routes: RouteRecordRaw[],
-  options: Record<string, any> = { setMenus: true, setRoutes: true },
+  options: Record<string, any> = DEFAULT_OPTIONS,
 ) {
   const accessStore = useAccessStore();
   const userStore = useUserStore();

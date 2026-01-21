@@ -20,7 +20,6 @@ import {
   watch,
   watchEffect,
 } from 'vue';
-import { useRouter } from 'vue-router';
 
 import { useNamespace } from '@vben-core/composables';
 import { Ellipsis } from '@vben-core/icons';
