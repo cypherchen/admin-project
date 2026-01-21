@@ -5,57 +5,17 @@
  * @LastEditors: cwx
  * @Description: 操作列按钮
 -->
-<template>
-  <Tooltip v-bind="getTooltip(action)">
-    <template v-if="action.model === 'button'">
-      <Button
-        v-if="action.label"
-        v-bind="action"
-        type="link"
-        size="small"
-        class="!text-[13px]"
-        :class="getColorClass(action)"
-      >
-        {{ action.label }}
-      </Button>
-      <component
-        v-if="action.icon"
-        :is="getIcon(action.icon)"
-        :disabled="action.disabled"
-        @click="() => !action.disabled && action.onClick?.()"
-        class="px-2 !text-[13px]"
-        :class="getColorClass(action)"
-      ></component>
-    </template>
-    <Popconfirm v-else v-bind="getPopConfirm(action)">
-      <Button
-        v-if="action.label"
-        v-bind="action"
-        type="link"
-        size="small"
-        class="!text-[13px]"
-        :class="getColorClass(action)"
-      >
-        {{ action.label }}
-      </Button>
-      <component
-        v-if="action.icon"
-        :is="getIcon(action.icon)"
-        :disabled="action.disabled"
-        class="px-2 !text-[13px]"
-        :class="getColorClass(action)"
-      ></component>
-    </Popconfirm>
-  </Tooltip>
-</template>
-
 <script setup lang="tsx" name="ActionButton">
-import { toRefs, type PropType } from 'vue';
-import { Tooltip, Button, Popconfirm } from 'ant-design-vue';
-import * as Icons from '@ant-design/icons-vue';
+import type { PropType } from 'vue';
 
 import type { ActionItem } from './types';
+
+import { toRefs } from 'vue';
+
 import { isObject, isString } from '@vben/utils';
+
+import * as Icons from '@ant-design/icons-vue';
+import { Button, Popconfirm, Tooltip } from 'ant-design-vue';
 
 const props = defineProps({
   action: {
@@ -97,33 +57,85 @@ const getColorClass = (action: ActionItem) => {
 };
 </script>
 
+<template>
+  <Tooltip v-bind="getTooltip(action)">
+    <template v-if="action.model === 'button'">
+      <Button
+        v-if="action.label"
+        v-bind="action"
+        type="link"
+        size="small"
+        class="!text-[13px]"
+        :class="getColorClass(action)"
+      >
+        {{ action.label }}
+      </Button>
+      <component
+        v-if="action.icon"
+        :is="getIcon(action.icon)"
+        :disabled="action.disabled"
+        @click="() => !action.disabled && action.onClick?.()"
+        class="px-2 !text-[13px]"
+        :class="getColorClass(action)"
+      />
+    </template>
+    <Popconfirm v-else v-bind="getPopConfirm(action)">
+      <Button
+        v-if="action.label"
+        v-bind="action"
+        type="link"
+        size="small"
+        class="!text-[13px]"
+        :class="getColorClass(action)"
+      >
+        {{ action.label }}
+      </Button>
+      <component
+        v-if="action.icon"
+        :is="getIcon(action.icon)"
+        :disabled="action.disabled"
+        class="px-2 !text-[13px]"
+        :class="getColorClass(action)"
+      />
+    </Popconfirm>
+  </Tooltip>
+</template>
+
 <style scoped>
 .link-default:not(:disabled) {
   color: #1677ff;
+
   &:hover {
     color: #69b1ff;
   }
 }
+
 .link-success:not(:disabled) {
   color: #52c41a;
+
   &:hover {
     color: #73d13d;
   }
 }
+
 .link-warning:not(:disabled) {
   color: #faad14;
+
   &:hover {
     color: #ffc53d;
   }
 }
+
 .link-error:not(:disabled) {
   color: #ff4d4f;
+
   &:hover {
     color: #ff7875;
   }
 }
+
 [disabled='true'] {
-  color: rgba(0, 0, 0, 0.25) !important;
+  color: rgb(0 0 0 / 25%) !important;
   cursor: not-allowed;
 }
 </style>

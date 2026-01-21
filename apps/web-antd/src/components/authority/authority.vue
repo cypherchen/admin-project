@@ -5,11 +5,9 @@
  * @LastEditors: cwx
  * @Description: 按钮权限组件
 -->
-<template>
-  <slot v-if="hasAuth"></slot>
-</template>
 <script setup lang="ts" name="Authority">
 import { computed } from 'vue';
+
 import { hasPermission } from './usePermission';
 
 const props = defineProps({
@@ -23,5 +21,8 @@ const hasAuth = computed(() => {
   return hasPermission(props.value, 'auth');
 });
 </script>
+<template>
+  <slot v-if="hasAuth"></slot>
+</template>
 
 <style scoped></style>

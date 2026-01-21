@@ -5,84 +5,29 @@
  * @LastEditors: cwx
  * @Description: 发起审批弹窗
 -->
-<template>
-  <Modal
-    v-bind="$attrs"
-    title="发起审批"
-    v-model:open="open"
-    :destroyOnClose="true"
-    :maskClosable="false"
-    cancelText="取消"
-    okText="提交审批"
-    width="800px"
-    :afterClose="() => isFunction(close) && close()"
-    @ok="handleSubmit"
-    @cancel="handleOpen(false)"
-  >
-    <div class="mb-4" v-if="customizable">
-      <RadioGroup
-        v-model:value="templateType"
-        :options="[
-          { label: '模板', value: 0 },
-          { label: '自定义', value: 1 },
-        ]"
-        option-type="button"
-        button-style="solid"
-        @change="handleTypeChange"
-      ></RadioGroup>
-    </div>
-    <Form>
-      <template #Reviewer="slotProps">
-        <Flex vertical wrap="wrap" class="w-full">
-          <Select v-bind="slotProps"></Select>
-          <Flex>
-            <div v-for="item in getReviewers(slotProps.value)" :key="item.ID">
-              <span>{{ item.Sequence + 1 }}.{{ item.UserName }}</span>
-              <span
-                v-if="item.ID !== slotProps.value?.[slotProps.value.length - 1]"
-                class="mx-1"
-              >
-                →
-              </span>
-            </div>
-          </Flex>
-        </Flex>
-      </template>
-    </Form>
-    <Descriptions :column="2" size="small" :bordered="true">
-      <DescriptionsItem
-        v-for="item in schema"
-        :key="item.field"
-        :label="item.title"
-      >
-        {{ data[item.field] }}
-      </DescriptionsItem>
-    </Descriptions>
-  </Modal>
-</template>
-
 <script setup lang="ts" name="SubmitAudit">
-import { toRefs, ref, onMounted } from 'vue';
-import {
-  Modal,
-  RadioGroup,
-  Descriptions,
-  DescriptionsItem,
-  Select,
-  Flex,
-} from 'ant-design-vue';
+import type { SubmitAuditProps } from './props';
+
+import { onMounted, ref, toRefs } from 'vue';
 
 import { useVbenForm } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
+import { isFunction } from '@vben/utils';
 
-import type { SubmitAuditProps } from './props';
+import {
+  Descriptions,
+  DescriptionsItem,
+  Flex,
+  Modal,
+  RadioGroup,
+  Select,
+} from 'ant-design-vue';
+
+import { postAudit } from '#/api/auditInstanceApi/auditInstanceApi';
+import { getAuditTemplate } from '#/api/auditTemplateApi/auditTemplateApi';
+import { getUser } from '#/api/userApi/userApi';
 
 import { formSchema } from './data';
-import { postAudit } from '#/api/auditInstanceApi/auditInstanceApi';
-import { getUser } from '#/api/userApi/userApi';
-import { getAuditTemplate } from '#/api/auditTemplateApi/auditTemplateApi';
-
-import { isFunction } from '@vben/utils';
 
 const props = withDefaults(defineProps<SubmitAuditProps>(), {
   tableName: '',
@@ -111,7 +56,7 @@ async function handleTypeChange() {
   formApi.resetValidate();
   const schema = formSchema.filter((item) =>
     templateType.value === 0
-      ? !['Reviewer', 'CCRecipient'].includes(item.fieldName)
+      ? !['CCRecipient', 'Reviewer'].includes(item.fieldName)
       : !['WorkflowTemplate_ID'].includes(item.fieldName),
   );
   formApi.setState({ schema });
@@ -225,6 +170,62 @@ onMounted(() => {
   handleTypeChange();
 });
 </script>
+
+<template>
+  <Modal
+    v-bind="$attrs"
+    title="发起审批"
+    v-model:open="open"
+    :destroy-on-close="true"
+    :mask-closable="false"
+    cancel-text="取消"
+    ok-text="提交审批"
+    width="800px"
+    :after-close="() => isFunction(close) && close()"
+    @ok="handleSubmit"
+    @cancel="handleOpen(false)"
+  >
+    <div class="mb-4" v-if="customizable">
+      <RadioGroup
+        v-model:value="templateType"
+        :options="[
+          { label: '模板', value: 0 },
+          { label: '自定义', value: 1 },
+        ]"
+        option-type="button"
+        button-style="solid"
+        @change="handleTypeChange"
+      />
+    </div>
+    <Form>
+      <template #Reviewer="slotProps">
+        <Flex vertical wrap="wrap" class="w-full">
+          <Select v-bind="slotProps" />
+          <Flex>
+            <div v-for="item in getReviewers(slotProps.value)" :key="item.ID">
+              <span>{{ item.Sequence + 1 }}.{{ item.UserName }}</span>
+              <span
+                v-if="item.ID !== slotProps.value?.[slotProps.value.length - 1]"
+                class="mx-1"
+              >
+                →
+              </span>
+            </div>
+          </Flex>
+        </Flex>
+      </template>
+    </Form>
+    <Descriptions :column="2" size="small" :bordered="true">
+      <DescriptionsItem
+        v-for="item in schema"
+        :key="item.field"
+        :label="item.title"
+      >
+        {{ data[item.field] }}
+      </DescriptionsItem>
+    </Descriptions>
+  </Modal>
+</template>
 
 <style scoped lang="less">
 :deep(.ant-descriptions-item-label) {

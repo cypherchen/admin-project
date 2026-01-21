@@ -5,48 +5,21 @@
  * @LastEditors: cwx
  * @Description: 表格操作列
 -->
-<template>
-  <div>
-    <template
-      v-for="(action, index) in getActions(actions)"
-      :key="action.label"
-    >
-      <ActionButton :action="action"></ActionButton>
-      <Divider
-        type="vertical"
-        class="m-0"
-        v-if="divider && index < getActions(actions).length - 1"
-      />
-    </template>
-    <Dropdown
-      v-if="getActions(dropdownActions)?.length > 0"
-      trigger="hover"
-      :destroyPopupOnHide="true"
-    >
-      <MoreOutlined />
-      <template #overlay>
-        <Flex vertical>
-          <ActionButton
-            v-for="action in getActions(dropdownActions)"
-            :key="action.label"
-            :action="action"
-          ></ActionButton>
-        </Flex>
-      </template>
-    </Dropdown>
-  </div>
-</template>
-
 <script setup lang="tsx" name="TableAction">
-import { toRefs, type PropType } from 'vue';
-import { Divider, Dropdown, Flex } from 'ant-design-vue';
-import { MoreOutlined } from '@ant-design/icons-vue';
+import type { PropType } from 'vue';
 
 import type { ActionItem } from './types';
-import ActionButton from './actionButton.vue';
+
+import { toRefs } from 'vue';
 
 import { isBoolean, isFunction } from '@vben/utils';
+
+import { MoreOutlined } from '@ant-design/icons-vue';
+import { Divider, Dropdown, Flex } from 'ant-design-vue';
+
 import { hasPermission } from '#/components/authority';
+
+import ActionButton from './actionButton.vue';
 
 const props = defineProps({
   actions: {
@@ -85,5 +58,37 @@ const getActions = (actions: ActionItem[]) => {
   );
 };
 </script>
+
+<template>
+  <div>
+    <template
+      v-for="(action, index) in getActions(actions)"
+      :key="action.label"
+    >
+      <ActionButton :action="action" />
+      <Divider
+        type="vertical"
+        class="m-0"
+        v-if="divider && index < getActions(actions).length - 1"
+      />
+    </template>
+    <Dropdown
+      v-if="getActions(dropdownActions)?.length > 0"
+      trigger="hover"
+      :destroy-popup-on-hide="true"
+    >
+      <MoreOutlined />
+      <template #overlay>
+        <Flex vertical>
+          <ActionButton
+            v-for="action in getActions(dropdownActions)"
+            :key="action.label"
+            :action="action"
+          />
+        </Flex>
+      </template>
+    </Dropdown>
+  </div>
+</template>
 
 <style scoped></style>

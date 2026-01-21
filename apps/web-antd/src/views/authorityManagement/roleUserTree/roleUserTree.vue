@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2025-03-28 22:17:50
- * @LastEditTime: 2026-01-21 10:35:46
+ * @LastEditTime: 2026-01-21 11:48:37
  * @LastEditors: cwx
  * @Description: 角色用户树
 -->
@@ -67,7 +67,7 @@ defineExpose({ getTreeData });
 </script>
 
 <template>
-  <Flex vertical gap="8" class="h-full w-full rounded-md p-2">
+  <Flex vertical gap="8" class="h-full w-full rounded-md bg-card p-2">
     <RadioGroup
       v-model:value="type"
       :options="[
@@ -79,22 +79,24 @@ defineExpose({ getTreeData });
       @change="typeChange"
       class="mx-auto"
     />
-    <Spin :spinning="loading">
-      <Input
-        v-model:value="searchValue"
-        allow-clear
-        class="mb-2"
-        placeholder="请输入关键字"
-      />
+    <Input v-model:value="searchValue" allow-clear placeholder="请输入关键字" />
+    <Spin :spinning="loading" wrapperClassName="flex-1 overflow-auto">
       <Tree
-        class="h-full min-w-[200px] p-2"
         :tree-data="treeData"
         :field-names="{ key: 'ID', title: 'Name' }"
         block-node
         @select="nodeSelect"
-      />
+      >
+        <template #title="{ data }">
+          <div class="whitespace-nowrap">{{ data.Name }}</div>
+        </template>
+      </Tree>
     </Spin>
   </Flex>
 </template>
 
-<style scoped></style>
+<style scoped>
+:deep(.ant-spin-container) {
+  height: 100%;
+}
+</style>

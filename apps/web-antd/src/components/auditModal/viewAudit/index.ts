@@ -1,3 +1,5 @@
+import type { ViewAuditProps } from './props';
+
 /*
  * @Author: cwx
  * @Date: 2025-03-20 15:42:14
@@ -6,14 +8,14 @@
  * @Description: 查看审批
  */
 import { createVNode, render } from 'vue';
+
 import viewAudit from './viewAudit.vue';
-import type { ViewAuditProps } from './props';
 
 export * from './props';
 
 export function createViewAuditModal(options: ViewAuditProps) {
   const div = document.createElement('div');
-  document.body.appendChild(div);
+  document.body.append(div);
   const vm = createVNode(viewAudit, options);
   render(vm, div);
 }

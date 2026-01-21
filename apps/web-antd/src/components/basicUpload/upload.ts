@@ -1,19 +1,20 @@
 /*
  * @Author: cwx
  * @Date: 2025-03-16 01:17:40
- * @LastEditTime: 2025-03-17 23:35:41
+ * @LastEditTime: 2026-01-21 11:14:43
  * @LastEditors: cwx
  * @Description:
  */
-import BMF from 'browser-md5-file';
 import { useAppConfig } from '@vben/hooks';
+
+import BMF from 'browser-md5-file';
 
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 
 /**
  * @description 计算文件MD5
  * @param {File} file
- * @returns {Promise<string>}
+ * @returns {Promise<string>} MD5
  */
 export async function getFileMd5(file: File): Promise<string> {
   const bmf = new BMF();
@@ -31,7 +32,7 @@ export async function getFileMd5(file: File): Promise<string> {
 /**
  * @description 格式化文件
  * @param {Record<string, any>} file
- * @returns {Record<string, any>}
+ * @returns {Record<string, any>} formatted file
  */
 export function formatFile(file: Record<string, any>) {
   Object.assign(file, {

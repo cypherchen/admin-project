@@ -5,32 +5,41 @@
  * @LastEditors: cwx
  * @Description: 审核状态
 -->
-<template>
-  <div class="cursor-pointer" @click="handleClick">
-    <component
-      :is="iconMap[status].icon"
-      :style="{ color: iconMap[status].color }"
-    />
-    {{ AuditStatusEnum[status] }}
-  </div>
-</template>
-
 <script setup lang="ts" name="AuditStatus">
-import { toRefs, type Component, type PropType } from 'vue';
-import { message } from 'ant-design-vue';
+import type { Component, PropType } from 'vue';
+
+import { toRefs } from 'vue';
+
 import {
-  InfoCircleFilled,
-  ClockCircleFilled,
   CheckCircleFilled,
+  ClockCircleFilled,
   CloseCircleFilled,
+  InfoCircleFilled,
   StopFilled,
 } from '@ant-design/icons-vue/lib/icons';
-
-import { AuditStatusEnum } from '#/enums/auditStatusEnum';
+import { message } from 'ant-design-vue';
 
 import { createViewAuditModal } from '#/components/auditModal';
+import { AuditStatusEnum } from '#/enums/auditStatusEnum';
 
-const iconMap: Record<AuditStatusEnum, { icon: Component; color: string }> = {
+const props = defineProps({
+  status: {
+    type: Number as PropType<AuditStatusEnum>,
+    default: 0,
+  },
+  instanceId: {
+    type: String as PropType<string>,
+    default: '',
+  },
+  clickable: {
+    type: Boolean as PropType<boolean>,
+    default: true,
+  },
+});
+
+const emit = defineEmits(['close']);
+
+const iconMap: Record<AuditStatusEnum, { color: string; icon: Component }> = {
   [AuditStatusEnum.未提交]: {
     icon: InfoCircleFilled,
     color: '#909399',
@@ -53,22 +62,6 @@ const iconMap: Record<AuditStatusEnum, { icon: Component; color: string }> = {
   },
 };
 
-const emit = defineEmits(['close']);
-
-const props = defineProps({
-  status: {
-    type: Number as PropType<AuditStatusEnum>,
-    default: 0,
-  },
-  instanceId: {
-    type: String as PropType<string>,
-    default: '',
-  },
-  clickable: {
-    type: Boolean as PropType<boolean>,
-    default: true,
-  },
-});
 const { status, instanceId, clickable } = toRefs(props);
 
 function handleClick() {
@@ -83,5 +76,15 @@ function handleClick() {
   });
 }
 </script>
+
+<template>
+  <div class="cursor-pointer" @click="handleClick">
+    <component
+      :is="iconMap[status].icon"
+      :style="{ color: iconMap[status].color }"
+    />
+    {{ AuditStatusEnum[status] }}
+  </div>
+</template>
 
 <style scoped></style>

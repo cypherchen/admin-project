@@ -5,122 +5,36 @@
  * @LastEditors: cwx
  * @Description: 查看审批弹窗
 -->
-<template>
-  <Modal
-    v-bind="$attrs"
-    title="查看审批"
-    v-model:open="open"
-    :destroyOnClose="true"
-    :maskClosable="false"
-    :footer="null"
-    :afterClose="() => isFunction(close) && close()"
-    width="1500px"
-  >
-    <Flex gap="8" class="h-[600px] w-full rounded-md border p-2">
-      <Flex vertical gap="8" class="flex-1">
-        <Flex justify="space-between" class="w-full">
-          <div class="title-class">审批信息</div>
-          <Button type="link" size="small" :href="linkUrl" target="_blank">
-            详情链接
-          </Button>
-        </Flex>
-        <Divider class="m-0"></Divider>
-        <Descriptions :column="2" size="small" :bordered="true">
-          <DescriptionsItem
-            v-for="item in computedFormSchema"
-            :key="item.field"
-            :label="item.title"
-          >
-            {{ auditForm[item.field] }}
-          </DescriptionsItem>
-        </Descriptions>
-        <Descriptions :column="2" size="small" :bordered="true">
-          <DescriptionsItem
-            v-for="item in auditSchema"
-            :key="item.field"
-            :label="item.title"
-          >
-            {{ auditData[item.field] }}
-          </DescriptionsItem>
-        </Descriptions>
-      </Flex>
-      <Divider type="vertical" class="m-0 h-full"></Divider>
-      <Flex vertical gap="8" class="h-full w-[350px]">
-        <div class="title-class !h-[25px]">审批状态</div>
-        <Divider class="m-0"></Divider>
-        <Steps direction="vertical" size="small" :items="steps" :percent="50">
-        </Steps>
-        <Flex vertical gap="8" class="mt-auto">
-          <Flex v-if="canAudit" align="center">
-            <div class="w-20">审批意见:</div>
-            <Input v-model:value="opinion" placeholder="请输入审批意见"></Input>
-          </Flex>
-          <Flex gap="8" justify="end">
-            <Popconfirm
-              v-if="canCancel && stepsAuditStatus === AuditStatusEnum.审批中"
-              title="确定撤销吗?"
-              okText="确定"
-              cancelText="取消"
-              @confirm="handleAudit(AuditStatusEnum.撤销)"
-            >
-              <Button danger size="small">撤销</Button>
-            </Popconfirm>
-            <Popconfirm
-              v-if="canAudit"
-              title="确定驳回吗?"
-              okText="确定"
-              cancelText="取消"
-              @confirm="handleAudit(AuditStatusEnum.已驳回)"
-            >
-              <Button type="primary" danger size="small">驳回</Button>
-            </Popconfirm>
-            <Popconfirm
-              v-if="canAudit"
-              title="确定通过吗?"
-              okText="确定"
-              cancelText="取消"
-              @confirm="handleAudit(AuditStatusEnum.已审批)"
-            >
-              <Button type="primary" size="small">通过</Button>
-            </Popconfirm>
-          </Flex>
-        </Flex>
-      </Flex>
-    </Flex>
-  </Modal>
-</template>
-
 <script setup lang="ts" name="ViewAudit">
-import { toRefs, ref, computed, onMounted, h } from 'vue';
+import type { ViewAuditProps } from './props';
+
+import { computed, h, onMounted, ref, toRefs } from 'vue';
+
+import { isFunction } from '@vben/utils';
+
+import { StopOutlined } from '@ant-design/icons-vue/lib/icons';
 import {
-  Modal,
-  Flex,
   Button,
-  Divider,
   Descriptions,
   DescriptionsItem,
-  Steps,
+  Divider,
+  Flex,
   Input,
-  Popconfirm,
   message,
+  Modal,
+  Popconfirm,
+  Steps,
 } from 'ant-design-vue';
-import { StopOutlined } from '@ant-design/icons-vue/lib/icons';
-
-import { useUserStore } from '@vben/stores';
-
-import { AuditStatusEnum } from '#/enums/auditStatusEnum';
-import { formSchema } from './data';
 
 import {
   getAuditInstance,
   putAgreeAudit,
-  putRefuseAudit,
   putCancelAudit,
+  putRefuseAudit,
 } from '#/api/auditInstanceApi/auditInstanceApi';
+import { AuditStatusEnum } from '#/enums/auditStatusEnum';
 
-import type { ViewAuditProps } from './props';
-
-import { isFunction } from '@vben/utils';
+import { formSchema } from './data';
 
 const props = withDefaults(defineProps<ViewAuditProps>(), {
   instanceId: '',
@@ -143,7 +57,7 @@ const templateType = ref<number>(0);
 const computedFormSchema = computed(() => {
   return formSchema.filter((item) =>
     templateType.value === 0
-      ? !['reviewer', 'ccRecipient'].includes(item.field)
+      ? !['ccRecipient', 'reviewer'].includes(item.field)
       : !['templateName'].includes(item.field),
   );
 });
@@ -236,7 +150,7 @@ async function handleAudit(status: AuditStatusEnum) {
   let data = {};
 
   switch (status) {
-    case AuditStatusEnum.已审批:
+    case AuditStatusEnum.已审批: {
       data = {
         TaskID: steps.value.at(-1)?.ID,
         CheckOpinion: opinion.value,
@@ -244,12 +158,13 @@ async function handleAudit(status: AuditStatusEnum) {
       await putAgreeAudit(
         instanceId.value,
         data as {
-          TaskID: string;
           CheckOpinion: string;
+          TaskID: string;
         },
       );
       break;
-    case AuditStatusEnum.已驳回:
+    }
+    case AuditStatusEnum.已驳回: {
       data = {
         TaskID: steps.value.at(-1)?.ID,
         CheckOpinion: opinion.value,
@@ -257,17 +172,19 @@ async function handleAudit(status: AuditStatusEnum) {
       await putRefuseAudit(
         instanceId.value,
         data as {
-          TaskID: string;
           CheckOpinion: string;
+          TaskID: string;
         },
       );
       break;
-    case AuditStatusEnum.撤销:
+    }
+    case AuditStatusEnum.撤销: {
       data = {
         CancelCause: '',
       };
       await putCancelAudit(instanceId.value, data as { CancelCause: string });
       break;
+    }
   }
 
   const msgMap: Record<number, string> = {
@@ -285,6 +202,90 @@ onMounted(() => {
   getInstance();
 });
 </script>
+
+<template>
+  <Modal
+    v-bind="$attrs"
+    title="查看审批"
+    v-model:open="open"
+    :destroy-on-close="true"
+    :mask-closable="false"
+    :footer="null"
+    :after-close="() => isFunction(close) && close()"
+    width="1500px"
+  >
+    <Flex gap="8" class="h-[600px] w-full rounded-md border p-2">
+      <Flex vertical gap="8" class="flex-1">
+        <Flex justify="space-between" class="w-full">
+          <div class="title-class">审批信息</div>
+          <Button type="link" size="small" :href="linkUrl" target="_blank">
+            详情链接
+          </Button>
+        </Flex>
+        <Divider class="m-0" />
+        <Descriptions :column="2" size="small" :bordered="true">
+          <DescriptionsItem
+            v-for="item in computedFormSchema"
+            :key="item.field"
+            :label="item.title"
+          >
+            {{ auditForm[item.field] }}
+          </DescriptionsItem>
+        </Descriptions>
+        <Descriptions :column="2" size="small" :bordered="true">
+          <DescriptionsItem
+            v-for="item in auditSchema"
+            :key="item.field"
+            :label="item.title"
+          >
+            {{ auditData[item.field] }}
+          </DescriptionsItem>
+        </Descriptions>
+      </Flex>
+      <Divider type="vertical" class="m-0 h-full" />
+      <Flex vertical gap="8" class="h-full w-[350px]">
+        <div class="title-class !h-[25px]">审批状态</div>
+        <Divider class="m-0" />
+        <Steps direction="vertical" size="small" :items="steps" :percent="50" />
+        <Flex vertical gap="8" class="mt-auto">
+          <Flex v-if="canAudit" align="center">
+            <div class="w-20">审批意见:</div>
+            <Input v-model:value="opinion" placeholder="请输入审批意见" />
+          </Flex>
+          <Flex gap="8" justify="end">
+            <Popconfirm
+              v-if="canCancel && stepsAuditStatus === AuditStatusEnum.审批中"
+              title="确定撤销吗?"
+              ok-text="确定"
+              cancel-text="取消"
+              @confirm="handleAudit(AuditStatusEnum.撤销)"
+            >
+              <Button danger size="small">撤销</Button>
+            </Popconfirm>
+            <Popconfirm
+              v-if="canAudit"
+              title="确定驳回吗?"
+              ok-text="确定"
+              cancel-text="取消"
+              @confirm="handleAudit(AuditStatusEnum.已驳回)"
+            >
+              <Button type="primary" danger size="small">驳回</Button>
+            </Popconfirm>
+            <Popconfirm
+              v-if="canAudit"
+              title="确定通过吗?"
+              ok-text="确定"
+              cancel-text="取消"
+              @confirm="handleAudit(AuditStatusEnum.已审批)"
+            >
+              <Button type="primary" size="small">通过</Button>
+            </Popconfirm>
+          </Flex>
+        </Flex>
+      </Flex>
+    </Flex>
+  </Modal>
+</template>
 
 <style scoped lang="less">
 .title-class {

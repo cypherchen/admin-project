@@ -6,6 +6,7 @@
  * @Description:
  */
 import type { ButtonProps, TooltipProps } from 'ant-design-vue';
+
 interface Fn<T = any, R = T> {
   (...arg: T[]): R;
 }
@@ -13,15 +14,15 @@ interface Fn<T = any, R = T> {
 export interface ActionItem extends ButtonProps {
   onClick?: Fn;
   label?: string;
-  color?: 'success' | 'error' | 'warning';
+  color?: 'error' | 'success' | 'warning';
   icon?: string;
   popConfirm?: PopConfirm;
   disabled?: boolean;
-  model?: 'confirm' | 'button';
+  model?: 'button' | 'confirm';
   // 权限编码控制是否显示
   auth?: string;
   // 业务控制是否显示
-  ifShow?: boolean | ((action: ActionItem) => boolean);
+  ifShow?: ((action: ActionItem) => boolean) | boolean;
   tooltip?: string | TooltipProps;
 }
 
@@ -33,16 +34,16 @@ export interface PopConfirm {
   cancel?: Fn;
   icon?: string;
   placement?:
-    | 'top'
-    | 'left'
-    | 'right'
     | 'bottom'
-    | 'topLeft'
-    | 'topRight'
-    | 'leftTop'
-    | 'leftBottom'
-    | 'rightTop'
-    | 'rightBottom'
     | 'bottomLeft'
-    | 'bottomRight';
+    | 'bottomRight'
+    | 'left'
+    | 'leftBottom'
+    | 'leftTop'
+    | 'right'
+    | 'rightBottom'
+    | 'rightTop'
+    | 'top'
+    | 'topLeft'
+    | 'topRight';
 }

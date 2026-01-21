@@ -5,7 +5,7 @@
  * @LastEditors: cwx
  * @Description:
  */
-import { type VbenFormSchema } from '@vben/common-ui';
+import type { VbenFormSchema } from '@vben/common-ui';
 
 export const formSchema: VbenFormSchema[] = [
   {
@@ -17,7 +17,7 @@ export const formSchema: VbenFormSchema[] = [
         value: 'ID',
       },
       filterOption: (input: string, option: Record<string, any>) =>
-        option.Name.indexOf(input) >= 0,
+        option.Name.includes(input),
       showSearch: true,
     },
     fieldName: 'WorkflowTemplate_ID',
@@ -35,7 +35,7 @@ export const formSchema: VbenFormSchema[] = [
         value: 'ID',
       },
       filterOption: (input: string, option: Record<string, any>) =>
-        option.UserName.indexOf(input) >= 0,
+        option.UserName.includes(input),
       showSearch: true,
     },
     fieldName: 'Reviewer',
@@ -53,7 +53,7 @@ export const formSchema: VbenFormSchema[] = [
         value: 'ID',
       },
       filterOption: (input: string, option: Record<string, any>) =>
-        option.UserName.indexOf(input) >= 0,
+        option.UserName.includes(input),
       showSearch: true,
     },
     fieldName: 'CCRecipient',

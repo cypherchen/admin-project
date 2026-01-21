@@ -5,10 +5,10 @@
  * @LastEditors: cwx
  * @Description: 预览
 -->
+<script setup lang="ts" name="Preview"></script>
+
 <template>
   <div></div>
 </template>
-
-<script setup lang="ts" name="Preview"></script>
 
 <style scoped></style>

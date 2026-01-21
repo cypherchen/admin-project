@@ -5,39 +5,22 @@
  * @LastEditors: cwx
  * @Description: 修改密码弹窗
 -->
-<template>
-  <Modal
-    v-bind="$attrs"
-    title="修改密码"
-    v-model:open="open"
-    :destroyOnClose="true"
-    :maskClosable="false"
-    :keyboard="false"
-    :closable="closeable"
-    width="500px"
-    :footer="null"
-  >
-    <VbenForm></VbenForm>
-    <Flex justify="end" class="w-full">
-      <Button type="primary" @click="handleSubmit">确认</Button>
-    </Flex>
-  </Modal>
-</template>
-
 <script setup lang="ts" name="ModifyPassword">
-import { toRefs, ref } from 'vue';
-import { Modal, Flex, Button, message } from 'ant-design-vue';
-
-import { useVbenForm, z, type VbenFormSchema } from '@vben/common-ui';
-import { useUserStore } from '@vben/stores';
+import type { VbenFormSchema } from '@vben/common-ui';
 
 import type { ModifyPasswordProps } from './props';
 
-import { putUserPassword } from '#/api/userApi/userApi';
+import { ref, toRefs } from 'vue';
 
-import { checkPwdStrength } from '#/utils/valid';
-import { encrypt } from '#/utils/encrypt';
+import { useVbenForm, z } from '@vben/common-ui';
+import { useUserStore } from '@vben/stores';
 import { isFunction } from '@vben/utils';
+
+import { Button, Flex, message, Modal } from 'ant-design-vue';
+
+import { putUserPassword } from '#/api/userApi/userApi';
+import { encrypt } from '#/utils/encrypt';
+import { checkPwdStrength } from '#/utils/valid';
 
 const props = withDefaults(defineProps<ModifyPasswordProps>(), {
   closeable: true,
@@ -109,6 +92,25 @@ async function handleSubmit() {
   isFunction(submit.value) && submit.value();
 }
 </script>
+
+<template>
+  <Modal
+    v-bind="$attrs"
+    title="修改密码"
+    v-model:open="open"
+    :destroy-on-close="true"
+    :mask-closable="false"
+    :keyboard="false"
+    :closable="closeable"
+    width="500px"
+    :footer="null"
+  >
+    <VbenForm />
+    <Flex justify="end" class="w-full">
+      <Button type="primary" @click="handleSubmit">确认</Button>
+    </Flex>
+  </Modal>
+</template>
 
 <style scoped lang="less">
 :deep(p[role='alert']) {

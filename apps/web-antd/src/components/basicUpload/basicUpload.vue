@@ -5,51 +5,21 @@
  * @LastEditors: cwx
  * @Description: 上传组件
 -->
-<template>
-  <Upload
-    v-bind="$attrs"
-    v-model:file-list="uploadFileList"
-    :headers="headers"
-    :accept="computedAccept"
-    :action="computedAction"
-    :beforeUpload="beforeValidator"
-    :progress="progress"
-    :showUploadList="showUploadList"
-    @change="handleChange"
-    class="w-full"
-  >
-    <template v-if="!$slots.default">
-      <a-button
-        v-if="attrs.listType !== 'picture-card'"
-        :disabled="$attrs.disabled"
-      >
-        上传文件
-      </a-button>
-      <PlusOutlined
-        v-if="attrs.listType === 'picture-card'"
-        :disabled="$attrs.disabled"
-      />
-    </template>
-    <slot v-else name="default" :disable="$attrs.disabled"></slot>
-  </Upload>
-</template>
-
 <script setup lang="tsx" name="BasicUpload">
-import { ref, computed, toRefs, type PropType, useAttrs, watch } from 'vue';
-import {
-  Upload,
-  type UploadProps,
-  type UploadFile,
-  message,
-} from 'ant-design-vue';
-import { PlusOutlined } from '@ant-design/icons-vue';
+import type { UploadFile, UploadProps } from 'ant-design-vue';
 
-import { useAccessStore } from '@vben/stores';
+import type { PropType } from 'vue';
+
+import { computed, ref, toRefs, useAttrs, watch } from 'vue';
+
 import { useAppConfig } from '@vben/hooks';
+import { useAccessStore } from '@vben/stores';
 
-import { isFunction, difference } from 'lodash';
+import { PlusOutlined } from '@ant-design/icons-vue';
+import { message, Upload } from 'ant-design-vue';
+import { difference, isFunction } from 'lodash';
 
-import { getFileMd5, formatFile } from './upload';
+import { formatFile, getFileMd5 } from './upload';
 
 interface FileType<T = Record<string, any>> extends UploadFile<T> {
   md5?: string;
@@ -85,12 +55,12 @@ const props = defineProps({
     default: 2048,
   },
 });
+const emit = defineEmits(['change', 'update:fileList']);
+
 const { fileList, accept, action, beforeupload, showUploadList, maxSize } =
   toRefs(props);
 
 const attrs = useAttrs() as UploadProps;
-
-const emit = defineEmits(['change', 'update:fileList']);
 
 const uploadFileList = ref<FileType<Record<string, any>>[]>([]);
 watch(
@@ -102,10 +72,10 @@ watch(
       .map((f) => f.md5);
     // 如果uploadFileList中的md5和fileList中的md5不一致, 则更新数据
     if (
-      difference(fileMD5s, uploadFileMD5s).length ||
-      difference(uploadFileMD5s, fileMD5s).length
+      difference(fileMD5s, uploadFileMD5s).length > 0 ||
+      difference(uploadFileMD5s, fileMD5s).length > 0
     ) {
-      uploadFileList.value = val.map(formatFile) as FileType[];
+      uploadFileList.value = val.map((item) => formatFile(item)) as FileType[];
     }
   },
   {
@@ -178,39 +148,73 @@ const progress: UploadProps['progress'] = {
     '100%': '#87d068',
   },
   strokeWidth: 3,
-  format: (percent) => `${parseFloat(percent!.toFixed(2))}%`,
+  format: (percent) => `${Number.parseFloat(percent!.toFixed(2))}%`,
   class: 'upload-progress',
 };
 
 const handleChange: UploadProps['onChange'] = async ({ file }) => {
   // 状态机判断
   switch (file.status) {
-    case 'uploading':
-      // if (file.percent === 0) {
-      //   console.log('开始上传', file.name);
-      // } else {
-      //   console.log('上传进度:', file.percent + '%');
-      // }
-      break;
-    case 'done':
+    case 'done': {
       const doneList = uploadFileList.value
         .filter((f: FileType) => f.status === 'done' && f.response?.Value)
         .map((f: FileType) => f.response?.Value);
       emit('update:fileList', doneList);
       emit('change', file);
       break;
-    case 'error':
+    }
+    case 'error': {
       break;
-    case 'removed':
+    }
+    case 'removed': {
       const removedList = fileList.value.filter((f) => f.MD5Code !== file.md5);
       emit('update:fileList', removedList);
       emit('change', file);
       break;
-    default:
+    }
+    case 'uploading': {
+      // if (file.percent === 0) {
+      //   console.log('开始上传', file.name);
+      // } else {
+      //   console.log('上传进度:', file.percent + '%');
+      // }
+      break;
+    }
+    default: {
       console.warn('未知状态:', file.status);
+    }
   }
 };
 </script>
+
+<template>
+  <Upload
+    v-bind="$attrs"
+    v-model:file-list="uploadFileList"
+    :headers="headers"
+    :accept="computedAccept"
+    :action="computedAction"
+    :before-upload="beforeValidator"
+    :progress="progress"
+    :show-upload-list="showUploadList"
+    @change="handleChange"
+    class="w-full"
+  >
+    <template v-if="!$slots.default">
+      <a-button
+        v-if="attrs.listType !== 'picture-card'"
+        :disabled="$attrs.disabled"
+      >
+        上传文件
+      </a-button>
+      <PlusOutlined
+        v-if="attrs.listType === 'picture-card'"
+        :disabled="$attrs.disabled"
+      />
+    </template>
+    <slot v-else name="default" :disable="$attrs.disabled"></slot>
+  </Upload>
+</template>
 
 <style scoped lang="less">
 :deep(.upload-progress) {
