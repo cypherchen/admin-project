@@ -8,6 +8,7 @@
 import type { Recordable } from '@vben/types';
 
 import type { BasicFetchResult, BasicModel } from '#/api/basicType';
+
 import { requestClient } from '#/api/request';
 
 export namespace MaterialManagementApi {
