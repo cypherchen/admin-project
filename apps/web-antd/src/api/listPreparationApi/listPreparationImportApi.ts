@@ -49,12 +49,10 @@ export namespace ListPreparationImportApi {
  * @param options.vId 版本ID
  * @param options.params 查询参数
  */
-export async function getListPreparationImportFile(
-  options: {
-    vId: string;
-    params?: BasicParamsType;
-  },
-) {
+export async function getListPreparationImportFile(options: {
+  params?: BasicParamsType;
+  vId: string;
+}) {
   const { vId, params } = options;
   return requestClient.get<
     BasicFetchResult<ListPreparationImportApi.ImportFileResult>

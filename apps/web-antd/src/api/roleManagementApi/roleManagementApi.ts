@@ -6,12 +6,13 @@
  * @Description: 角色管理api
  */
 
-import { requestClient } from '#/api/request';
 import type {
-  BasicParamsType,
   BasicFetchResult,
   BasicModel,
+  BasicParamsType,
 } from '#/api/basicType';
+
+import { requestClient } from '#/api/request';
 
 export namespace RoleApi {
   export interface SysRole extends BasicModel {
@@ -129,7 +130,7 @@ export function getRoleByID(params: { userId: string }) {
  * @param {{ userId: string; newPassword: string }} data
  * @return {*}
  */
-export function putRolePassword(data: { userId: string; newPassword: string }) {
+export function putRolePassword(data: { newPassword: string; userId: string }) {
   return requestClient.put<RoleApi.RoleResult>(
     `api/SysRole/ChangePassword`,
     data,

@@ -1,16 +1,18 @@
 /*
  * @Author: cwx
  * @Date: 2025-03-22 23:51:36
- * @LastEditTime: 2025-03-25 15:23:58
+ * @LastEditTime: 2026-01-21 11:06:25
  * @LastEditors: cwx
  * @Description: 审核实例
  */
-import { requestClient } from '#/api/request';
+
 import type {
-  BasicParamsType,
   BasicFetchResult,
   BasicModel,
+  BasicParamsType,
 } from '#/api/basicType';
+
+import { requestClient } from '#/api/request';
 
 export namespace AuditInstanceApi {
   export interface User {
@@ -83,8 +85,8 @@ export function getMyAuditList({
   searchType,
   params,
 }: {
-  searchType: number;
   params?: BasicParamsType;
+  searchType: number;
 }) {
   return requestClient.get<
     BasicFetchResult<AuditInstanceApi.AuditInstanceResult>
@@ -112,8 +114,8 @@ export function postAudit(data: Record<string, any>) {
 export function putAgreeAudit(
   id: string,
   data: {
-    TaskID: string;
     CheckOpinion: string;
+    TaskID: string;
   },
 ) {
   return requestClient.put<AuditInstanceApi.AuditInstanceResult>(
@@ -131,8 +133,8 @@ export function putAgreeAudit(
 export function putRefuseAudit(
   id: string,
   data: {
-    TaskID: string;
     CheckOpinion: string;
+    TaskID: string;
   },
 ) {
   return requestClient.put<AuditInstanceApi.AuditInstanceResult>(
@@ -160,8 +162,8 @@ export function putCancelAudit(id: string, data: { CancelCause: string }) {
  * @return {*}
  */
 export function putBatchApproved(data: {
-  IDList: string[];
   CheckOpinion: string;
+  IDList: string[];
 }) {
   return requestClient.put<AuditInstanceApi.AuditInstanceResult>(
     `api/WorkflowInstance/BatchTaskAgree`,
@@ -175,8 +177,8 @@ export function putBatchApproved(data: {
  * @return {*}
  */
 export function putBatchRejected(data: {
-  IDList: string[];
   CheckOpinion: string;
+  IDList: string[];
 }) {
   return requestClient.put<AuditInstanceApi.AuditInstanceResult>(
     `api/WorkflowInstance/BatchTaskRefuse`,

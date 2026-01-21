@@ -5,24 +5,25 @@
  * @LastEditors: cwx
  * @Description: 基地管理
  */
-import { requestClient } from '#/api/request';
 import type { Recordable } from '@vben/types';
+
 import type { BasicFetchResult, BasicModel } from '#/api/basicType';
+import { requestClient } from '#/api/request';
 
 export namespace BaseManagementApi {
   export interface BaseResult extends BasicModel {
     Name: string;
-    BackShowName: string | null;
-    Parent_ID: string | null;
+    BackShowName: null | string;
+    Parent_ID: null | string;
     Count: number;
-    Amount: number | null;
+    Amount: null | number;
     Type: number;
     MergeState: number;
-    ErrorReason: string | null;
+    ErrorReason: null | string;
     IsThirdParty: boolean | null;
-    ThirdPartyId: string | null;
-    ShortName: string | null;
-    CopyID: string | null;
+    ThirdPartyId: null | string;
+    ShortName: null | string;
+    CopyID: null | string;
   }
 
   export interface BaseMonomerResult extends BasicModel {
@@ -36,8 +37,8 @@ export namespace BaseManagementApi {
     APProjectBaseTree_ID: string;
     APProjectBaseTreeName: string;
     ThirdPartyId: string;
-    BaseTreeThirdPartyId: string | null;
-    BaseTreeShortName: string | null;
+    BaseTreeThirdPartyId: null | string;
+    BaseTreeShortName: null | string;
   }
 }
 

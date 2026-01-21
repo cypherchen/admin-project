@@ -10,6 +10,7 @@ import type {
   BasicModel,
   BasicParamsType,
 } from '#/api/basicType';
+
 import { requestClient } from '#/api/request';
 
 export namespace ParamsTemplateApi {

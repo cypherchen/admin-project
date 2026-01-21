@@ -5,8 +5,9 @@
  * @LastEditors: cwx
  * @Description: 路由埋点api
  */
-import { requestClient } from '#/api/request';
 import type { Recordable } from '@vben/types';
+
+import { requestClient } from '#/api/request';
 
 export namespace RouteTrackingApi {
   export type RouteTrackingApiModel = {
@@ -31,7 +32,7 @@ export namespace RouteTrackingApi {
  * @param {Recordable<string | number>} data
  * @return {*}
  */
-export async function postRouteTracking(data: Recordable<string | number>) {
+export async function postRouteTracking(data: Recordable<number | string>) {
   return requestClient.post<Recordable<string>>(
     `/api/Common/BuryingPointAsk`,
     data,

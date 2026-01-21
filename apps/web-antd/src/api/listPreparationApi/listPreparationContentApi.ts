@@ -5,25 +5,27 @@
  * @LastEditors: cwx
  * @Description: 清单编制内容api
  */
-import { requestClient } from '#/api/request';
 import type { Recordable } from '@vben/types';
+
 import type {
-  BasicParamsType,
   BasicFetchResult,
   BasicModel,
+  BasicParamsType,
 } from '#/api/basicType';
+
+import { requestClient } from '#/api/request';
 
 export namespace ListPreparationContentApi {
   export interface CatalogTreeResult extends BasicModel {
-    Code: string | null;
+    Code: null | string;
     Name: string;
     Hierarchy: number;
-    Parent_ID: string | null;
-    NamePath: string | null;
+    Parent_ID: null | string;
+    NamePath: null | string;
     IDPath: string;
     IPProjectID: string;
-    CopyTreeID: string | null;
-    Specification: string | null;
+    CopyTreeID: null | string;
+    Specification: null | string;
     Version_ID: string;
   }
 }
@@ -91,9 +93,9 @@ export async function getListPreparationCatalog({
   vId,
   params,
 }: {
+  params?: BasicParamsType;
   pId: string;
   vId: string;
-  params?: BasicParamsType;
 }) {
   return requestClient.get<
     BasicFetchResult<ListPreparationContentApi.CatalogTreeResult>

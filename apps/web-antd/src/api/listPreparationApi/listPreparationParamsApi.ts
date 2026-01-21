@@ -12,6 +12,7 @@ import type {
   BasicModel,
   BasicParamsType,
 } from '#/api/basicType';
+
 import { requestClient } from '#/api/request';
 
 export namespace ListPreparationParamsApi {
@@ -21,8 +22,8 @@ export namespace ListPreparationParamsApi {
     InputType: number;
     Options: null | string;
     IsRequired: boolean;
-    Value: string | null;
-    Remark: string | null;
+    Value: null | string;
+    Remark: null | string;
     Parent_ID: null | string;
     IPProjectTreeID: string;
     IPProjectID: string;
@@ -41,10 +42,10 @@ export namespace ListPreparationParamsApi {
  * @param {BasicParamsType} options.params 查询参数
  */
 export async function getListPreparationParams(options: {
-  vId: string;
-  treeId: string;
-  tId: string;
   params?: BasicParamsType;
+  tId: string;
+  treeId: string;
+  vId: string;
 }) {
   const { vId, treeId, tId, params } = options;
   return requestClient.get<

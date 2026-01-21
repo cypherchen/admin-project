@@ -1,16 +1,17 @@
 /*
  * @Author: cwx
  * @Date: 2025-03-23 12:14:00
- * @LastEditTime: 2025-03-30 22:34:53
+ * @LastEditTime: 2026-01-21 11:10:18
  * @LastEditors: cwx
  * @Description: 用户管理api
  */
-import { requestClient } from '#/api/request';
 import type {
-  BasicParamsType,
   BasicFetchResult,
   BasicModel,
+  BasicParamsType,
 } from '#/api/basicType';
+
+import { requestClient } from '#/api/request';
 
 export namespace UserApi {
   export interface SysRole extends BasicModel {
@@ -127,7 +128,7 @@ export function getUserByID(params: { userId: string }) {
  * @param {{ userId: string; newPassword: string }} data
  * @return {*}
  */
-export function putUserPassword(data: { userId: string; newPassword: string }) {
+export function putUserPassword(data: { newPassword: string; userId: string }) {
   return requestClient.put<UserApi.UserResult>(
     `api/SystemUserInfo/ChangePassword`,
     data,

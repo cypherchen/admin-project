@@ -1,47 +1,49 @@
 /*
  * @Author: cwx
  * @Date: 2024-05-24 08:47:27
- * @LastEditTime: 2025-03-26 10:06:04
+ * @LastEditTime: 2026-01-21 11:08:15
  * @LastEditors: cwx
  * @Description: 清单编制台账api
  */
 
-import { requestClient } from '#/api/request';
 import type { Recordable } from '@vben/types';
+
 import type {
-  BasicParamsType,
   BasicFetchResult,
   BasicModel,
+  BasicParamsType,
 } from '#/api/basicType';
+
+import { requestClient } from '#/api/request';
 
 export namespace ListPreparationApi {
   export interface ProjectResult extends BasicModel {
     APProjectBaseTree_ID: string;
     APProjectState: number;
     BaseTreeName: string;
-    BaseTreeShortName: string | null;
-    BaseTreeThirdPartyId: string | null;
+    BaseTreeShortName: null | string;
+    BaseTreeThirdPartyId: null | string;
     Code: string;
-    CurrentTask: string | null;
-    DutyUserCode: string | null;
-    EndingTime: string | null;
-    HistoryUsers: string | null;
+    CurrentTask: null | string;
+    DutyUserCode: null | string;
+    EndingTime: null | string;
+    HistoryUsers: null | string;
     IPProjectState: number;
     IsEdit: boolean;
     Name: string;
-    Parent_ID: string | null;
-    PlanEndTime: string | null;
-    PlanTime: string | null;
-    ReportUserCode: string | null;
-    ReportedUserID: string | null;
-    ReportedUserName: string | null;
-    ResponsibleUserID: string | null;
-    ResponsibleUserName: string | null;
-    StartUserName: string | null;
-    Start_SysUser_ID: string | null;
-    StartingTime: string | null;
-    ThirdPartyId: string | null;
-    Type: number | null;
+    Parent_ID: null | string;
+    PlanEndTime: null | string;
+    PlanTime: null | string;
+    ReportUserCode: null | string;
+    ReportedUserID: null | string;
+    ReportedUserName: null | string;
+    ResponsibleUserID: null | string;
+    ResponsibleUserName: null | string;
+    StartUserName: null | string;
+    Start_SysUser_ID: null | string;
+    StartingTime: null | string;
+    ThirdPartyId: null | string;
+    Type: null | number;
   }
 
   export interface VersionResult extends BasicModel {
@@ -56,13 +58,13 @@ export namespace ListPreparationApi {
     Value: boolean;
     Message: string;
     List?: {
-      TreeName: string;
       [key: string]: any;
+      TreeName: string;
     }[];
   }
 }
 
-/*********************清单编制台账*********************/
+/** *******************清单编制台账*/
 
 /**
  * @description: 新增清单编制台账
@@ -130,8 +132,8 @@ export async function getListPreparation({
   params,
 }: {
   orgId: string;
-  treeId: string;
   params?: BasicParamsType;
+  treeId: string;
 }) {
   return requestClient.get<BasicFetchResult<ListPreparationApi.ProjectResult>>(
     `api/IPProject/${orgId}/${treeId}`,
@@ -187,7 +189,7 @@ export function getListPreparationCanSubmit(pId: string) {
   );
 }
 
-/*********************清单编制版本*********************/
+/** *******************清单编制版本*/
 
 /**
  * @description: 新增版本
@@ -255,8 +257,8 @@ export async function getListPreparationVersion({
   params,
 }: {
   orgId: string;
-  pId: string;
   params?: BasicParamsType;
+  pId: string;
 }) {
   return requestClient.get<BasicFetchResult<ListPreparationApi.VersionResult>>(
     `api/IPProjectVersion/${orgId}/${pId}`,

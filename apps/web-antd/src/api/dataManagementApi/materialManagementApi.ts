@@ -5,9 +5,10 @@
  * @LastEditors: cwx
  * @Description: 物料管理api
  */
-import { requestClient } from '#/api/request';
-import type { BasicFetchResult, BasicModel } from '#/api/basicType';
 import type { Recordable } from '@vben/types';
+
+import type { BasicFetchResult, BasicModel } from '#/api/basicType';
+import { requestClient } from '#/api/request';
 
 export namespace MaterialManagementApi {
   export interface MaterialResult extends BasicModel {

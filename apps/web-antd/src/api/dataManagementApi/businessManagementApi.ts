@@ -5,9 +5,10 @@
  * @LastEditors: cwx
  * @Description: 业态管理api
  */
-import { requestClient } from '#/api/request';
-import type { BasicFetchResult, BasicModel } from '#/api/basicType';
 import type { Recordable } from '@vben/types';
+
+import type { BasicFetchResult, BasicModel } from '#/api/basicType';
+import { requestClient } from '#/api/request';
 
 export namespace BusinessManagementApi {
   export interface BusinessResult extends BasicModel {
@@ -17,7 +18,7 @@ export namespace BusinessManagementApi {
     Parent_ID: string;
     NamePath: string;
     IDPath: string;
-    CopyTreeID: string | null;
+    CopyTreeID: null | string;
   }
 }
 
@@ -93,4 +94,3 @@ export async function getBusiness({
     BasicFetchResult<BusinessManagementApi.BusinessResult>
   >(`api/ProjectBusinessTree/${orgId}`, { params });
 }
-

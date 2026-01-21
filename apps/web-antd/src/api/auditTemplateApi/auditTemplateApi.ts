@@ -6,12 +6,13 @@
  * @Description: 审批模板
  */
 
-import { requestClient } from '#/api/request';
 import type {
-  BasicParamsType,
   BasicFetchResult,
   BasicModel,
+  BasicParamsType,
 } from '#/api/basicType';
+
+import { requestClient } from '#/api/request';
 
 export namespace AuditTemplateApi {
   export interface User {
