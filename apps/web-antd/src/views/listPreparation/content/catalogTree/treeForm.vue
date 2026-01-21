@@ -16,7 +16,7 @@ import { useVbenForm, useVbenModal } from '@vben/common-ui';
 import {
   postListPreparationCatalog,
   putListPreparationCatalog,
-} from '#/api/listPreparationApi/listPreparationContentApi';
+} from '#/api/listPreparationApi/listPreparationCatalogApi';
 
 const props = defineProps<{
   treeList: Record<string, any>[];

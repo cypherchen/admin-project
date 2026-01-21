@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2025-03-14 23:53:02
- * @LastEditTime: 2026-01-17 12:55:47
+ * @LastEditTime: 2026-01-21 11:56:18
  * @LastEditors: cwx
  * @Description: 清单编制内容api
  */
@@ -15,7 +15,7 @@ import type {
 
 import { requestClient } from '#/api/request';
 
-export namespace ListPreparationContentApi {
+export namespace ListPreparationCatalogApi {
   export interface CatalogTreeResult extends BasicModel {
     Code: null | string;
     Name: string;
@@ -42,7 +42,7 @@ export async function postListPreparationCatalog(
   vId: string,
   data: Recordable<any>,
 ) {
-  return requestClient.post<ListPreparationContentApi.CatalogTreeResult>(
+  return requestClient.post<ListPreparationCatalogApi.CatalogTreeResult>(
     `api/IPProjectTree/${pId}/${vId}`,
     data,
   );
@@ -75,7 +75,7 @@ export async function putListPreparationCatalog(
   vId: string,
   data: Recordable<any>,
 ) {
-  return requestClient.put<ListPreparationContentApi.CatalogTreeResult>(
+  return requestClient.put<ListPreparationCatalogApi.CatalogTreeResult>(
     `api/IPProjectTree/${pId}/${vId}/${data.ID}`,
     data,
   );
@@ -98,6 +98,6 @@ export async function getListPreparationCatalog({
   vId: string;
 }) {
   return requestClient.get<
-    BasicFetchResult<ListPreparationContentApi.CatalogTreeResult>
+    BasicFetchResult<ListPreparationCatalogApi.CatalogTreeResult>
   >(`api/IPProjectTree/${pId}/${vId}`, { params });
 }

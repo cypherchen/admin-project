@@ -38,7 +38,7 @@ import { getListPreparationByProjectID } from '#/api/listPreparationApi/listPrep
 import {
   deleteListPreparationCatalog,
   getListPreparationCatalog,
-} from '#/api/listPreparationApi/listPreparationContentApi';
+} from '#/api/listPreparationApi/listPreparationCatalogApi';
 import { Authority } from '#/components/authority';
 import { listPreparationPermission } from '#/permission';
 import { arrayToTree } from '#/utils/tree';

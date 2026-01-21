@@ -23,7 +23,7 @@ import { getMaterial } from '#/api/dataManagementApi/materialManagementApi';
 import {
   postListPreparationCatalog,
   putListPreparationCatalog,
-} from '#/api/listPreparationApi/listPreparationContentApi';
+} from '#/api/listPreparationApi/listPreparationCatalogApi';
 
 import { matColumns, monomerColumns } from './data';
 
