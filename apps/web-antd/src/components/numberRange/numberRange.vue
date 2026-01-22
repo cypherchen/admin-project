@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2026-01-18 20:02:41
- * @LastEditTime: 2026-01-19 14:38:24
+ * @LastEditTime: 2026-01-22 15:33:59
  * @LastEditors: cwx
  * @Description: 
 -->
@@ -84,7 +84,8 @@ watch(
 </script>
 
 <template>
-  <Input.Group compact v-bind="props.groupProps" class="!flex">
+  <Input.Group compact v-bind="props.groupProps" class="!flex items-center">
+    <slot name="prefix"></slot>
     <InputNumber
       v-model:value="innerMin"
       :controls="false"
@@ -106,6 +107,7 @@ watch(
       v-bind="props.maxInputProps"
       @blur="handleBlur('max')"
     />
+    <slot name="suffix"></slot>
   </Input.Group>
 </template>
 
