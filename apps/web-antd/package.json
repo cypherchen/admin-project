@@ -52,5 +52,8 @@
     "uuid": "^11.1.0",
     "vue": "catalog:",
     "vue-router": "catalog:"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.23"
   }
 }
