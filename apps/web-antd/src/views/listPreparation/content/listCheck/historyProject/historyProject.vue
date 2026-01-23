@@ -7,7 +7,8 @@
 -->
 <script setup lang="ts">
 import type { TreeProps } from 'ant-design-vue';
-import type { VxeGridProps, VxeGridListeners } from '#/adapter/vxe-table';
+
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 import type { WhereType } from '#/api/basicType';
 
 import { ref } from 'vue';
@@ -16,16 +17,16 @@ import { useRoute } from 'vue-router';
 import { useVbenModal } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
 
-import { Flex, Tree, Button, Alert, Divider, message } from 'ant-design-vue';
+import { Alert, Button, Divider, Flex, message, Tree } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { ConditionalType } from '#/api/basicType';
 import { getAutoPricing } from '#/api/autoPricingApi/autoPricingApi';
+import { ConditionalType } from '#/api/basicType';
 import { getIndicatorAnalyze } from '#/api/indicatorAnalyzeApi/indicatorAnalyzeApi';
 import { postListPreparationInspectHistory } from '#/api/listPreparationApi/listPreparationInspectApi';
 
-import { columns, searchFormSchema } from './data';
 import BaseTree from './baseTree.vue';
+import { columns, searchFormSchema } from './data';
 
 const emit = defineEmits(['reloadHistory']);
 
@@ -181,7 +182,7 @@ const [VbenModal, modalApi] = useVbenModal({
       <Button type="primary" @click="handleComfirm">加入对比</Button>
       <Tree
         :tree-data="checkedProjects"
-        v-model:checkedKeys="checkedKeys"
+        v-model:checked-keys="checkedKeys"
         :selectable="false"
         checkable
         :field-names="{ title: 'Name', key: 'ID' }"

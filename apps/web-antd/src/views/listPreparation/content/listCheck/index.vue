@@ -184,23 +184,21 @@ const gridOptions: VxeGridProps = {
       'CPrice',
     ];
     const classes: string[] = [];
-    if (cColumns.includes(column.field)) {
-      if (row.Result) {
-        const changeFlags: Record<string, boolean> = {
-          CName: row.IsNameChange,
-          CFeature: row.IsFeatureChange,
-          CUnit: row.IsUnitChange,
-          CQuantity: row.IsQuantityChange,
-          CPrice: row.IsPriceChange,
-        };
-        if (row.IsMissingItem) {
-          classes.push('!bg-[#ff00001a]');
-        } else if (row.IsAddition) {
-          classes.push('!bg-[#00ff661a]');
-        }
-        if (changeFlags[column.field]) {
-          classes.push('text-red-500');
-        }
+    if (cColumns.includes(column.field) && row.Result) {
+      const changeFlags: Record<string, boolean> = {
+        CName: row.IsNameChange,
+        CFeature: row.IsFeatureChange,
+        CUnit: row.IsUnitChange,
+        CQuantity: row.IsQuantityChange,
+        CPrice: row.IsPriceChange,
+      };
+      if (row.IsMissingItem) {
+        classes.push('!bg-[#ff00001a]');
+      } else if (row.IsAddition) {
+        classes.push('!bg-[#00ff661a]');
+      }
+      if (changeFlags[column.field]) {
+        classes.push('text-red-500');
       }
     }
     if (row.IsTreePath && ['BCode', 'CCode'].includes(column.field)) {
@@ -215,7 +213,7 @@ const gridOptions: VxeGridProps = {
       } else if (column.field === 'CCode') {
         return { rowspan: 1, colspan: 6 };
       } else if (
-        ['Result', 'DifferenceRate'].includes(column.field) ||
+        ['DifferenceRate', 'Result'].includes(column.field) ||
         column.type === 'seq'
       ) {
         return { rowspan: 1, colspan: 1 };
