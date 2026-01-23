@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2025-01-24 20:35:57
- * @LastEditTime: 2026-01-21 10:06:25
+ * @LastEditTime: 2026-01-22 10:41:08
  * @LastEditors: cwx
  * @Description: 清单编制内容
 -->
@@ -110,34 +110,28 @@ onMounted(() => {
     <template #left>
       <CatalogTree ref="treeRef" @node-change="handleNodeChange" />
     </template>
-    <div class="ml-2 h-full w-full rounded-md bg-card p-2">
-      <Tabs
-        v-model:active-key="activeKey"
-        @change="handleTabChange"
-        class="h-full"
-      >
-        <template #rightExtra>
-          <a-button type="link" @click="handleBack">
-            <template #icon>
-              <RollbackOutlined />
-            </template>
-            返回台账页
-          </a-button>
-        </template>
-        <TabPane
-          v-for="item in computedTabList"
+    <Tabs
+      v-model:active-key="activeKey"
+      @change="handleTabChange"
+      class="ml-2 h-full rounded-md bg-card p-2"
+    >
+      <template #rightExtra>
+        <a-button type="link" @click="handleBack">
+          <template #icon>
+            <RollbackOutlined />
+          </template>
+          返回台账页
+        </a-button>
+      </template>
+      <TabPane v-for="item in computedTabList" :key="item.key" :tab="item.name">
+        <component
           :key="item.key"
-          :tab="item.name"
-        >
-          <component
-            :key="item.key"
-            :is="item.component"
-            :current-node="currentNode"
-            @reload-tree="reloadTree"
-          />
-        </TabPane>
-      </Tabs>
-    </div>
+          :is="item.component"
+          :current-node="currentNode"
+          @reload-tree="reloadTree"
+        />
+      </TabPane>
+    </Tabs>
   </ColPage>
 </template>
 
