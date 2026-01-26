@@ -10,7 +10,7 @@ import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 import type { WhereType } from '#/api/basicType';
 
 import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 import { useUserStore } from '@vben/stores';
 
@@ -36,26 +36,23 @@ defineProps<{
 
 const emit = defineEmits(['reloadTree']);
 
-const { currentRoute } = useRouter();
-const userStore = useUserStore();
-
 const permission = listPreparationPermission!.导入工程;
 
 const currentRow = ref<null | Record<string, any>>(null);
 
-const auditStatus = computed(
-  () => currentRoute.value.query?.auditStatus as string,
-);
-const disabledByAudit = computed(() =>
-  [1, 2].includes(Number(auditStatus.value)),
-);
+const route = useRoute();
+const userStore = useUserStore();
 
-const orgId = computed(() => userStore.userInfo!.Orz_ID);
-const pId = computed(() => currentRoute.value.params.pId as string);
-const vId = computed(() => currentRoute.value.params.vId as string);
+const orgId = userStore.userInfo!.Orz_ID;
+const pId = route.params.pId as string;
+const vId = route.params.vId as string;
+
+const disabledByAudit = computed(() =>
+  [1, 2].includes(Number(route.query?.auditStatus)),
+);
 
 const importAction = computed(
-  () => `/api/IPProjectVersion/${orgId.value}/${pId.value}/Import/${vId.value}`,
+  () => `/api/IPProjectVersion/${orgId}/${pId}/Import/${vId}`,
 );
 
 const importTips =
@@ -88,7 +85,7 @@ const gridOptions = computed((): VxeGridProps => {
             Order: 'CreatedTime asc',
           };
           return getListPreparationImportFile({
-            vId: vId.value,
+            vId,
             params,
           });
         },
@@ -125,7 +122,7 @@ async function handleDelete() {
     type: 'warning',
     async onOk() {
       const data = [currentRow.value!.ID];
-      await deleteListPreparationImportFile(vId.value, data);
+      await deleteListPreparationImportFile(vId, data);
       message.success('删除成功');
       currentRow.value = null;
       gridApi.reload();

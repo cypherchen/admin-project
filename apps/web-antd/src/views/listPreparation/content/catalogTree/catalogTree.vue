@@ -159,8 +159,6 @@ const getCatalogList = async () => {
       const newNode = res.List.find((n) => n.ID === currentNode.value?.ID);
       if (newNode) {
         currentNode.value = newNode;
-
-        currentNode.value = newNode;
       }
     }
   } finally {
