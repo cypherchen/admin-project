@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2025-03-18 09:19:29
- * @LastEditTime: 2026-01-17 15:22:36
+ * @LastEditTime: 2026-01-26 11:09:01
  * @LastEditors: cwx
  * @Description: 导入文件
 -->
@@ -84,7 +84,9 @@ const handleChange = (file: UploadFile) => {
     >
       {{ label }}
     </a-button>
-    <slot v-else :disabled="$attrs.disabled" :upload-file="uploadFile"></slot>
+    <span v-else class="inline-block" @click="!$attrs.disabled && uploadFile()">
+      <slot :disabled="$attrs.disabled"></slot>
+    </span>
   </BasicUpload>
 </template>
 
