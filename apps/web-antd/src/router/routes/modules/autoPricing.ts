@@ -1,7 +1,7 @@
 /*
  * @Author: cwx
  * @Date: 2024-12-19 20:56:58
- * @LastEditTime: 2025-03-26 23:58:20
+ * @LastEditTime: 2026-01-16 15:18:47
  * @LastEditors: cwx
  * @Description:
  */
@@ -22,20 +22,20 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         name: 'autoPricingList',
-        path: '/autoPricing',
-        component: () => import('#/views/listPreparation/index.vue'),
+        path: '/autoPricing/:bId?',
+        component: () => import('#/views/autoPricing/index.vue'),
         meta: {
           title: '自动套价',
-          activePath: '/autoPricing',
+          activePath: '/autoPricing/:bId?',
         },
       },
       {
         name: 'autoPricingDetail',
-        path: '/autoPricing/:bId/detail/:pId/:vId',
-        component: () => import('#/views/listPreparation/content/content.vue'),
+        path: ':bId/detail/:pId/:vId',
+        component: () => import('#/views/autoPricing/content/content.vue'),
         meta: {
           title: '自动套价详情',
-          activePath: '/autoPricing',
+          activePath: '/autoPricing/:bId?',
         },
       },
     ],

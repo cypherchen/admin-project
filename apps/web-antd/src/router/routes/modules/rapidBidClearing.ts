@@ -22,20 +22,20 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         name: 'rapidBidClearingList',
-        path: '/rapidBidClearing',
+        path: '/rapidBidClearing/:bId?',
         component: () => import('#/views/listPreparation/index.vue'),
         meta: {
           title: '快速清标',
-          activePath: '/rapidBidClearing',
+          activePath: '/rapidBidClearing/:bId?',
         },
       },
       {
         name: 'rapidBidClearingDetail',
-        path: '/rapidBidClearing/:bId/detail/:pId/:vId',
+        path: ':bId/detail/:pId/:vId',
         component: () => import('#/views/listPreparation/content/content.vue'),
         meta: {
           title: '快速清标详情',
-          activePath: '/rapidBidClearing',
+          activePath: '/rapidBidClearing/:bId?',
         },
       },
     ],

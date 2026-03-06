@@ -22,20 +22,20 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         name: 'indicatorAnalyzeList',
-        path: '/indicatorAnalyze',
+        path: '/indicatorAnalyze/:bId?',
         component: () => import('#/views/listPreparation/index.vue'),
         meta: {
           title: '指标分析',
-          activePath: '/indicatorAnalyze',
+          activePath: '/indicatorAnalyze/:bId?',
         },
       },
       {
         name: 'indicatorAnalyzeDetail',
-        path: '/indicatorAnalyze/:bId/detail/:pId/:vId',
+        path: ':bId/detail/:pId/:vId',
         component: () => import('#/views/listPreparation/content/content.vue'),
         meta: {
           title: '指标分析详情',
-          activePath: '/indicatorAnalyze',
+          activePath: '/indicatorAnalyze/:bId?',
         },
       },
     ],
