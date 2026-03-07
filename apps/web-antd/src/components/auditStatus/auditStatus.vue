@@ -1,7 +1,7 @@
 <!--
  * @Author: cwx
  * @Date: 2025-03-18 22:09:53
- * @LastEditTime: 2025-03-25 15:21:11
+ * @LastEditTime: 2026-03-07 22:06:57
  * @LastEditors: cwx
  * @Description: 审核状态
 -->
@@ -59,6 +59,10 @@ const iconMap: Record<AuditStatusEnum, { color: string; icon: Component }> = {
   [AuditStatusEnum.撤销]: {
     icon: StopFilled,
     color: '#909399',
+  },
+  [AuditStatusEnum.已退回]: {
+    icon: CloseCircleFilled,
+    color: '#f56c6c',
   },
 };
 
